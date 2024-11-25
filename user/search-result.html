@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hasil Pencarian - Rental Film</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Hasil Pencarian</h1>
+    </header>
+    <nav>
+        <a href="/dashboard.html">Dashboard</a>
+        <a href="/etalase.html">Etalase</a>
+        <a href="/history.html">Riwayat</a>
+        <a href="/login.html">Logout</a>
+    </nav>
+    <div class="container">
+        <h2>Pencarian Film</h2>
+        <form action="/search-results.html" method="GET">
+            <label for="genre">Genre</label>
+            <input type="text" id="genre" name="genre" placeholder="Komedi, Aksi">
+            <label for="actor">Aktor</label>
+            <input type="text" id="actor" name="actor" placeholder="John Doe, Jane Doe">
+            <label for="title">Judul</label>
+            <input type="text" id="title" name="title" placeholder="Keyword judul">
+            <button type="submit">Cari</button>
+        </form>
+    </div>
+    <div class="container">
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Cover</th>
+                    <th>Judul Film</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td><img src="images/film1.jpg" alt="Film A"></td>
+                    <td>Tomorrow Never Dies</td>
+                    <td>Tersedia</td>
+                    <td><button onclick="pinjam('Tomorrow Never Dies')">Pinjam</button></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td><img src="images/film1.jpg" alt="Film B"></td>
+                    <td>The Great Escape</td>
+                    <td>Tidak Tersedia</td>
+                    <td><button disabled>Pinjam</button></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td><img src="images/film1.jpg" alt="Film C"></td>
+                    <td>Comedy Nights</td>
+                    <td>Tersedia</td>
+                    <td><button onclick="pinjam('Comedy Nights')">Pinjam</button></td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+    <footer>
+        &copy; 2024 Rental Film
+    </footer>
+
+    <script>
+        function pinjam(judul) {
+            alert('Anda meminjam film "' + judul + '".');
+        }
+    </script>
+</body>
+</html>

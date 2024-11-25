@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Movies</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Welcome, Admin</h1>
+    </header>
+    <nav>
+        <a href="/dashboard.html">Dashboard</a>
+        <a href="/report.html">Report</a>
+        <a href="/login.html">Logout</a>
+    </nav>
+    <div class="container">
+        <h2>Add New Film</h2>
+        <form>
+            <label for="film">Film Title</label>
+            <input type="text" id="film" name="film" required>
+            <label for="genre">Genre</label>
+            <input type="text" id="genre" name="genre" required>
+            <label for="actor">Actor</label>
+            <input type="text" id="actor" name="actor" required>
+            <label for="file">Upload Cover</label>
+            <input type="file" id="file" name="file" required>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <footer>
+        &copy; 2024 Rental Film (Admin)
+    </footer>
+</body>
+</html>
