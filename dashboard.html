@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Rental</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(0, 0, 0, 0.8);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            transition: background 0.3s ease;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-header {
+            background: transparent;
+            border: 1px solid #fff;
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-header:hover {
+            background: #ffffff;
+            color: #000;
+        }
+
+        .btn-header-logo {
+            background: transparent;
+            border: 1px solid #ff0000;
+            color: #ffffff;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        /* Section Styles */
+        .section-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .section {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #fff;
+            opacity: 0;
+            transition: opacity 1s ease, transform 1s ease;
+            transform: translateX(100%);
+            z-index: 1;
+        }
+
+        .section.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .section h1, .section h2 {
+            font-size: 3rem;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+            margin-bottom: 1rem;
+        }
+
+        .section p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0.5rem auto;
+        }
+
+        /* Video Background */
+        .video-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            filter: brightness(50%);
+        }
+
+        /* Navigation Arrows */
+        .prev, .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            width: auto;
+            padding: 16px;
+            margin-top: -22px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            transition: 0.6s ease;
+            border-radius: 0 3px 3px 0;
+            user-select: none;
+            z-index: 1000;
+        }
+
+        .next {
+            right: 0;
+            border-radius: 3px 0 0 3px;
+        }
+
+        .prev:hover, .next:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        /* Navigation Dots */
+        .nav-dots {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .nav-dot, .dot {
+            width: 12px;
+            height: 12px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .nav-dot.active, .dot.active {
+            background: #fff;
+        }
+
+        /* Footer */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0,0,0,0.7);
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">Movie Rental</div>
+        <div class="header-buttons">
+            <a href="#" class="btn-header nav-link" data-section="home">Home</a>
+            <a href="#" class="btn-header nav-link" data-section="about">About Us</a>
+            <a href="#" class="btn-header nav-link" data-section="service">Service</a>
+            <a href="#logout" class="btn-header-logo">Log Out</a>
+        </div>
+    </header>
+
+    <!-- Section Container -->
+    <div class="section-container">
+        <!-- Navigation Arrows -->
+        <a class="prev" onclick="plusSlides(-1)">❮</a>
+        <a class="next" onclick="plusSlides(1)">❯</a>
+
+        <!-- Home Section -->
+        <section id="home" class="section active">
+            <video autoplay muted loop class="video-background">
+                <source src="video/disney.mp4" type="video/mp4">
+            </video>
+            <h1>Welcome to Movie Rental</h1>
+            <p>Platform terbaik untuk menyewa film favorit Anda. Temukan berbagai genre film dengan kualitas terbaik.</p>
+        </section>
+
+        <!-- About Us Section -->
+        <section id="about" class="section">
+            <video autoplay muted loop class="video-background">
+                <source src="video/marvel.mp4" type="video/mp4">
+            </video>
+            <h2>About Us</h2>
+            <p>Kami adalah pengembang platform Movie Rental yang bertujuan untuk memberikan pengalaman menonton terbaik bagi pengguna.</p>
+            <p>Dibuat oleh tim pengembang yang berdedikasi, kami percaya pada kekuatan hiburan untuk menyatukan orang.</p>
+        </section>
+
+        <!-- Service Section -->
+        <section id="service" class="section">
+            <video autoplay muted loop class="video-background">
+                <source src="video/short.mp4" type="video/mp4">
+            </video>
+            <h2>Our Services</h2>
+            <p>Kami menyediakan layanan bantuan 24/7 untuk memandu Anda menggunakan platform ini.</p>
+            <p>Panduan mencakup cara menyewa film, melihat koleksi, dan mengelola langganan Anda.</p>
+        </section>
+    </div>
+
+    <!-- Navigation Dots -->
+    <div style="text-align:center">
+        <span class="dot" onclick="currentSlide(1)"></span> 
+        <span class="dot" onclick="currentSlide(2)"></span> 
+        <span class="dot" onclick="currentSlide(3)"></span> 
+      </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        &copy; 2024 Movie Rental. All rights reserved.
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const navDots = document.querySelectorAll('.nav-dot');
+            const additionalDots = document.querySelectorAll('.dot');
+            let currentSlideIndex = 1;
+
+            function showSection(sectionId) {
+                // Hide all sections
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                });
+
+                // Show selected section
+                const selectedSection = document.getElementById(sectionId);
+                selectedSection.classList.add('active');
+
+                // Update nav dot
+                navDots.forEach(dot => {
+                    dot.classList.remove('active');
+                    if (dot.dataset.section === sectionId) {
+                        dot.classList.add('active');
+                    }
+                });
+
+                // Update additional dots
+                additionalDots.forEach((dot, index) => {
+                    dot.classList.remove('active');
+                    if (index === currentSlideIndex) {
+                        dot.classList.add('active');
+                    }
+                });
+            }
+
+            function plusSlides(n) {
+                currentSlideIndex += n;
+                
+                // Wrap around
+                if (currentSlideIndex >= sections.length) {
+                    currentSlideIndex = 0;
+                }
+                if (currentSlideIndex < 0) {
+                    currentSlideIndex = sections.length - 1;
+                }
+
+                // Show the current slide
+                showSection(sections[currentSlideIndex].id);
+            }
+
+            function currentSlide(n) {
+                currentSlideIndex = n - 1;
+                showSection(sections[currentSlideIndex].id);
+            }
+
+            // Navigation links click event
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    currentSlideIndex = Array.from(sections).findIndex(section => section.id === link.dataset.section);
+                    showSection(link.dataset.section);
+                });
+            });
+
+            // Navigation dots click event
+            navDots.forEach(dot => {
+                dot.addEventListener('click', () => {
+                    currentSlideIndex = Array.from(sections).findIndex(section => section.id === dot.dataset.section);
+                    showSection(dot.dataset.section);
+                });
+            });
+
+            // Additional dots click event
+            additionalDots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    currentSlideIndex = index;
+                    showSection(sections[index].id);
+                });
+            });
+
+            // Add keyboard navigation
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'ArrowRight') {
+                    plusSlides(1);
+                } else if (event.key === 'ArrowLeft') {
+                    plusSlides(-1);
+                }
+            });
+        });
+        
+    </script>
+</body>
+</html>
