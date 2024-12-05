@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Movies - Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #101010;
+            color: #f1f1f1;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+        header {
+            background: #1c1c1c;
+            color: #fff;
+            padding: 1rem 2rem;
+            text-align: center;
+            border-bottom: 2px solid #ff5722;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background: #222;
+            padding: 0.5rem;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            transition: 0.3s ease;
+        }
+        nav a:hover {
+            background: #ff5722;
+            color: #fff;
+            border-radius: 4px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1.5rem;
+            background: #1c1c1c;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #ff5722;
+        }
+        form label {
+            display: block;
+            margin: 0.5rem 0 0.2rem;
+            font-weight: bold;
+        }
+        form input {
+            width: 100%;
+            padding: 0.7rem;
+            margin-bottom: 1rem;
+            border: none;
+            border-radius: 4px;
+            background: #333;
+            color: #fff;
+        }
+        form button {
+            display: block;
+            width: 100%;
+            padding: 0.7rem;
+            background: #ff5722;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+        form button:hover {
+            background: #e64a19;
+        }
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            background: #1c1c1c;
+            border-top: 2px solid #e64a19;
+            margin-top: 2rem;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome, Admin</h1>
+    </header>
+    <nav>
+        <a href="/dashboard.html">Dashboard</a>
+        <a href="/report.html">Report</a>
+        <a href="/customers.html">Kelola Pelanggan</a>
+        <a href="/login.html">Logout</a>
+    </nav>
+    <div class="container">
+        <h2>Add New Film</h2>
+        <form>
+            <label for="film">Film Title</label>
+            <input type="text" id="film" name="film" required>
+            <label for="genre">Genre</label>
+            <input type="text" id="genre" name="genre" required>
+            <label for="actor">Actor</label>
+            <input type="text" id="actor" name="actor" required>
+            <label for="file">Upload Cover</label>
+            <input type="file" id="file" name="file" required>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <footer>
+        &copy; 2024 Rental Film (Admin)
+    </footer>
+</body>
+</html>
