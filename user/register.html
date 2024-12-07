@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style_login.css" />
+    <title>Create Account</title>
+  </head>
+  <body>
+    <header>
+      <h1>Create Account</h1>
+    </header>
+    <div class="container">
+      <div class="image-section">
+        <img src="./image/camara.png" alt="Camera" />
+      </div>
+
+      <main>
+        <form id="registerForm">
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" required />
+
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required />
+
+          <label for="confirmPassword">Confirm Password:</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            required
+          />
+
+          <button class="submit_btn" type="submit">Create Account</button>
+        </form>
+
+        <!-- Navigation Links -->
+        <div class="nav-links">
+          <a href="login.html">Already have an account?</a><br />
+          <a href="index.html">Back to Home</a>
+        </div>
+      </main>
+    </div>
+
+    <div id="message"></div>
+
+    <script src="auth.js"></script>
+  </body>
+</html>
