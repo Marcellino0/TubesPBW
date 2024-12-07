@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Rental - History Rental</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: white;
+            padding: 1rem;
+        }
+
+        .sidebar-header {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid #34495e;
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .sidebar-menu li:hover {
+            background: #34495e;
+        }
+
+        .sidebar-menu i {
+            margin-right: 0.5rem;
+            width: 20px;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            background: #f5f6fa;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 0.8rem;
+        border: 1px solid #ddd;
+    }
+
+    .data-table th {
+        background: #f8f9fa;
+    }
+</style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>User Dashboard</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li onclick="redirectToCatalog()">
+                    <i class="fas fa-film"></i> Catalog
+                </li>
+                <li onclick="redirectToSearch()">
+                    <i class="fas fa-search"></i> Search
+                </li>
+                <li onclick="redirectToRentals()">
+                    <i class="fas fa-ticket-alt"></i> Rentals
+                </li>
+                <li class="active">
+                    <i class="fas fa-history"></i> History
+                </li>
+                <li onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </li>
+            </ul>
+        </div>
+        <!-- Main Content -->
+    <div class="main-content">
+        <!-- History Section -->
+        <div id="historySection" class="section">
+            <div class="content-header">
+                <h2>Rental History</h2>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Movie</th>
+                        <th>Rented On</th>
+                        <th>Returned On</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                    <!-- History data will be populated here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Function to redirect to catalog page
+    function redirectToCatalog() {
+        window.location.href = 'catalog.html';
+    }
+
+    // Function to redirect to search page
+    function redirectToSearch() {
+        window.location.href = 'search-rental.html';
+    }
+
+    // Function to redirect to rentals page
+    function redirectToRentals() {
+        window.location.href = 'rental.html';
+    }
+
+    // Function to handle logout
+    function logout() {
+        window.location.href = 'login.html';
+    }
+
+    // Fetch rental history data from the server and populate the history table
+    function fetchHistoryData() {
+        // Use AJAX or fetch to retrieve rental history data from the server
+        // and populate the 'historyTableBody' with the retrieved data
+
+        // Example history data (replace with actual data from the server)
+        const historyData = [
+            {
+                movie: 'Movie 1',
+                rentedOn: '2023-05-01',
+                returnedOn: '2023-05-08',
+            },
+            {
+                movie: 'Movie 2',
+                rentedOn: '2023-05-10',
+                returnedOn: '2023-05-17',
+            },
+            // Add more history data
+        ];
+
+        const historyTableBody = document.getElementById('historyTableBody');
+        historyTableBody.innerHTML = '';
+
+        historyData.forEach(history => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${history.movie}</td>
+                <td>${history.rentedOn}</td>
+                <td>${history.returnedOn}</td>
+            `;
+            historyTableBody.appendChild(row);
+        });
+    }
+
+    // Fetch rental history data when the page loads
+    window.addEventListener('load', fetchHistoryData);
+</script>

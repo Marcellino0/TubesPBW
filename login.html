@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie Rental - Login</title>
+    <title>MovieMate - Login</title>
     <style>
         * {
             margin: 0;
@@ -21,7 +21,9 @@
         }
 
         .login-container {
-            background: white;
+            opacity: 80%;
+            position: fixed;
+            background: black;
             padding: 2rem;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -32,10 +34,11 @@
         .login-title {
             text-align: center;
             margin-bottom: 2rem;
-            color: #2c3e50;
+            color: #ffffff;
         }
 
         .login-form {
+            color: white;
             display: flex;
             flex-direction: column;
             gap: 1rem;
@@ -49,7 +52,7 @@
 
         .input-group label {
             font-weight: bold;
-            color: #34495e;
+            color: white;
         }
 
         .input-group input {
@@ -92,11 +95,22 @@
             margin-bottom: 1rem;
             display: none;
         }
+        #myVideo {
+            filter: brightness(70%);
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+        }
     </style>
 </head>
 <body>
+    <video autoplay muted loop id="myVideo">
+        <source src="video/bgPartikel.mp4" type="video/mp4">
+    </video>
     <div class="login-container">
-        <h1 class="login-title">Movie Rental</h1>
+        <h1 class="login-title">MovieMate</h1>
         <div class="error-message" id="errorMessage">Invalid username or password</div>
         <form class="login-form" onsubmit="handleLogin(event)">
             <div class="input-group">
