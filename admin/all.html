@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Report - Admin</title>
+    <title>TEST</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -72,6 +72,28 @@
             margin-bottom: 2rem;
         }
 
+        .edit-btn:hover{
+    background-color: blue;
+}
+.edit-btn{
+    background-color: rgb(56, 56, 245);
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.delete-btn:hover{
+    background-color: red;
+}
+.delete-btn{
+    background-color: rgb(252, 69, 69);
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
         .section {
             display: none;
             background: white;
@@ -85,9 +107,11 @@
         #movies:checked ~ .main-content #moviesSection,
         #genres:checked ~ .main-content #genresSection,
         #actors:checked ~ .main-content #actorsSection,
+        #users:checked ~ .main-content #usersSection,
         #reports:checked ~ .main-content #reportsSection {
             display: block;
         }
+
 
         /* Form Styles */
         .admin-form {
@@ -160,8 +184,14 @@
                 <li>
                     <label for="movies"><i class="fas fa-film"></i> Kelola Film</label>
                 </li>
+                <!-- <li>
+                    <label for="genres"><i class="fas fa-tags"></i> Kelola Genre</label>
+                </li>-->
+                <!-- <li>
+                    <label for="actors"><i class="fas fa-user"></i> Kelola Aktor</label>
+                </li>  -->
                 <li>
-                    <label for="user"><i class="fas fa-user"></i> Kelola Pelanggan</label>
+                    <label for="users"><i class="fas fa-user"></i> Kelola Pelanggan</label>
                 </li>
                 <li>
                     <label for="reports"><i class="fas fa-chart-bar"></i> Laporan</label>
@@ -173,12 +203,96 @@
         </div>
 
         <!-- Main Content -->
-        <!-- <input type="radio" name="section" id="movies">
+        <input type="radio" name="section" id="movies" checked>
         <input type="radio" name="section" id="genres">
-        <input type="radio" name="section" id="actors"> -->
+        <input type="radio" name="section" id="users">
         <input type="radio" name="section" id="reports">
 
         <div class="main-content">
+            <div id="moviesSection" class="section">
+                <div class="content-header">
+                    <h2>Kelola Film</h2>
+                    <button onclick="showAddMovieForm()" class="submit-btn">
+                        <i class="fas fa-plus"></i> Tambah Film
+                    </button>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label>Judul Film</label>
+                    <input type="text" required>
+                </div>
+                <br>
+                <form class="filmForm" id="movieForm" style="display: table;">
+                    <div class="form-group">
+                        <label>Genre</label>
+                        <select multiple required>
+                            <option value="action">Action</option>
+                            <option value="comedy">Comedy</option>
+                            <option value="drama">Drama</option>
+                            <option value="anime">Anime</option>
+                            <option value="scifi">Sci-fi</option>
+                        </select>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label>Aktor</label>
+                        <input type="text" placeholder="Pisahkan dengan koma" required>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label>Stok</label>
+                        <input type="number" required>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label>Cover Film</label>
+                        <input type="file" accept="image/*" required>
+                    </div>
+                    <br>
+                    <button type="submit" class="submit-btn">Simpan Film</button>
+                </form>
+                
+            </div>
+            <!-- <div id="genresSection" class="section">
+                <h2>Kelola Genre</h2>
+                <p>Content for managing genres.</p>
+            </div>-->
+            <!-- <div id="actorsSection" class="section">
+                <h2>Kelola Aktor</h2>
+                <p>Content for managing actors.</p>
+            </div> -->
+            <div id="usersSection" class="section">
+                <div class="content-header">
+                    <h2>Kelola Pelanggan</h2>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama</th>
+                            <th>Email</th>
+                            <th>Nomor Telepon</th>
+                            <th>Film</th>
+                            <th>Durasi</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>John Doe</td>
+                            <td>johndoe@example.com</td>
+                            <td>+62 812 3456 7890</td>
+                            <td>Naruto</td>
+                            <td>1 hari</td>
+                            <td>
+                                <a href="#" class="edit-btn">Edit</a>
+                                <a href="#" class="delete-btn">Hapus</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <div id="reportsSection" class="section">
                 <div class="content-header">
                     <h2>Laporan Penyewaan</h2>
@@ -212,9 +326,5 @@
             </div>
         </div>
     </div>
-
-    <footer>
-        &copy; 2024 Rental Film (Admin)
-    </footer>
 </body>
 </html>

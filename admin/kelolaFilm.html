@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Movies - Admin</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
 * {
     margin: 0;
@@ -11,45 +12,73 @@
     box-sizing: border-box;
     font-family: Arial, sans-serif;
 }
-
+.section {
+background: white;
+padding: 2rem;
+border-radius: 8px;
+box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+margin-bottom: 2rem;
+}
+/* admin form */
 .admin-container {
     display: flex;
     min-height: 100vh;
 }
-
-/* Sidebar Styles */
-.sidebar {
-    width: 250px;
-    background: #2c3e50;
-    color: white;
-    padding: 1rem;
+.admin-form {
+display: grid;
+gap: 1rem;
+max-width: 600px;
+}
+.form-group {
+display: flex;
+flex-direction: column;
+gap: 0.5rem;
+}
+.form-group label {
+font-weight: bold;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+padding: 0.5rem;
+border: 1px solid #ddd;
+border-radius: 4px;
 }
 
-.sidebar-header {
-    padding: 1rem;
-    text-align: center;
-    border-bottom: 1px solid #34495e;
-    margin-bottom: 1rem;
-}
 
-.sidebar-menu {
-    list-style: none;
-}
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: white;
+            padding: 1rem;
+        }
 
-.sidebar-menu li {
-    padding: 0.8rem 1rem;
-    cursor: pointer;
-    transition: background 0.3s;
-}
+        .sidebar-header {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid #34495e;
+            margin-bottom: 1rem;
+        }
 
-.sidebar-menu li:hover {
-    background: #34495e;
-}
+        .sidebar-menu {
+            list-style: none;
+        }
 
-.sidebar-menu i {
-    margin-right: 0.5rem;
-    width: 20px;
-}
+        .sidebar-menu li {
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .sidebar-menu li:hover {
+            background: #34495e;
+        }
+
+        .sidebar-menu i {
+            margin-right: 0.5rem;
+            width: 20px;
+        }
 
 /* Main Content Styles */
 .main-content {
@@ -108,11 +137,24 @@
                     <h2>Admin Panel</h2>
                 </div>
                 <ul class="sidebar-menu">
-                    <li><i class="fas fa-dashboard"></i> Dashboard</li>
-                    <li><i class="fas fa-film"></i> Kelola Film</li>
-                    <li><i class="fas fa-user"></i> Kelola Pelanggan</li>
-                    <li><i class="fas fa-chart-bar"></i> Laporan</li>
-                    <li><i class="fas fa-sign-out-alt"></i> Logout</li>
+                    <li onclick="showSection('movies')">
+                        <i class="fas fa-film"></i> Kelola Film
+                    </li>
+                    <!-- <li onclick="showSection('genres')">
+                        <i class="fas fa-tags"></i> Kelola Genre
+                    </li>
+                    <li onclick="showSection('actors')">
+                        <i class="fas fa-user"></i> Kelola Aktor
+                    </li> -->
+                    <li onclick="showSection('users')">
+                        <i class="fas fa-user"></i> Kelola Pelanggan
+                    </li>
+                    <li onclick="showSection('reports')">
+                        <i class="fas fa-chart-bar"></i> Laporan
+                    </li>
+                    <li onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </li>
                 </ul>
             </div>
     
@@ -120,29 +162,48 @@
             <div class="main-content">
                 <div class="section">
                     <div class="content-header">
-                        <h2>Add New Film</h2>
+                        <h2>Kelola Film</h2>
+                        <button onclick="showAddMovieForm()" class="submit-btn">
+                            <i class="fas fa-plus"></i> Tambah Film
+                        </button>
                     </div>
-                    <form class="admin-form">
+                    <br>
+                    <div class="form-group">
+                        <label>Judul Film</label>
+                        <input type="text" required>
+                    </div>
+                    <br>
+                    <form class="filmForm" id="movieForm" style="display: table;">
                         <div class="form-group">
-                            <label for="film">Film Title</label>
-                            <input type="text" id="film" name="film" required>
+                            <label>Genre</label>
+                            <select multiple required>
+                                <option value="action">Action</option>
+                                <option value="comedy">Comedy</option>
+                                <option value="drama">Drama</option>
+                                <option value="anime">Anime</option>
+                                <option value="scifi">Sci-fi</option>
+                            </select>
                         </div>
+                        <br>
                         <div class="form-group">
-                            <label for="genre">Genre</label>
-                            <input type="text" id="genre" name="genre" required>
+                            <label>Aktor</label>
+                            <input type="text" placeholder="Pisahkan dengan koma" required>
                         </div>
+                        <br>
                         <div class="form-group">
-                            <label for="actor">Actor</label>
-                            <input type="text" id="actor" name="actor" required>
+                            <label>Stok</label>
+                            <input type="number" required>
                         </div>
+                        <br>
                         <div class="form-group">
-                            <label for="file">Upload Cover</label>
-                            <input type="file" id="file" name="file" required>
+                            <label>Cover Film</label>
+                            <input type="file" accept="image/*" required>
                         </div>
-                        <button type="submit" class="submit-btn">Submit</button>
+                        <br>
+                        <button type="submit" class="submit-btn">Simpan Film</button>
                     </form>
+                    
                 </div>
-            </div>
         </div>
     </body>
     
