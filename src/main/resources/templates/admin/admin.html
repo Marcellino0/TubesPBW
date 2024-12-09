@@ -170,9 +170,10 @@
             <div id="moviesSection" class="section active">
                 <div class="content-header">
                     <h2>Kelola Film</h2>
-                    <button onclick="showAddMovieForm()" class="submit-btn">
+                    <button onclick="redirectToKelolaFilm()" class="submit-btn">
                         <i class="fas fa-plus"></i> Tambah Film
                     </button>
+                    
                 </div>
                 <form class="admin-form" id="movieForm" style="display: none;">
                     <div class="form-group">
@@ -324,9 +325,9 @@
         }
 
         // Functions to show/hide forms
-        function showAddMovieForm() {
-            document.getElementById('movieForm').style.display = 'grid';
-        }
+        function redirectToKelolaFilm() {
+        window.location.href = 'kelolaFilm.html';
+    }
 
         function showAddGenreForm() {
             document.getElementById('genreForm').style.display = 'grid';

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -95,6 +96,7 @@
             margin-bottom: 1rem;
             display: none;
         }
+
         #myVideo {
             filter: brightness(70%);
             position: fixed;
@@ -105,6 +107,7 @@
         }
     </style>
 </head>
+
 <body>
     <video autoplay muted loop id="myVideo">
         <source src="video/bgPartikel.mp4" type="video/mp4">
@@ -136,9 +139,9 @@
 
             // Simple check for admin or user
             if (username === 'admin' && password === 'admin') {
-                window.location.href = 'admin.html';
+                window.location.href = 'admin/admin.html';
             } else if (username === 'user' && password === 'user') {
-                window.location.href = 'user.html';
+                window.location.href = 'user/userdashboard.html';
             } else {
                 document.getElementById('errorMessage').style.display = 'block';
             }
@@ -150,4 +153,5 @@
         }
     </script>
 </body>
+
 </html>
