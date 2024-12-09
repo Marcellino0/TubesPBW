@@ -1,6 +1,6 @@
+<!-- src/main/resources/templates/login.html -->
 <!DOCTYPE html>
-<html lang="id">
-
+<html xmlns:th="http://www.thymeleaf.org" lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -107,51 +107,28 @@
         }
     </style>
 </head>
-
 <body>
     <video autoplay muted loop id="myVideo">
-        <source src="video/bgPartikel.mp4" type="video/mp4">
+        <source th:src="@{/video/bgPartikel.mp4}" type="video/mp4">
     </video>
+    
     <div class="login-container">
-        <h1 class="login-title">MovieMate</h1>
-        <div class="error-message" id="errorMessage">Invalid username or password</div>
-        <form class="login-form" onsubmit="handleLogin(event)">
+        <!-- ... -->
+        <form class="login-form" th:action="@{/login}" method="post">
             <div class="input-group">
                 <label for="username">Username</label>
-                <input type="text" id="username" required>
+                <input type="text" id="username" name="username" required>
             </div>
             <div class="input-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" required>
+                <input type="password" id="password" name="password" required>
             </div>
             <button type="submit" class="login-btn">Login</button>
         </form>
+        
         <div class="switch-form">
-            Don't have an account? <a onclick="switchToRegister()">Register</a>
+            Don't have an account? <a th:href="@{/register}">Register</a>
         </div>
     </div>
-
-    <script>
-        function handleLogin(event) {
-            event.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            // Simple check for admin or user
-            if (username === 'admin' && password === 'admin') {
-                window.location.href = 'admin/admin.html';
-            } else if (username === 'user' && password === 'user') {
-                window.location.href = 'user/userdashboard.html';
-            } else {
-                document.getElementById('errorMessage').style.display = 'block';
-            }
-        }
-
-        function switchToRegister() {
-            // Add registration logic here
-            alert('Registration functionality to be implemented');
-        }
-    </script>
 </body>
-
 </html>
