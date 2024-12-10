@@ -17,6 +17,8 @@ public class LoginController {
     
     @Autowired
     private UserService userService;
+
+  
     
     @GetMapping("/login")
     public String loginView(HttpSession session) {
@@ -24,6 +26,14 @@ public class LoginController {
             return "redirect:/userdashboard";
         }
         return "login";
+    }
+
+    @GetMapping("/register")
+    public String registerView(HttpSession session) {
+        if (session.getAttribute("pelanggan") != null) {
+            return "redirect:/userdashboard";
+        }
+        return "register";
     }
     
     @GetMapping("/userdashboard")

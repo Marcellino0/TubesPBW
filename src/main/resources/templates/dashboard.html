@@ -312,10 +312,11 @@
     <header class="header">
         <div class="logo">MovieMate</div>
         <div class="header-buttons">
-            <a href="#" class="btn-header nav-link" data-section="home">Home</a>
-            <a href="#" class="btn-header nav-link" data-section="about">About Us</a>
+            <a  class="btn-header nav-link" data-section="home" th:href="@{/}">Home</a>
+            <a href="#" class="btn-header nav-link" data-section="about" >About Us</a>
             <a href="#" class="btn-header nav-link" data-section="service">Service</a>
-            <a href="/login.html" class="btn-header-logo">Log in</a>
+            <a class="btn-header-logo" th:href="@{/login}">Log in</a>
+            <a class="btn-header-logo" th:href="@{/register}">Register</a>
         </div>
     </header>
 
