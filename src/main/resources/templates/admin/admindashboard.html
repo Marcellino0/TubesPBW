@@ -139,224 +139,218 @@
     </style>
 </head>
 <body>
-    <div class="admin-container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <h2>Admin Panel</h2>
-            </div>
-            <ul class="sidebar-menu">
-                <li onclick="showSection('movies')">
-                    <i class="fas fa-film"></i> Kelola Film
-                </li>
-                <li onclick="showSection('users')">
-                    <i class="fas fa-user"></i> Kelola Pelanggan
-                </li> 
-                <li onclick="showSection('reports')">
-                    <i class="fas fa-chart-bar"></i> Laporan
-                </li>
-                <li onclick="handleLogout()">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </li>
-            </ul>
+<div class="admin-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>Admin Panel</h2>
         </div>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Movies Section -->
-            <div id="moviesSection" class="section active">
-                <div class="content-header">
-                    <h2>Kelola Film</h2>
-                    <button onclick="redirectToKelolaFilm()" class="submit-btn">
-                        <i class="fas fa-plus"></i> Tambah Film
-                    </button>
-                    
-                </div>
-                <form class="admin-form" id="movieForm" style="display: none;">
-                    <div class="form-group">
-                        <label>Judul Film</label>
-                        <input type="text" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Genre</label>
-                        <select multiple required>
-                            <option value="action">Action</option>
-                            <option value="comedy">Comedy</option>
-                            <option value="drama">Drama</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Aktor</label>
-                        <input type="text" placeholder="Pisahkan dengan koma" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Stok</label>
-                        <input type="number" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Cover Film</label>
-                        <input type="file" accept="image/*" required>
-                    </div>
-                    <button type="submit" class="submit-btn">Simpan Film</button>
-                </form>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Cover</th>
-                            <th>Judul</th>
-                            <th>Genre</th>
-                            <th>Aktor</th>
-                            <th>Stok</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="movieTableBody">
-                        <!-- Movie data will be populated here -->
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Genres Section -->
-            <div id="genresSection" class="section">
-                <div class="content-header">
-                    <h2>Kelola Genre</h2>
-                    <button onclick="showAddGenreForm()" class="submit-btn">
-                        <i class="fas fa-plus"></i> Tambah Genre
-                    </button>
-                </div>
-                <form class="admin-form" id="genreForm" style="display: none;">
-                    <div class="form-group">
-                        <label>Nama Genre</label>
-                        <input type="text" required>
-                    </div>
-                    <button type="submit" class="submit-btn">Simpan Genre</button>
-                </form>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Nama Genre</th>
-                            <th>Jumlah Film</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="genreTableBody">
-                        <!-- Genre data will be populated here -->
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Actors Section -->
-            <div id="actorsSection" class="section">
-                <div class="content-header">
-                    <h2>Kelola Aktor</h2>
-                    <button onclick="showAddActorForm()" class="submit-btn">
-                        <i class="fas fa-plus"></i> Tambah Aktor
-                    </button>
-                </div>
-                <form class="admin-form" id="actorForm" style="display: none;">
-                    <div class="form-group">
-                        <label>Nama Aktor</label>
-                        <input type="text" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Biografi</label>
-                        <textarea required></textarea>
-                    </div>
-                    <button type="submit" class="submit-btn">Simpan Aktor</button>
-                </form>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Nama Aktor</th>
-                            <th>Jumlah Film</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="actorTableBody">
-                        <!-- Actor data will be populated here -->
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Reports Section -->
-            <div id="reportsSection" class="section">
-                <div class="content-header">
-                    <h2>Laporan Penyewaan</h2>
-                    <select onchange="updateReport(this.value)">
-                        <option value="monthly">Bulanan</option>
-                        <option value="yearly">Tahunan</option>
-                    </select>
-                </div>
-                <div class="chart-container">
-                    <!-- Chart will be added here -->
-                    <img src="/api/placeholder/800/400" alt="Graph Placeholder">
-                </div>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Periode</th>
-                            <th>Total Penyewaan</th>
-                            <th>Pendapatan</th>
-                            <th>Film Terpopuler</th>
-                        </tr>
-                    </thead>
-                    <tbody id="reportTableBody">
-                        <!-- Report data will be populated here -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        <ul class="sidebar-menu">
+            <li onclick="showSection('movies')">
+                <i class="fas fa-film"></i> Kelola Film
+            </li>
+            <!-- <li onclick="showSection('genres')">
+                <i class="fas fa-tags"></i> Kelola Genre
+            </li>-->
+            <li onclick="showSection('users')">
+                <i class="fas fa-user"></i> Kelola Pelanggan
+            </li>
+            <li onclick="showSection('reports')">
+                <i class="fas fa-chart-bar"></i> Laporan
+            </li>
+            <li onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </li>
+        </ul>
     </div>
 
-    <script>
-        // Function to show different sections
-        function showSection(sectionName) {
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            const section = document.getElementById(sectionName + 'Section');
-            if (section) {
-                section.classList.add('active');
-            }
-        }
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Movies Section -->
+        <div id="moviesSection" class="section active">
+            <div class="content-header">
+                <h2>Kelola Film</h2>
+                <button onclick="redirectToKelolaFilm()" class="submit-btn">
+                    <i class="fas fa-plus"></i> Tambah Film
+                </button>
+            </div>
+            <form class="admin-form" id="movieForm" name="film" action="/addmovie" method="post" style="display: none" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label>Judul Film</label>
+                    <input name="judul" type="text" required>
+                </div>
+                <div class="form-group">
+                    <label>Genre</label>
+                    <select name="genre" multiple required>
+                        <option value="action">Action</option>
+                        <option value="comedy">Comedy</option>
+                        <option value="drama">Drama</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Aktor</label>
+                    <input name="aktor" type="text" placeholder="Pisahkan dengan koma" required>
+                </div>
+                <div class="form-group">
+                    <label>Stok</label>
+                    <input name="stok" type="number" required>
+                </div>
+                <div class="form-group">
+                    <label>Harga</label>
+                    <input name="harga" type="number" placeholder="Harga Per film" required>
+                </div>
+                <div class="form-group">
+                    <label>Cover Film</label>
+                    <input name="cover" type="file" accept="image/*" required>
+                </div>
+                <button type="submit" class="submit-btn">Simpan Film</button>
+            </form>
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Cover</th>
+                    <th>Judul</th>
+                    <th>Genre</th>
+                    <th>Aktor</th>
+                    <th>Stok</th>
+                    <th>Aksi</th>
+                </tr>
+                </thead>
+                <tbody id="movieTableBody">
+                <!-- Movie data will be populated here -->
+                </tbody>
+            </table>
+        </div>
 
-        // Functions to show/hide forms
-        function redirectToKelolaFilm() {
-        window.location.href = 'kelolaFilm.html';
+        <!-- Genres Section -->
+        <div id="genresSection" class="section">
+            <div class="content-header">
+                <h2>Kelola Genre</h2>
+                <button onclick="showAddGenreForm()" class="submit-btn">
+                    <i class="fas fa-plus"></i> Tambah Genre
+                </button>
+            </div>
+            <form class="admin-form" id="genreForm" style="display: none;">
+                <div class="form-group">
+                    <label>Nama Genre</label>
+                    <input type="text" required>
+                </div>
+                <button type="submit" class="submit-btn">Simpan Genre</button>
+            </form>
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Nama Genre</th>
+                    <th>Jumlah Film</th>
+                    <th>Aksi</th>
+                </tr>
+                </thead>
+                <tbody id="genreTableBody">
+                <!-- Genre data will be populated here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Actors Section -->
+        <div id="actorsSection" class="section">
+            <div class="content-header">
+                <h2>Kelola Aktor</h2>
+                <button onclick="showAddActorForm()" class="submit-btn">
+                    <i class="fas fa-plus"></i> Tambah Aktor
+                </button>
+            </div>
+            <form class="admin-form" id="actorForm" style="display: none;">
+                <div class="form-group">
+                    <label>Nama Aktor</label>
+                    <input type="text" required>
+                </div>
+                <div class="form-group">
+                    <label>Biografi</label>
+                    <textarea required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Simpan Aktor</button>
+            </form>
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Nama Aktor</th>
+                    <th>Jumlah Film</th>
+                    <th>Aksi</th>
+                </tr>
+                </thead>
+                <tbody id="actorTableBody">
+                <!-- Actor data will be populated here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Reports Section -->
+        <div id="reportsSection" class="section">
+            <div class="content-header">
+                <h2>Laporan Penyewaan</h2>
+                <select onchange="updateReport(this.value)">
+                    <option value="monthly">Bulanan</option>
+                    <option value="yearly">Tahunan</option>
+                </select>
+            </div>
+            <div class="chart-container">
+                <!-- Chart will be added here -->
+                <img src="/api/placeholder/800/400" alt="Graph Placeholder">
+            </div>
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Periode</th>
+                    <th>Total Penyewaan</th>
+                    <th>Pendapatan</th>
+                    <th>Film Terpopuler</th>
+                </tr>
+                </thead>
+                <tbody id="reportTableBody">
+                <!-- Report data will be populated here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Function to show different sections
+    function showSection(sectionName) {
+        document.querySelectorAll('.section').forEach(section => {
+            section.classList.remove('active');
+        });
+
+        const section = document.getElementById(sectionName + 'Section');
+        if (section) {
+            section.classList.add('active');
+        }
     }
 
-        function showAddGenreForm() {
-            document.getElementById('genreForm').style.display = 'grid';
-        }
+    // Functions to show/hide forms
+    function redirectToKelolaFilm() {
+        const movieForm = document.getElementById('movieForm');
+        movieForm.style.display = movieForm.style.display === 'grid' ? 'none' : 'grid';
+    }
 
-        function showAddActorForm() {
-            document.getElementById('actorForm').style.display = 'grid';
-        }
+    function showAddGenreForm() {
+        document.getElementById('genreForm').style.display = 'grid';
+    }
 
-        // Updated logout function
-        function handleLogout() {
-            // Send request to logout endpoint
-            fetch('/admin/logout', {
-                method: 'GET',
-                credentials: 'include' // This is important for session handling
-            })
-            .then(response => {
-                if (response.ok) {
-                    // Redirect to admin login page
-                    window.location.href = '/loginadmin';
-                } else {
-                    console.error('Logout failed');
-                }
-            })
-            .catch(error => {
-                console.error('Error during logout:', error);
-            });
-        }
+    function showAddActorForm() {
+        document.getElementById('actorForm').style.display = 'grid';
+    }
 
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            if (event.target == document.getElementById('rentModal')) {
-                closeModal();
-            }
+    // Function to handle logout
+    function logout() {
+        window.location.href = 'login.html';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('rentModal')) {
+            closeModal();
         }
+    }
+
+</script>
