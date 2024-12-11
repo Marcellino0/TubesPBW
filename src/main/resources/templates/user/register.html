@@ -210,7 +210,7 @@
     </div>
 
     <main>
-      <form id="registerForm" th:action="@{/register}" th:object="${pelanggan}" method="post">
+      <form th:action="@{/register}" th:object="${pelanggan}" method="post">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" th:field="*{username}" required />
 

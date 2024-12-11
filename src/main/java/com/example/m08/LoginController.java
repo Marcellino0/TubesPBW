@@ -31,7 +31,7 @@ public class LoginController {
         if (session.getAttribute("pelanggan") == null) {
             return "redirect:/login";
         }
-        return "userdashboard";
+        return "user/userdashboard"; // Updated path to match directory structure
     }
     
     @PostMapping("/login")
