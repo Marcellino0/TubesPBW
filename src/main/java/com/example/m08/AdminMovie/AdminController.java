@@ -1,4 +1,3 @@
-// AdminController.java
 package com.example.m08.AdminMovie;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +10,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.servlet.http.HttpSession;
-
+import com.example.m08.Movie.MovieRepository;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
 
     @Autowired
-    private AdminService adminService;
+private MovieRepository movieRepository;
 
     private boolean isAdminAuthenticated(HttpSession session) {
         return session.getAttribute("admin") != null;
@@ -29,12 +28,13 @@ public class AdminController {
     }
 
     @GetMapping("/dashboard")
-    public String dashboard(HttpSession session) {
-        if (!isAdminAuthenticated(session)) {
-            return "redirect:/loginadmin";
-        }
-        return "admin/admindashboard";
+public String dashboard(Model model, HttpSession session) {
+    if (!isAdminAuthenticated(session)) {
+        return "redirect:/loginadmin";
     }
+    model.addAttribute("movies", movieRepository.findAll());
+    return "admin/admindashboard";
+}
 
     @GetMapping("/registerAdmin")  // Changed from /register to /registerAdmin
     public String registerView(Model model, HttpSession session) {
@@ -58,22 +58,16 @@ public class AdminController {
             return "admin/registerAdmin";
         }
 
-        boolean success = adminService.register(admin);
-        if (!success) {
-            model.addAttribute("error", "Username already exists");
-            return "admin/registerAdmin";
-        }
-
         return "redirect:/loginadmin";
     }
 
-    @GetMapping("/manage-movies")
+    @GetMapping("/admin/manage-movies-admin")
     public String manageMovies(HttpSession session) {
-        if (!isAdminAuthenticated(session)) {
-            return "redirect:/loginadmin";
-        }
-        return "admin/kelolaFilm";
+    if (!isAdminAuthenticated(session)) {
+        return "redirect:/loginadmin";
     }
+    return "admin/kelolaFilm";
+}
 
     @GetMapping("/manage-customers")
     public String manageCustomers(HttpSession session) {
@@ -90,4 +84,6 @@ public class AdminController {
         }
         return "admin/report";
     }
+
+    
 }
