@@ -228,30 +228,29 @@
 
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Catalog Section -->
             <div id="catalogSection" class="section active">
                 <div class="content-header">
                     <h2>Movie Catalog</h2>
                 </div>
                 <div class="movie-grid">
-                    <!-- Movie cards will be populated here -->
-                </div>
-                <div class="pagination">
-                    <!-- Pagination buttons will be added here -->
+                    <!-- Dynamic Movie Cards -->
+                    <div th:each="movie : ${movies}" class="movie-card">
+                        <img th:src="@{'data:image/jpeg;base64,' + ${movie.base64Cover}}" 
+                             th:alt="${movie.judul}">
+                        <div class="movie-card-content">
+                            <h3 th:text="${movie.judul}">Movie Title</h3>
+                            <p><strong>Genre:</strong> <span th:text="${movie.genre}">Genre</span></p>
+                            <p><strong>Actor:</strong> <span th:text="${movie.aktor}">Actor</span></p>
+                            <p><strong>Stock:</strong> <span th:text="${movie.stok}">Stock</span></p>
+                            <p><strong>Price:</strong> Rp<span th:text="${#numbers.formatDecimal(movie.hargaPerFilm, 0, 'COMMA', 0, 'POINT')}">Price</span></p>
+                            <button class="rent-btn" th:onclick="'rentMovie(' + ${movie.filmId} + ')'"
+                                    th:disabled="${movie.stok <= 0}">
+                                <span th:text="${movie.stok > 0 ? 'Rent Now' : 'Out of Stock'}">Rent Now</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <div class="container">
-            <img src="../image/movie4.jpg" alt="">
-            <img src="../image/movie5.jpg" alt="">
-            <img src="../image/movie6.jpg" alt="">
-            <img src="../image/movie7.jpg" alt="">
-            <img src="../image/movie8.jpg" alt="">
-            <img src="../image/movie9.jpeg" alt="">
-            <img src="../image/movie10.jpg" alt="">
-            <img src="../image/movie11.jpg" alt="">
-            
         </div>
     </div>
 
