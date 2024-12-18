@@ -1,22 +1,24 @@
 package com.example.m08.AdminMovie;
 
+import com.example.m08.Movie.MovieRepository;
+import com.example.m08.User.Pelanggan;
+import com.example.m08.User.PelangganRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpSession;
-import com.example.m08.Movie.MovieRepository;
+
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
 
     @Autowired
-private MovieRepository movieRepository;
+    private MovieRepository movieRepository;
+
+    @Autowired
+    private PelangganRepository pelangganRepository;
 
     private boolean isAdminAuthenticated(HttpSession session) {
         return session.getAttribute("admin") != null;
@@ -28,53 +30,66 @@ private MovieRepository movieRepository;
     }
 
     @GetMapping("/dashboard")
-public String dashboard(Model model, HttpSession session) {
-    if (!isAdminAuthenticated(session)) {
-        return "redirect:/loginadmin";
-    }
-    model.addAttribute("movies", movieRepository.findAll());
-    return "admin/admindashboard";
-}
-
-    @GetMapping("/registerAdmin")  // Changed from /register to /registerAdmin
-    public String registerView(Model model, HttpSession session) {
+    public String dashboard(Model model, HttpSession session) {
         if (!isAdminAuthenticated(session)) {
             return "redirect:/loginadmin";
         }
-        model.addAttribute("admin", new Admin());
-        return "admin/registerAdmin";  // Make sure this matches your template path exactly
+        model.addAttribute("movies", movieRepository.findAll());
+        return "admin/admindashboard";
     }
-
-    @PostMapping("/registerAdmin")  // Changed from /register to /registerAdmin
-    public String registerUser(@ModelAttribute("admin") Admin admin,
-                             BindingResult bindingResult,
-                             Model model) {
-        if (bindingResult.hasErrors()) {
-            return "admin/registerAdmin";
-        }
-
-        if (!admin.getPassword().equals(admin.getConfirmPassword())) {
-            model.addAttribute("error", "Passwords do not match");
-            return "admin/registerAdmin";
-        }
-
-        return "redirect:/loginadmin";
-    }
-
-    @GetMapping("/admin/manage-movies-admin")
-    public String manageMovies(HttpSession session) {
-    if (!isAdminAuthenticated(session)) {
-        return "redirect:/loginadmin";
-    }
-    return "admin/kelolaFilm";
-}
 
     @GetMapping("/manage-customers")
-    public String manageCustomers(HttpSession session) {
+    public String manageCustomers(Model model, HttpSession session) {
         if (!isAdminAuthenticated(session)) {
             return "redirect:/loginadmin";
         }
+        model.addAttribute("customers", pelangganRepository.findAll());
         return "admin/kelolaPelanggan";
+    }
+
+    @GetMapping("/edit-customer/{id}")
+    public String editCustomer(@PathVariable Long id, Model model, HttpSession session) {
+        if (!isAdminAuthenticated(session)) {
+            return "redirect:/loginadmin";
+        }
+        
+        Pelanggan customer = pelangganRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Customer not found"));
+        model.addAttribute("customer", customer);
+        return "admin/editPelanggan";
+    }
+
+    @PostMapping("/update-customer/{id}")
+    public String updateCustomer(@PathVariable Long id, @ModelAttribute Pelanggan customer, 
+                               BindingResult result, HttpSession session) {
+        if (!isAdminAuthenticated(session)) {
+            return "redirect:/loginadmin";
+        }
+
+        if (result.hasErrors()) {
+            return "admin/editPelanggan";
+        }
+
+        Pelanggan existingCustomer = pelangganRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Customer not found"));
+        
+        existingCustomer.setUsername(customer.getUsername());
+        existingCustomer.setNama(customer.getNama());
+        existingCustomer.setEmail(customer.getEmail());
+        existingCustomer.setNoTelp(customer.getNoTelp());
+        
+        pelangganRepository.save(existingCustomer);
+        return "redirect:/admin/manage-customers";
+    }
+
+    @GetMapping("/delete-customer/{id}")
+    public String deleteCustomer(@PathVariable Long id, HttpSession session) {
+        if (!isAdminAuthenticated(session)) {
+            return "redirect:/loginadmin";
+        }
+        
+        pelangganRepository.deleteById(id);
+        return "redirect:/admin/manage-customers";
     }
 
     @GetMapping("/reports")
@@ -82,8 +97,6 @@ public String dashboard(Model model, HttpSession session) {
         if (!isAdminAuthenticated(session)) {
             return "redirect:/loginadmin";
         }
-        return "admin/report";
+        return "admin/reports";
     }
-
-    
 }

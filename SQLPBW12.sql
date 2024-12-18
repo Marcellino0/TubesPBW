@@ -4,9 +4,10 @@ DROP TABLE Penyewaan
 DROP TABLE laporan
 SELECT *
 FROM pelanggan
+SELECT *
+FROM film
+ALTER TABLE Film ALTER COLUMN cover TYPE VARCHAR(255);
 
- 
-);
 -- Tabel Pelanggan
 CREATE TABLE Pelanggan (
     user_id SERIAL PRIMARY KEY,
@@ -16,10 +17,6 @@ CREATE TABLE Pelanggan (
     email varchar (30) NOT NULL,
     noTelp varchar (30) Not Null
 );
-
-SELECT *
-FROM film
-ALTER TABLE Film ALTER COLUMN cover TYPE BYTEA;
 
 -- Tabel Film
 CREATE TABLE Film (

@@ -77,32 +77,50 @@ public class JdbcMovieRepository implements MovieRepository {
 
     @Override
     public List<Movie> findByReleaseYear(Integer year) {
-        // Tidak ada kolom release_year pada tabel Film
-        return null;
+        return null; // Not implemented
     }
 
     @Override
     public List<Movie> findByRatingGreaterThanEqual(Double rating) {
-        // Tidak ada kolom rating pada tabel Film
-        return null;
+        return null; // Not implemented
     }
 
     @Override
-public void save(Movie movie) {
-    String sql = "INSERT INTO film (cover, judul, genre, aktor, stok, hargaperfilm) VALUES (?, ?, ?, ?, ?, ?)";
-    jdbcTemplate.update(sql, movie.getCover(), movie.getJudul(), movie.getGenre(), movie.getAktor(), movie.getStok(), movie.getHargaPerFilm());
-}
+    public void save(Movie movie) {
+        String sql = "INSERT INTO film (cover, judul, genre, aktor, stok, hargaperfilm) VALUES (?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, 
+            movie.getCover(),
+            movie.getJudul(), 
+            movie.getGenre(), 
+            movie.getAktor(), 
+            movie.getStok(), 
+            movie.getHargaPerFilm()
+        );
+    }
+
     @Override
-public List<Movie> findAll() {
-    String sql = "SELECT * FROM film";
-    return jdbcTemplate.query(sql, movieRowMapper);
-}
+    public void update(Movie movie) {
+        String sql = "UPDATE film SET cover = ?, judul = ?, genre = ?, aktor = ?, stok = ?, hargaperfilm = ? WHERE film_id = ?";
+        jdbcTemplate.update(sql, 
+            movie.getCover(),
+            movie.getJudul(), 
+            movie.getGenre(), 
+            movie.getAktor(), 
+            movie.getStok(), 
+            movie.getHargaPerFilm(),
+            movie.getFilmId()
+        );
+    }
 
-@Override
-public void deleteById(Long id) {
-    String sql = "DELETE FROM film WHERE film_id = ?";
-    jdbcTemplate.update(sql, id);
-}
+    @Override
+    public List<Movie> findAll() {
+        String sql = "SELECT * FROM film";
+        return jdbcTemplate.query(sql, movieRowMapper);
+    }
 
-
+    @Override
+    public void deleteById(Long id) {
+        String sql = "DELETE FROM film WHERE film_id = ?";
+        jdbcTemplate.update(sql, id);
+    }
 }

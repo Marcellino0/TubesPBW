@@ -1,5 +1,6 @@
+<!-- admin/dashboard.html -->
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -19,7 +20,6 @@
             min-height: 100vh;
         }
 
-        /* Sidebar Styles */
         .sidebar {
             width: 250px;
             background: #2c3e50;
@@ -53,18 +53,18 @@
             width: 20px;
         }
 
-        /* Main Content Styles */
+        .sidebar-menu a {
+            text-decoration: none;
+            color: white;
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
         .main-content {
             flex: 1;
             padding: 2rem;
             background: #f5f6fa;
-        }
-
-        .content-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
         }
 
         .section {
@@ -72,37 +72,13 @@
             padding: 2rem;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-            display: none;
         }
 
-        .section.active {
-            display: block;
-        }
-
-        /* Form Styles */
-        .admin-form {
-            display: grid;
-            gap: 1rem;
-            max-width: 600px;
-        }
-
-        .form-group {
+        .content-header {
             display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .form-group label {
-            font-weight: bold;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            padding: 0.5rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
         }
 
         .submit-btn {
@@ -113,17 +89,8 @@
             border-radius: 4px;
             cursor: pointer;
             text-decoration: none;
-            /* Menghilangkan garis bawah link */
-            display: inline-block;
-            /* Agar padding bekerja dengan baik */
         }
 
-        .submit-btn:hover {
-            background: #2980b9;
-            /* Warna lebih gelap saat hover */
-        }
-
-        /* Table Styles */
         .data-table {
             width: 100%;
             border-collapse: collapse;
@@ -140,11 +107,21 @@
             background: #f8f9fa;
         }
 
-        /* Chart Container */
-        .chart-container {
-            width: 100%;
-            height: 400px;
-            margin-top: 1rem;
+        .edit-btn,
+        .delete-btn {
+            padding: 6px 12px;
+            margin: 0 4px;
+            border-radius: 4px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .edit-btn {
+            background-color: #3498db;
+        }
+
+        .delete-btn {
+            background-color: #e74c3c;
         }
     </style>
 </head>
@@ -157,58 +134,38 @@
                 <h2>Admin Panel</h2>
             </div>
             <ul class="sidebar-menu">
-                <li onclick="showSection('movies')">
-                    <i class="fas fa-film"></i> Kelola Film
+                <li>
+                    <a href="/admin/dashboard">
+                        Kelola Film
+                    </a>
                 </li>
-                <li onclick="showSection('users')">
-                    <i class="fas fa-user"></i> Kelola Pelanggan
+                <li>
+                    <a href="/admin/manage-customers">
+                        Kelola Pelanggan
+                    </a>
                 </li>
-                <li onclick="showSection('reports')">
-                    <i class="fas fa-chart-bar"></i> Laporan
+                <li>
+                    <a href="/admin/reports">
+                        Laporan
+                    </a>
                 </li>
-                <li onclick="handleLogout()">
-                    <i class="fas fa-sign-out-alt"></i> Logout
+                <li>
+                    <a href="#" onclick="handleLogout(); return false;">
+                        Logout
+                    </a>
                 </li>
             </ul>
         </div>
 
-        <!-- Main Content -->
+
         <div class="main-content">
-            <!-- Movies Section -->
-            <div id="moviesSection" class="section active">
+            <div id="moviesSection" class="section">
                 <div class="content-header">
                     <h2>Kelola Film</h2>
-                    <a href="/admin/manage-movies" class="submit-btn">
+                    <a href="/admin/movies/manage" class="submit-btn">
                         <i class="fas fa-plus"></i> Tambah Film
                     </a>
                 </div>
-                <form class="admin-form" id="movieForm" style="display: none;">
-                    <div class="form-group">
-                        <label>Judul Film</label>
-                        <input type="text" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Genre</label>
-                        <select multiple required>
-                            <option value="action">Action</option>
-                            <option value="comedy">Comedy</option>
-                            <option value="drama">Drama</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Aktor</label>
-                        <input type="text" placeholder="Pisahkan dengan koma" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Stok</label>
-                        <input type="number" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Cover Film</label>
-                        <input type="file" accept="image/*" required>
-                    </div>
-                    <button type="submit" class="submit-btn">Simpan Film</button>
-                </form>
                 <table class="data-table">
                     <thead>
                         <tr>
@@ -221,164 +178,30 @@
                             <th>Aksi</th>
                         </tr>
                     </thead>
-                    <tbody id="movieTableBody">
+                    <tbody>
                         <tr th:each="movie : ${movies}">
-                            <td><img th:src="@{'data:image/jpeg;base64,'+${movie.cover}}" alt="Cover Film" width="100"></td>
+                            <td>
+                                <img th:if="${movie.base64Cover != null}"
+                                    th:src="@{'data:image/jpeg;base64,' + ${movie.base64Cover}}" alt="Cover Film"
+                                    width="100">
+                                <span th:unless="${movie.base64Cover != null}">No Cover</span>
+                            </td>
                             <td th:text="${movie.judul}"></td>
                             <td th:text="${movie.genre}"></td>
                             <td th:text="${movie.aktor}"></td>
                             <td th:text="${movie.stok}"></td>
                             <td th:text="${movie.hargaPerFilm}"></td>
                             <td>
-                                <a th:href="@{/admin/edit-movie/{id}(id=${movie.filmId})}" class="submit-btn">Edit</a>
-                                <a th:href="@{/admin/delete-movie/{id}(id=${movie.filmId})}" class="submit-btn" onclick="return confirm('Apakah Anda yakin ingin menghapus film ini?')">Hapus</a>
+                                <a th:href="@{/admin/movies/edit/{id}(id=${movie.filmId})}" class="edit-btn">Edit</a>
+                                <a th:href="@{/admin/movies/delete/{id}(id=${movie.filmId})}" class="delete-btn"
+                                    onclick="return confirm('Apakah Anda yakin ingin menghapus film ini?')">Hapus</a>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-
-            <!-- Genres Section -->
-            <div id="genresSection" class="section">
-                <div class="content-header">
-                    <h2>Kelola Genre</h2>
-                    <button onclick="showAddGenreForm()" class="submit-btn">
-                        <i class="fas fa-plus"></i> Tambah Genre
-                    </button>
-                </div>
-                <form class="admin-form" id="genreForm" style="display: none;">
-                    <div class="form-group">
-                        <label>Nama Genre</label>
-                        <input type="text" required>
-                    </div>
-                    <button type="submit" class="submit-btn">Simpan Genre</button>
-                </form>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Nama Genre</th>
-                            <th>Jumlah Film</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="genreTableBody">
-                        <!-- Genre data will be populated here -->
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Actors Section -->
-            <div id="actorsSection" class="section">
-                <div class="content-header">
-                    <h2>Kelola Aktor</h2>
-                    <button onclick="showAddActorForm()" class="submit-btn">
-                        <i class="fas fa-plus"></i> Tambah Aktor
-                    </button>
-                </div>
-                <form class="admin-form" id="actorForm" style="display: none;">
-                    <div class="form-group">
-                        <label>Nama Aktor</label>
-                        <input type="text" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Biografi</label>
-                        <textarea required></textarea>
-                    </div>
-                    <button type="submit" class="submit-btn">Simpan Aktor</button>
-                </form>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Nama Aktor</th>
-                            <th>Jumlah Film</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="actorTableBody">
-                        <!-- Actor data will be populated here -->
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Reports Section -->
-            <div id="reportsSection" class="section">
-                <div class="content-header">
-                    <h2>Laporan Penyewaan</h2>
-                    <select onchange="updateReport(this.value)">
-                        <option value="monthly">Bulanan</option>
-                        <option value="yearly">Tahunan</option>
-                    </select>
-                </div>
-                <div class="chart-container">
-                    <!-- Chart will be added here -->
-                    <img src="/api/placeholder/800/400" alt="Graph Placeholder">
-                </div>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Periode</th>
-                            <th>Total Penyewaan</th>
-                            <th>Pendapatan</th>
-                            <th>Film Terpopuler</th>
-                        </tr>
-                    </thead>
-                    <tbody id="reportTableBody">
-                        <!-- Report data will be populated here -->
-                    </tbody>
-                </table>
-            </div>
         </div>
     </div>
+</body>
 
-    <script>
-        // Function to show different sections
-        function showSection(sectionName) {
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.remove('active');
-            });
-
-            const section = document.getElementById(sectionName + 'Section');
-            if (section) {
-                section.classList.add('active');
-            }
-        }
-
-        // Functions to show/hide forms
-        function redirectToKelolaFilm() {
-            window.location.href = 'kelolaFilm.html';
-        }
-
-        function showAddGenreForm() {
-            document.getElementById('genreForm').style.display = 'grid';
-        }
-
-        function showAddActorForm() {
-            document.getElementById('actorForm').style.display = 'grid';
-        }
-
-        // Updated logout function
-        function handleLogout() {
-            // Send request to logout endpoint
-            fetch('/admin/logout', {
-                method: 'GET',
-                credentials: 'include' // This is important for session handling
-            })
-                .then(response => {
-                    if (response.ok) {
-                        // Redirect to admin login page
-                        window.location.href = '/loginadmin';
-                    } else {
-                        console.error('Logout failed');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error during logout:', error);
-                });
-        }
-
-        // Close modal when clicking outside
-        window.onclick = function (event) {
-            if (event.target == document.getElementById('rentModal')) {
-                closeModal();
-            }
-        }
+</html>

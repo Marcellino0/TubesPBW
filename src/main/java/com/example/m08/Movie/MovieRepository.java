@@ -14,6 +14,6 @@ public interface MovieRepository {
     List<Movie> findByRatingGreaterThanEqual(Double rating);
     void save(Movie movie);
     void deleteById(Long id);
-
     List<Movie> findAll();
+    void update(Movie movie);
 }

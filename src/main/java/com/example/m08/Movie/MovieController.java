@@ -3,18 +3,14 @@ package com.example.m08.Movie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
 
 @Controller
-
+@RequestMapping("/admin/movies")
 public class MovieController {
 
     @Autowired
@@ -24,7 +20,18 @@ public class MovieController {
         return session.getAttribute("admin") != null;
     }
 
-    @GetMapping("/admin/manage-movies")
+    // @GetMapping("/admin/dashboard")
+    // public String dashboard(Model model, HttpSession session) {
+    //     if (!isAdminAuthenticated(session)) {
+    //         return "redirect:/loginadmin";
+    //     }
+        
+    //     List<Movie> movies = movieRepository.findAll();
+    //     model.addAttribute("movies", movies);
+    //     return "admin/dashboard";
+    // }
+
+    @GetMapping("/manage")
     public String manageMovies(Model model, HttpSession session) {
         if (!isAdminAuthenticated(session)) {
             return "redirect:/loginadmin";
@@ -33,7 +40,7 @@ public class MovieController {
         return "admin/kelolaFilm";
     }
 
-    @PostMapping("/admin/manage-movies")
+    @PostMapping("/add")
     public String addMovie(@ModelAttribute Movie movie, 
                           @RequestParam("coverImage") MultipartFile coverImage, 
                           Model model, 
@@ -46,30 +53,27 @@ public class MovieController {
             movie.setCover(coverImage.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
-            // Handle error
+            return "redirect:/admin/movies/manage?error=true";
         }
     
         movieRepository.save(movie);
-        model.addAttribute("movies", movieRepository.findAll());
-    
         return "redirect:/admin/dashboard";
     }
 
-    @GetMapping("/admin/edit-movie/{id}")
+    @GetMapping("/edit/{id}")
     public String editMovieForm(@PathVariable Long id, Model model, HttpSession session) {
         if (!isAdminAuthenticated(session)) {
             return "redirect:/loginadmin";
         }
-        Movie movie = movieRepository.findById(id); // Langsung menggunakan findById karena return Movie
+        Movie movie = movieRepository.findById(id);
         if (movie == null) {
-            // Handle movie not found
             return "redirect:/admin/dashboard";
         }
         model.addAttribute("movie", movie);
         return "admin/editMovie";
     }
 
-    @PostMapping("/admin/edit-movie/{id}")
+    @PostMapping("/edit/{id}")
     public String updateMovie(@PathVariable Long id, 
                             @ModelAttribute Movie movie, 
                             @RequestParam(value = "coverImage", required = false) MultipartFile coverImage, 
@@ -87,21 +91,19 @@ public class MovieController {
             if (coverImage != null && !coverImage.isEmpty()) {
                 movie.setCover(coverImage.getBytes());
             } else {
-                // Gunakan cover yang sudah ada
                 movie.setCover(existingMovie.getCover());
             }
         } catch (IOException e) {
             e.printStackTrace();
-            // Handle error
+            return "redirect:/admin/movies/edit/" + id + "?error=true";
         }
 
         movie.setFilmId(id);
-        movieRepository.save(movie);
-
+        movieRepository.update(movie);
         return "redirect:/admin/dashboard";
     }
 
-    @GetMapping("/admin/delete-movie/{id}")
+    @GetMapping("/delete/{id}")
     public String deleteMovie(@PathVariable Long id, HttpSession session) {
         if (!isAdminAuthenticated(session)) {
             return "redirect:/loginadmin";
