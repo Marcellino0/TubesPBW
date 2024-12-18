@@ -4,19 +4,263 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Film - Admin</title>
-    <!-- ... -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: white;
+            padding: 1rem;
+        }
+
+        .sidebar-header {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid #34495e;
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .sidebar-menu li:hover {
+            background: #34495e;
+        }
+
+        .sidebar-menu i {
+            margin-right: 0.5rem;
+            width: 20px;
+        }
+
+        .sidebar-menu a {
+            text-decoration: none;
+            color: white;
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            background: #f5f6fa;
+        }
+
+        .section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .admin-form {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .form-group input[type="file"] {
+            display: block;
+            margin-top: 0.5rem;
+        }
+
+        .form-group select {
+            background-color: white;
+        }
+
+        .form-group img {
+            display: block;
+            margin: 1rem 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group p {
+            color: #666;
+            margin: 0.5rem 0;
+        }
+
+        .submit-btn {
+            background: #3498db;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: inline-block;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #2980b9;
+        }
+
+        .cover-preview {
+            max-width: 200px;
+            margin: 1rem 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .file-input-wrapper {
+            margin: 1rem 0;
+        }
+        
+        .file-input-wrapper p {
+            margin: 0.5rem 0;
+            color: #666;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .admin-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .admin-form {
+                padding: 0;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="admin-container">
-        <!-- ... -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Admin Panel</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="/admin/dashboard">
+                        Kelola Film
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/manage-customers">
+                        Kelola Pelanggan
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/reports">
+                        Laporan
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="handleLogout(); return false;">
+                        Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+
         <div class="main-content">
             <div class="section">
                 <div class="content-header">
                     <h2>Edit Film</h2>
                 </div>
-                <form th:action="@{/admin/edit-movie/{id}(id=${movie.filmId})}" th:object="${movie}" method="post" enctype="multipart/form-data" class="admin-form">
-                    <!-- ... -->
-                    <button type="submit" class="submit-btn">Simpan Perubahan</button>
+                <form th:action="@{/admin/movies/edit/{id}(id=${movie.filmId})}" th:object="${movie}" method="post" enctype="multipart/form-data" class="admin-form">
+                    <input type="hidden" th:field="*{filmId}">
+                    
+                    <div class="form-group">
+                        <label>Cover Film Saat Ini</label>
+                        <img th:if="${movie.base64Cover != null}"
+                             th:src="@{'data:image/jpeg;base64,' + ${movie.base64Cover}}"
+                             alt="Cover Film"
+                             class="cover-preview">
+                        <div class="file-input-wrapper">
+                            <p>Upload cover baru (biarkan kosong jika tidak ingin mengubah)</p>
+                            <input type="file" name="coverImage" accept="image/*">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Judul Film</label>
+                        <input type="text" th:field="*{judul}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Genre</label>
+                        <select th:field="*{genre}" required>
+                            <option value="">Pilih Genre</option>
+                            <option value="Action">Action</option>
+                            <option value="Comedy">Comedy</option>
+                            <option value="Drama">Drama</option>
+                            <option value="Horror">Horror</option>
+                            <option value="Romance">Romance</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Aktor</label>
+                        <input type="text" th:field="*{aktor}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Stok</label>
+                        <input type="number" th:field="*{stok}" required min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Harga Per Film</label>
+                        <input type="number" step="0.01" th:field="*{hargaPerFilm}" required min="0">
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">Update Film</button>
                 </form>
             </div>
         </div>
