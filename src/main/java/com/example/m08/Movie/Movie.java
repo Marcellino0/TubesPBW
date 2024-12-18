@@ -5,35 +5,32 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "movie")
+@Table(name = "film")
 public class Movie {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long film_id;
+    @Column(name = "film_id")
+    private Long filmId;
 
-    @Lob
-    @Column(nullable = true)
-    private String cover;
+    @Column(nullable = false)
+    private byte[] cover;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String judul;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String genre;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String aktor;
 
     @Column(nullable = false)
-    private int stok;
+    private Integer stok;
 
-    @Column(precision = 10, scale = 2)
-    private BigDecimal hargaperfilm;
+    @Column(name = "hargaperfilm")
+    private Double hargaPerFilm;
 }

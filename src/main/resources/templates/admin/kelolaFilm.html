@@ -140,12 +140,6 @@ border-radius: 4px;
                     <li onclick="showSection('movies')">
                         <i class="fas fa-film"></i> Kelola Film
                     </li>
-                    <!-- <li onclick="showSection('genres')">
-                        <i class="fas fa-tags"></i> Kelola Genre
-                    </li>
-                    <li onclick="showSection('actors')">
-                        <i class="fas fa-user"></i> Kelola Aktor
-                    </li> -->
                     <li onclick="showSection('users')">
                         <i class="fas fa-user"></i> Kelola Pelanggan
                     </li>
@@ -163,47 +157,43 @@ border-radius: 4px;
                 <div class="section">
                     <div class="content-header">
                         <h2>Kelola Film</h2>
-                        <button onclick="showAddMovieForm()" class="submit-btn">
-                            <i class="fas fa-plus"></i> Tambah Film
-                        </button>
                     </div>
-                    <br>
-                    <div class="form-group">
-                        <label>Judul Film</label>
-                        <input type="text" required>
-                    </div>
-                    <br>
-                    <form class="filmForm" id="movieForm" style="display: table;">
+                    <form th:action="@{/admin/manage-movies}" th:object="${movie}" method="post" enctype="multipart/form-data" class="admin-form">
+                        <div class="form-group">
+                            <label>Judul Film</label>
+                            <input type="text" th:field="*{judul}" required>
+                        </div>
                         <div class="form-group">
                             <label>Genre</label>
-                            <select multiple required>
-                                <option value="action">Action</option>
-                                <option value="comedy">Comedy</option>
-                                <option value="drama">Drama</option>
-                                <option value="anime">Anime</option>
-                                <option value="scifi">Sci-fi</option>
+                            <select th:field="*{genre}" required>
+                                <option value="">Pilih Genre</option>
+                                <option value="Action">Action</option>
+                                <option value="Comedy">Comedy</option>
+                                <option value="Drama">Drama</option>
+                                <option value="Horror">Horror</option>
+                                <option value="Romance">Romance</option>
                             </select>
                         </div>
-                        <br>
                         <div class="form-group">
                             <label>Aktor</label>
-                            <input type="text" placeholder="Pisahkan dengan koma" required>
+                            <input type="text" th:field="*{aktor}" required>
                         </div>
-                        <br>
                         <div class="form-group">
                             <label>Stok</label>
-                            <input type="number" required>
+                            <input type="number" th:field="*{stok}" required>
                         </div>
-                        <br>
+                        <div class="form-group">
+                            <label>Harga Per Film</label>
+                            <input type="number" step="0.01" th:field="*{hargaPerFilm}" required>
+                        </div>
                         <div class="form-group">
                             <label>Cover Film</label>
-                            <input type="file" accept="image/*" required>
+                            <input type="file" name="coverImage" accept="image/*" required>
                         </div>
-                        <br>
                         <button type="submit" class="submit-btn">Simpan Film</button>
                     </form>
-                    
                 </div>
+            </div>
         </div>
     </body>
     
