@@ -33,21 +33,39 @@ public class LoginController {
     }
     
     @GetMapping("/userdashboard")
-    public String userDashboardView(HttpSession session, Model model) {
-        if (session.getAttribute("pelanggan") == null) {
-            return "redirect:/login";
-        }
-
-        // Mengambil data film dari database
-        List<Movie> movies = movieRepository.findAll();
-        model.addAttribute("movies", movies);
-        
-        // Menambahkan data user yang sedang login
-        Pelanggan currentUser = (Pelanggan) session.getAttribute("pelanggan");
-        model.addAttribute("user", currentUser);
-        
-        return "user/userdashboard";
+public String userDashboardView(
+        @RequestParam(defaultValue = "1") int page,
+        @RequestParam(required = false) String search,
+        HttpSession session, 
+        Model model) {
+    if (session.getAttribute("pelanggan") == null) {
+        return "redirect:/login";
     }
+
+    int show = 4; // Jumlah film per halaman
+    int start = (page - 1) * show;
+    
+    List<Movie> movies;
+    int totalMovies;
+    
+    if (search != null && !search.isEmpty()) {
+        movies = movieRepository.searchMoviesPaginated(search, start, show);
+        totalMovies = movieRepository.countSearchResults(search);
+    } else {
+        movies = movieRepository.getMoviesPaginated(start, show);
+        totalMovies = movieRepository.countAllMovies();
+    }
+
+    int pageCount = (int) Math.ceil((double) totalMovies / show);
+    
+    model.addAttribute("movies", movies);
+    model.addAttribute("search", search);
+    model.addAttribute("currentPage", page);
+    model.addAttribute("pageCount", pageCount);
+    model.addAttribute("user", session.getAttribute("pelanggan"));
+    
+    return "user/userdashboard";
+}
     
     @PostMapping("/login")
     public String processLogin(@RequestParam String username, 

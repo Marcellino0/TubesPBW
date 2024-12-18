@@ -5,204 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Rental - User Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-
-        .admin-container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            width: 250px;
-            background: #2c3e50;
-            color: white;
-            padding: 1rem;
-        }
-
-        .sidebar-header {
-            padding: 1rem;
-            text-align: center;
-            border-bottom: 1px solid #34495e;
-            margin-bottom: 1rem;
-        }
-
-        .sidebar-menu {
-            list-style: none;
-        }
-
-        .sidebar-menu li {
-            padding: 0.8rem 1rem;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .sidebar-menu li:hover {
-            background: #34495e;
-        }
-
-        .sidebar-menu i {
-            margin-right: 0.5rem;
-            width: 20px;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 2rem;
-            background: #f5f6fa;
-        }
-
-        .content-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .section {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-            display: none;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        .admin-form {
-            display: grid;
-            gap: 1rem;
-            max-width: 600px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .form-group label {
-            font-weight: bold;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            padding: 0.5rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .submit-btn {
-            background: #3498db;
-            color: white;
-            padding: 0.8rem;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-
-        .data-table th,
-        .data-table td {
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-        }
-
-        .data-table th {
-            background: #f8f9fa;
-        }
-
-        .movie-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-
-        .movie-card {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            overflow: hidden;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-
-        .movie-card:hover {
-            transform: scale(1.05);
-        }
-
-        .movie-card img {
-            width: 100%;
-            height: auto;
-            object-fit: cover;
-        }
-
-        .movie-card-content {
-            padding: 1rem;
-        }
-
-        .rent-btn {
-            background: #3498db;
-            color: white;
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .pagination {
-            display: flex;
-            justify-content: center;
-            margin-top: 1rem;
-        }
-
-        .pagination button {
-            background: #3498db;
-            color: white;
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin: 0 0.5rem;
-        }
-        .container {
-            margin: 100px 0 0 200px;
-            width: 70%;
-            height: 450px;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
-        .container img{
-            width: 10%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 10px;
-            border: 2px solid rgba(255, 255, 255, 0);
-            transition: all ease-in-out 0.5s;
-        }
-        .container img:hover{
-            width: 25%;
-        }
-    </style>
+    
+    <link th:href="@{/css/userdashboard.css}" rel="stylesheet"/>
 </head>
 <body>
     <div class="admin-container">
-        <!-- Sidebar -->
+        <!-- Sidebar content remains the same -->
         <div class="sidebar">
             <div class="sidebar-header">
                 <h2>User Dashboard</h2>
@@ -232,8 +40,16 @@
                 <div class="content-header">
                     <h2>Movie Catalog</h2>
                 </div>
+
+                <!-- Search Form -->
+                <form class="search-form" method="get" th:action="@{/userdashboard}">
+                    <input type="text" name="search" th:value="${search}" 
+                           class="search-input" placeholder="Search movies...">
+                    <button type="submit" class="search-btn">Search</button>
+                </form>
+
+                <!-- Movie Grid -->
                 <div class="movie-grid">
-                    <!-- Dynamic Movie Cards -->
                     <div th:each="movie : ${movies}" class="movie-card">
                         <img th:src="@{'data:image/jpeg;base64,' + ${movie.base64Cover}}" 
                              th:alt="${movie.judul}">
@@ -250,31 +66,47 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Pagination -->
+                <nav th:if="${pageCount > 1}">
+                    <ul class="pagination-container">
+                        <!-- Previous Button -->
+                        <li>
+                            <a th:href="@{/userdashboard(page=${currentPage - 1}, search=${search})}" 
+                               aria-label="Previous" 
+                               th:class="${currentPage == 1 ? 'disabled' : null}">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+
+                        <!-- Page Numbers -->
+                        <li th:each="i : ${#numbers.sequence(1, pageCount)}">
+                            <a th:href="@{/userdashboard(page=${i}, search=${search})}" 
+                               th:text="${i}" 
+                               th:class="${currentPage == i ? 'disabled' : null}"></a>
+                        </li>
+
+                        <!-- Next Button -->
+                        <li>
+                            <a th:href="@{/userdashboard(page=${currentPage + 1}, search=${search})}" 
+                               aria-label="Next" 
+                               th:class="${currentPage == pageCount ? 'disabled' : null}">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
 
     <script>
-        // Function to show different sections
-        function showSection(sectionName) {
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            const section = document.getElementById(sectionName + 'Section');
-            if (section) {
-                section.classList.add('active');
-            }
-        }
-
-        // Function to handle logout
         function logout() {
-            window.location.href = 'login.html';
+            window.location.href = '/logout';
         }
 
-        // Function to handle movie rental
         function rentMovie(movieId) {
-            // Perform rental action
+            // Implement rental functionality
             console.log('Renting movie with ID:', movieId);
         }
     </script>

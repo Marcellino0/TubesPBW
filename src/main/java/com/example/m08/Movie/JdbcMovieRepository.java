@@ -32,8 +32,15 @@ public class JdbcMovieRepository implements MovieRepository {
 
     @Override
     public List<Movie> getMoviesPaginated(int start, int show) {
-        String sql = "SELECT * FROM film ORDER BY film_id LIMIT ?, ?";
-        return jdbcTemplate.query(sql, movieRowMapper, start, show);
+        String sql = "SELECT * FROM film ORDER BY film_id LIMIT ? OFFSET ?";
+        return jdbcTemplate.query(sql, movieRowMapper, show, start);
+    }
+
+    @Override
+    public List<Movie> searchMoviesPaginated(String search, int start, int show) {
+        String sql = "SELECT * FROM film WHERE judul ILIKE ? OR genre ILIKE ? LIMIT ? OFFSET ?";
+        String searchPattern = "%" + search + "%";
+        return jdbcTemplate.query(sql, movieRowMapper, searchPattern, searchPattern, show, start);
     }
 
     @Override
@@ -43,23 +50,16 @@ public class JdbcMovieRepository implements MovieRepository {
     }
 
     @Override
-    public List<Movie> searchMoviesPaginated(String search, int start, int show) {
-        String sql = "SELECT * FROM film WHERE judul LIKE ? OR genre LIKE ? LIMIT ?, ?";
-        String searchPattern = "%" + search + "%";
-        return jdbcTemplate.query(sql, movieRowMapper, searchPattern, searchPattern, start, show);
-    }
-
-    @Override
     public int countSearchResults(String search) {
-        String sql = "SELECT COUNT(*) FROM film WHERE judul LIKE ? OR genre LIKE ?";
+        String sql = "SELECT COUNT(*) FROM film WHERE judul ILIKE ? OR genre ILIKE ?";
         String searchPattern = "%" + search + "%";
         return jdbcTemplate.queryForObject(sql, Integer.class, searchPattern, searchPattern);
     }
 
     @Override
     public List<Movie> getAvailableMoviesPaginated(int start, int show) {
-        String sql = "SELECT * FROM film WHERE stok > 0 LIMIT ?, ?";
-        return jdbcTemplate.query(sql, movieRowMapper, start, show);
+        String sql = "SELECT * FROM film WHERE stok > 0 LIMIT ? OFFSET ?";
+        return jdbcTemplate.query(sql, movieRowMapper, show, start);
     }
 
     @Override
