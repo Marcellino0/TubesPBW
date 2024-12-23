@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public class JdbcMovieRepository implements MovieRepository {
-    
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -86,30 +86,46 @@ public class JdbcMovieRepository implements MovieRepository {
     }
 
     @Override
+public List<String> getAllGenres() {
+    String sql = "SELECT DISTINCT genre FROM film ORDER BY genre";
+    return jdbcTemplate.queryForList(sql, String.class);
+}
+
+@Override
+public List<Movie> getMoviesByGenrePaginated(String genre, int start, int show) {
+    String sql = "SELECT * FROM film WHERE genre = ? LIMIT ? OFFSET ?";
+    return jdbcTemplate.query(sql, movieRowMapper, genre, show, start);
+}
+
+@Override
+public int countMoviesByGenre(String genre) {
+    String sql = "SELECT COUNT(*) FROM film WHERE genre = ?";
+    return jdbcTemplate.queryForObject(sql, Integer.class, genre);
+}
+
+    @Override
     public void save(Movie movie) {
         String sql = "INSERT INTO film (cover, judul, genre, aktor, stok, hargaperfilm) VALUES (?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql, 
-            movie.getCover(),
-            movie.getJudul(), 
-            movie.getGenre(), 
-            movie.getAktor(), 
-            movie.getStok(), 
-            movie.getHargaPerFilm()
-        );
+        jdbcTemplate.update(sql,
+                movie.getCover(),
+                movie.getJudul(),
+                movie.getGenre(),
+                movie.getAktor(),
+                movie.getStok(),
+                movie.getHargaPerFilm());
     }
 
     @Override
     public void update(Movie movie) {
         String sql = "UPDATE film SET cover = ?, judul = ?, genre = ?, aktor = ?, stok = ?, hargaperfilm = ? WHERE film_id = ?";
-        jdbcTemplate.update(sql, 
-            movie.getCover(),
-            movie.getJudul(), 
-            movie.getGenre(), 
-            movie.getAktor(), 
-            movie.getStok(), 
-            movie.getHargaPerFilm(),
-            movie.getFilmId()
-        );
+        jdbcTemplate.update(sql,
+                movie.getCover(),
+                movie.getJudul(),
+                movie.getGenre(),
+                movie.getAktor(),
+                movie.getStok(),
+                movie.getHargaPerFilm(),
+                movie.getFilmId());
     }
 
     @Override

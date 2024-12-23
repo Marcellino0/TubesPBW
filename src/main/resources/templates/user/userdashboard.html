@@ -41,12 +41,25 @@
                     <h2>Movie Catalog</h2>
                 </div>
 
-                <!-- Search Form -->
-                <form class="search-form" method="get" th:action="@{/userdashboard}">
-                    <input type="text" name="search" th:value="${search}" 
-                           class="search-input" placeholder="Search movies...">
-                    <button type="submit" class="search-btn">Search</button>
-                </form>
+                <div class="search-filter-container">
+                    <form class="search-form" method="get" th:action="@{/userdashboard}">
+                        <input type="text" name="search" th:value="${search}" 
+                               class="search-input" placeholder="Search movies...">
+                        <button type="submit" class="search-btn">Search</button>
+                    </form>
+                    <div class="filter-container">
+                        <form class="filter-form" method="get" th:action="@{/userdashboard}">
+                            <select name="genre" class="genre-select" onchange="this.form.submit()">
+                                <option value="">All Genres</option>
+                                <option th:each="genre: ${genres}" 
+                                        th:value="${genre}" 
+                                        th:text="${genre}"
+                                        th:selected="${genre== selectedGenre}">
+                                </option>
+                            </select>
+                        </form>
+                    </div>
+                </div>
 
                 <!-- Movie Grid -->
                 <div class="movie-grid">

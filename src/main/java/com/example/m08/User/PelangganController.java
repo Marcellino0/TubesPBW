@@ -12,6 +12,11 @@ public class PelangganController {
     @Autowired
     private UserService userService;
 
+    @GetMapping("/dashboard")
+    public String dashboard() {
+        return "dashboard";
+    }
+
     @GetMapping("/register")
     public String registerView(Model model) {
         model.addAttribute("pelanggan", new Pelanggan());

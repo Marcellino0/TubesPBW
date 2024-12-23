@@ -36,6 +36,7 @@ public class LoginController {
 public String userDashboardView(
         @RequestParam(defaultValue = "1") int page,
         @RequestParam(required = false) String search,
+        @RequestParam(required = false) String genre,
         HttpSession session, 
         Model model) {
     if (session.getAttribute("pelanggan") == null) {
@@ -47,10 +48,17 @@ public String userDashboardView(
     
     List<Movie> movies;
     int totalMovies;
+
+    List<String> genres = movieRepository.getAllGenres();
+    model.addAttribute("genres", genres);
+    model.addAttribute("selectedGenre", genre);
     
     if (search != null && !search.isEmpty()) {
         movies = movieRepository.searchMoviesPaginated(search, start, show);
         totalMovies = movieRepository.countSearchResults(search);
+    } else if (genre != null && !genre.isEmpty()) {
+        movies = movieRepository.getMoviesByGenrePaginated(genre, start, show);
+        totalMovies = movieRepository.countMoviesByGenre(genre);
     } else {
         movies = movieRepository.getMoviesPaginated(start, show);
         totalMovies = movieRepository.countAllMovies();

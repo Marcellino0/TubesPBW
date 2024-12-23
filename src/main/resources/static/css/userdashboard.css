@@ -196,7 +196,7 @@
          .search-form {
             display: flex;
             gap: 1rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
         }
 
         .search-input {
@@ -214,6 +214,13 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
+        }
+
+        .search-filter-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
         }
         .container {
             margin: 100px 0 0 200px;
@@ -233,5 +240,28 @@
         }
         .container img:hover{
             width: 25%;
+        }
+
+        .filter-container {
+            margin-bottom: 2rem;
+        }
+    
+        .filter-form {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+    
+        .genre-select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+            min-width: 200px;
+            cursor: pointer;
+        }
+    
+        .genre-select:hover {
+            border-color: #3498db;
         }
    
