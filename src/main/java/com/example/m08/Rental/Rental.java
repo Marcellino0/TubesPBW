@@ -12,10 +12,10 @@ public class Rental {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     
     @Column(name = "idSewa" , nullable = false)
-    private Long idSewa;
+    private int idSewa;
     
     @Column(name = "idFilm", nullable = false)
-    private Long filmId;
+    private int filmId;
     
     @Column(name = "rentDate", nullable = false)
     private LocalDate rentDate;

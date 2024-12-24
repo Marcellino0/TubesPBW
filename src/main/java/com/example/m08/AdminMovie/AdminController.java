@@ -93,10 +93,11 @@ public class AdminController {
     }
 
     @GetMapping("/reports")
-    public String viewReports(HttpSession session) {
-        if (!isAdminAuthenticated(session)) {
-            return "redirect:/loginadmin";
-        }
-        return "admin/reports";
+public String viewReports(Model model, HttpSession session) {
+    if (!isAdminAuthenticated(session)) {
+        return "redirect:/loginadmin";
     }
+    // Add any necessary data to the model here
+    return "admin/report"; // This will look for reports.html in templates/admin/
+}
 }

@@ -43,7 +43,7 @@ public class RentalController {
     @PostMapping("/api/rental/{filmId}")
     @ResponseBody
     public ResponseEntity<?> rentMovie(
-        @PathVariable Long filmId,
+        @PathVariable int filmId,
         @RequestBody RentalRequest rentalRequest,
         HttpSession session
     ) {

@@ -65,8 +65,10 @@
                                 <td th:text="${rental.status}">Status</td>
                                 <td>
                                     <button th:if="${rental.status == 'ACTIVE'}" 
+                                    
                                             th:onclick="'returnMovie(' + ${rental.idSewa}  + ')'"
                                             class="return-btn">Return</button>
+
                                 </td>
                             </tr>
                         </tbody>
@@ -75,7 +77,7 @@
             </div>
         </div>
     </div>
-
+<!-- Nambah tabel baru idSewa di database line 70-->
     <style>
         .rental-table {
             width: 100%;

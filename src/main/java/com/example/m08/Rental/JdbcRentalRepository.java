@@ -55,8 +55,8 @@ public class JdbcRentalRepository implements RentalRepository {
         try {
             return jdbcTemplate.query(sql, (rs, rowNum) -> {
                 RentalWithMovie rental = new RentalWithMovie();
-                rental.setIdSewa(rs.getLong("idSewa"));
-                rental.setFilmId(rs.getLong("idFilm"));
+                rental.setIdSewa(rs.getInt("idSewa"));
+                rental.setFilmId(rs.getInt("idFilm"));
                 rental.setRentDate(rs.getDate("rentDate").toLocalDate());
                 rental.setDueDate(rs.getDate("dueDate").toLocalDate());
                 rental.setStatus(rs.getString("status"));
@@ -78,8 +78,8 @@ public class JdbcRentalRepository implements RentalRepository {
         String sql = "SELECT * FROM penyewaan WHERE idSewa = ?";
         List<Rental> results = jdbcTemplate.query(sql, (rs, rowNum) -> {
             Rental rental = new Rental();
-            rental.setIdSewa(rs.getLong("idSewa"));
-            rental.setFilmId(rs.getLong("idFilm"));
+            rental.setIdSewa(rs.getInt("idSewa"));
+            rental.setFilmId(rs.getInt("idFilm"));
             rental.setRentDate(rs.getDate("rentDate").toLocalDate());
             rental.setDueDate(rs.getDate("dueDate").toLocalDate());
             rental.setStatus(rs.getString("status"));

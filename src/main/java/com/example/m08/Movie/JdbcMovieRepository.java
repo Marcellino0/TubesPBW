@@ -19,7 +19,7 @@ public class JdbcMovieRepository implements MovieRepository {
         @Override
         public Movie mapRow(ResultSet rs, int rowNum) throws SQLException {
             Movie movie = new Movie();
-            movie.setFilmId(rs.getLong("film_id"));
+            movie.setFilmId(rs.getInt("film_id"));
             movie.setCover(rs.getBytes("cover"));
             movie.setJudul(rs.getString("judul"));
             movie.setGenre(rs.getString("genre"));
@@ -63,7 +63,7 @@ public class JdbcMovieRepository implements MovieRepository {
     }
 
     @Override
-    public Movie findById(Long id) {
+    public Movie findById(int id) {
         String sql = "SELECT * FROM film WHERE film_id = ?";
         List<Movie> results = jdbcTemplate.query(sql, movieRowMapper, id);
         return results.isEmpty() ? null : results.get(0);
@@ -135,7 +135,7 @@ public int countMoviesByGenre(String genre) {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(int id) {
         String sql = "DELETE FROM film WHERE film_id = ?";
         jdbcTemplate.update(sql, id);
     }
