@@ -80,3 +80,69 @@
     border-radius: 4px;
     cursor: pointer;
 }
+.movie-info {
+    padding: 10px;
+}
+
+.movie-info h4 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+}
+
+.movie-info p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.return-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.return-btn:hover {
+    background-color: #45a049;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.data-table th, 
+.data-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.data-table th {
+    background-color: #f5f5f5;
+}
+
+.date-selection {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+}
+
+.date-selection label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.date-selection input[type="date"],
+.date-selection select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}

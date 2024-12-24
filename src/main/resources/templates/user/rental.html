@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Rental - Rental</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link th:href="@{/css/rental.css}" rel="stylesheet"/>
 </head>
 <body>
     <div class="admin-container">
@@ -17,9 +16,6 @@
             <ul class="sidebar-menu">
                 <li onclick="redirectToCatalog()">
                     <i class="fas fa-film"></i> Catalog
-                </li>
-                <li onclick="redirectToSearch()">
-                    <i class="fas fa-search"></i> Search
                 </li>
                 <li class="active">
                     <i class="fas fa-ticket-alt"></i> Rentals
@@ -35,100 +31,186 @@
 
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Rentals Section -->
-            <div id="rentalsSection" class="section">
+            <div class="section">
                 <div class="content-header">
                     <h2>Current Rentals</h2>
                 </div>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Movie</th>
-                            <th>Rented On</th>
-                            <th>Due Date</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="rentalTableBody">
-                        <!-- Rental data will be populated here -->
-                    </tbody>
-                </table>
+
+                <!-- Add message if no rentals -->
+                <div th:if="${#lists.isEmpty(rentals)}" class="no-rentals">
+                    <p>You don't have any active rentals.</p>
+                </div>
+
+                <!-- Rental List -->
+                <div th:unless="${#lists.isEmpty(rentals)}" class="rental-list">
+                    <table class="rental-table">
+                        <thead>
+                            <tr>
+                                <th>Movie Title</th>
+                                <th>Genre</th>
+                                <th>Rent Date</th>
+                                <th>Due Date</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="rental : ${rentals}">
+                                <td th:text="${rental.movieTitle}">Movie Title</td>
+                                <td th:text="${rental.genre}">Genre</td>
+                                <td th:text="${#temporals.format(rental.rentDate, 'dd-MM-yyyy')}">Rent Date</td>
+                                <td th:text="${#temporals.format(rental.dueDate, 'dd-MM-yyyy')}">Due Date</td>
+                                <td>Rp<span th:text="${#numbers.formatDecimal(rental.price, 0, 'COMMA', 0, 'POINT')}">Price</span></td>
+                                <td th:text="${rental.status}">Status</td>
+                                <td>
+                                    <button th:if="${rental.status == 'ACTIVE'}" 
+                                            th:onclick="'returnMovie(' + ${rental.idSewa}  + ')'"
+                                            class="return-btn">Return</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
+    <style>
+        .rental-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .rental-table th,
+        .rental-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .rental-table th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        .rental-table tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .no-rentals {
+            text-align: center;
+            padding: 40px;
+            background-color: white;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .main-content {
+            padding: 20px;
+            margin-left: 250px;
+        }
+
+        .content-header {
+            margin-bottom: 20px;
+        }
+
+        .content-header h2 {
+            color: #333;
+            margin: 0;
+        }
+
+        .sidebar {
+            width: 250px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background-color: #2c3e50;
+            color: white;
+            padding-top: 20px;
+        }
+
+        .sidebar-header {
+            padding: 0 20px;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar-menu li:hover,
+        .sidebar-menu li.active {
+            background-color: #34495e;
+        }
+
+        .sidebar-menu i {
+            margin-right: 10px;
+        }
+
+        .return-btn {
+            padding: 6px 12px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .return-btn:hover {
+            background-color: #c0392b;
+        }
+    </style>
+
     <script>
-        // Function to redirect to catalog page
         function redirectToCatalog() {
-            window.location.href = 'catalog.html';
+            window.location.href = '/userdashboard';
         }
 
-        // Function to redirect to search page
-        function redirectToSearch() {
-            window.location.href = 'search-rental.html';
-        }
-
-        // Function to redirect to history page
         function redirectToHistory() {
-            window.location.href = 'history-rental.html';
+            window.location.href = '/user/history-rental';
         }
 
-        // Function to handle logout
         function logout() {
-            window.location.href = 'login.html';
+            window.location.href = '/logout';
         }
 
-        // Function to return a rented movie
         function returnMovie(rentalId) {
-            // Perform the return action for the rental with the given rentalId
-            // Update the rental table after successfully returning the movie
-            // You can use AJAX or fetch to send a request to the server
-            // to handle the return process
-
-            console.log(`Returning movie with rental ID: ${rentalId}`);
+            if (confirm('Are you sure you want to return this movie?')) {
+                fetch(`/api/rental/return/${rentalId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => { throw new Error(text) });
+                    }
+                    return response.text();
+                })
+                .then(result => {
+                    alert('Movie returned successfully!');
+                    window.location.reload();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to return movie: ' + error.message);
+                });
+            }
         }
-
-        // Fetch rental data from the server and populate the rental table
-        function fetchRentalData() {
-            // Use AJAX or fetch to retrieve rental data from the server
-            // and populate the 'rentalTableBody' with the retrieved data
-
-            // Example rental data (replace with actual data from the server)
-            const rentalData = [
-                {
-                    id: 1,
-                    movie: 'Movie 1',
-                    rentedOn: '2023-06-01',
-                    dueDate: '2023-06-08',
-                },
-                {
-                    id: 2,
-                    movie: 'Movie 2',
-                    rentedOn: '2023-06-03',
-                    dueDate: '2023-06-10',
-                },
-                // Add more rental data
-            ];
-
-            const rentalTableBody = document.getElementById('rentalTableBody');
-            rentalTableBody.innerHTML = '';
-
-            rentalData.forEach(rental => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${rental.movie}</td>
-                    <td>${rental.rentedOn}</td>
-                    <td>${rental.dueDate}</td>
-                    <td>
-                        <button class="return-btn" onclick="returnMovie(${rental.id})">Return</button>
-                    </td>
-                `;
-                rentalTableBody.appendChild(row);
-            });
-        }
-
-        // Fetch rental data when the page loads
-        window.addEventListener('load', fetchRentalData);
     </script>
 </body>
 </html>
