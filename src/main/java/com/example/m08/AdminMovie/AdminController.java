@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpSession;
 
 import com.example.m08.Rental.RentalRepository;
-import com.example.m08.Rental.MovieRentalStats;
+
 
 @Controller
 @RequestMapping("/admin")
