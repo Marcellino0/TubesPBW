@@ -28,7 +28,7 @@ public class AdminController {
     private PelangganRepository pelangganRepository;
 
     @Autowired
-private RentalRepository rentalRepository;
+    private RentalRepository rentalRepository;
 
     private boolean isAdminAuthenticated(HttpSession session) {
         return session.getAttribute("admin") != null;
@@ -58,7 +58,7 @@ private RentalRepository rentalRepository;
     }
 
     @GetMapping("/edit-customer/{id}")
-    public String editCustomer(@PathVariable Long id, Model model, HttpSession session) {
+    public String editCustomer(@PathVariable int id, Model model, HttpSession session) {
         if (!isAdminAuthenticated(session)) {
             return "redirect:/loginadmin";
         }
@@ -70,7 +70,7 @@ private RentalRepository rentalRepository;
     }
 
     @PostMapping("/update-customer/{id}")
-    public String updateCustomer(@PathVariable Long id, @ModelAttribute Pelanggan customer, 
+    public String updateCustomer(@PathVariable int id, @ModelAttribute Pelanggan customer, 
                                BindingResult result, HttpSession session) {
         if (!isAdminAuthenticated(session)) {
             return "redirect:/loginadmin";
@@ -93,7 +93,7 @@ private RentalRepository rentalRepository;
     }
 
     @GetMapping("/delete-customer/{id}")
-    public String deleteCustomer(@PathVariable Long id, HttpSession session) {
+    public String deleteCustomer(@PathVariable int id, HttpSession session) {
         if (!isAdminAuthenticated(session)) {
             return "redirect:/loginadmin";
         }
@@ -103,13 +103,13 @@ private RentalRepository rentalRepository;
     }
 
     @GetMapping("/reports")
-public String viewReports(Model model, HttpSession session) {
-    if (!isAdminAuthenticated(session)) {
-        return "redirect:/loginadmin";
+    public String viewReports(Model model, HttpSession session) {
+        if (!isAdminAuthenticated(session)) {
+            return "redirect:/loginadmin";
+        }
+        
+        List<MovieRentalStats> rentalStats = rentalRepository.getMovieRentalStats();
+        model.addAttribute("rentalStats", rentalStats);
+        return "admin/report";
     }
-    
-    List<MovieRentalStats> rentalStats = rentalRepository.getMovieRentalStats();
-    model.addAttribute("rentalStats", rentalStats);
-    return "admin/report";
-}
 }
