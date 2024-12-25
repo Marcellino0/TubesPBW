@@ -3,7 +3,6 @@ package com.example.m08.Rental;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
