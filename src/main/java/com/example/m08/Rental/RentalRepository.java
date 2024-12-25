@@ -7,4 +7,5 @@ public interface RentalRepository {
     List<RentalWithMovie> findCurrentRentals();
     Rental findById(Long id);
     void update(Rental rental);
+    List<MovieRentalStats> getMovieRentalStats();
 }

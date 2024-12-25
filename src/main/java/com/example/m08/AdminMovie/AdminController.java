@@ -1,14 +1,21 @@
 package com.example.m08.AdminMovie;
 
 import com.example.m08.Movie.MovieRepository;
+import com.example.m08.Rental.MovieRentalStats;
 import com.example.m08.User.Pelanggan;
 import com.example.m08.User.PelangganRepository;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpSession;
+
+import com.example.m08.Rental.RentalRepository;
+import com.example.m08.Rental.MovieRentalStats;
 
 @Controller
 @RequestMapping("/admin")
@@ -19,6 +26,9 @@ public class AdminController {
 
     @Autowired
     private PelangganRepository pelangganRepository;
+
+    @Autowired
+private RentalRepository rentalRepository;
 
     private boolean isAdminAuthenticated(HttpSession session) {
         return session.getAttribute("admin") != null;
@@ -97,7 +107,9 @@ public String viewReports(Model model, HttpSession session) {
     if (!isAdminAuthenticated(session)) {
         return "redirect:/loginadmin";
     }
-    // Add any necessary data to the model here
-    return "admin/report"; // This will look for reports.html in templates/admin/
+    
+    List<MovieRentalStats> rentalStats = rentalRepository.getMovieRentalStats();
+    model.addAttribute("rentalStats", rentalStats);
+    return "admin/report";
 }
 }

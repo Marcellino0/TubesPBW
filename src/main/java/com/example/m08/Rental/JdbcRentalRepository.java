@@ -93,4 +93,21 @@ public class JdbcRentalRepository implements RentalRepository {
         String sql = "UPDATE penyewaan SET status = ? WHERE idSewa = ?";
         jdbcTemplate.update(sql, rental.getStatus(), rental.getIdSewa());
     }
+
+    public List<MovieRentalStats> getMovieRentalStats() {
+        String sql = """
+            SELECT f.judul as movieTitle, COUNT(p.idFilm) as rentalCount 
+            FROM penyewaan p 
+            JOIN film f ON p.idFilm = f.film_id 
+            GROUP BY f.judul 
+            ORDER BY rentalCount DESC
+            """;
+        
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            MovieRentalStats stats = new MovieRentalStats();
+            stats.setMovieTitle(rs.getString("movieTitle"));
+            stats.setRentalCount(rs.getInt("rentalCount"));
+            return stats;
+        });
+    }
 }
