@@ -1,14 +1,21 @@
 package com.example.m08.AdminMovie;
 
 import com.example.m08.Movie.MovieRepository;
+import com.example.m08.Rental.MovieRentalStats;
 import com.example.m08.User.Pelanggan;
 import com.example.m08.User.PelangganRepository;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpSession;
+
+import com.example.m08.Rental.RentalRepository;
+
 
 @Controller
 @RequestMapping("/admin")
@@ -19,6 +26,9 @@ public class AdminController {
 
     @Autowired
     private PelangganRepository pelangganRepository;
+
+    @Autowired
+    private RentalRepository rentalRepository;
 
     private boolean isAdminAuthenticated(HttpSession session) {
         return session.getAttribute("admin") != null;
@@ -48,7 +58,7 @@ public class AdminController {
     }
 
     @GetMapping("/edit-customer/{id}")
-    public String editCustomer(@PathVariable Long id, Model model, HttpSession session) {
+    public String editCustomer(@PathVariable int id, Model model, HttpSession session) {
         if (!isAdminAuthenticated(session)) {
             return "redirect:/loginadmin";
         }
@@ -60,7 +70,7 @@ public class AdminController {
     }
 
     @PostMapping("/update-customer/{id}")
-    public String updateCustomer(@PathVariable Long id, @ModelAttribute Pelanggan customer, 
+    public String updateCustomer(@PathVariable int id, @ModelAttribute Pelanggan customer, 
                                BindingResult result, HttpSession session) {
         if (!isAdminAuthenticated(session)) {
             return "redirect:/loginadmin";
@@ -83,7 +93,7 @@ public class AdminController {
     }
 
     @GetMapping("/delete-customer/{id}")
-    public String deleteCustomer(@PathVariable Long id, HttpSession session) {
+    public String deleteCustomer(@PathVariable int id, HttpSession session) {
         if (!isAdminAuthenticated(session)) {
             return "redirect:/loginadmin";
         }
@@ -93,10 +103,13 @@ public class AdminController {
     }
 
     @GetMapping("/reports")
-    public String viewReports(HttpSession session) {
+    public String viewReports(Model model, HttpSession session) {
         if (!isAdminAuthenticated(session)) {
             return "redirect:/loginadmin";
         }
-        return "admin/reports";
+        
+        List<MovieRentalStats> rentalStats = rentalRepository.getMovieRentalStats();
+        model.addAttribute("rentalStats", rentalStats);
+        return "admin/report";
     }
 }

@@ -14,8 +14,7 @@ public class Movie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     // @Column(name = "film_id")
-    private Long filmId;
-
+    private int filmId;
     // @Column(nullable = false)
     private byte[] cover;
 

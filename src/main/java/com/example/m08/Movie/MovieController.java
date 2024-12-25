@@ -61,7 +61,7 @@ public class MovieController {
     }
 
     @GetMapping("/edit/{id}")
-    public String editMovieForm(@PathVariable Long id, Model model, HttpSession session) {
+    public String editMovieForm(@PathVariable int id, Model model, HttpSession session) {
         if (!isAdminAuthenticated(session)) {
             return "redirect:/loginadmin";
         }
@@ -74,7 +74,7 @@ public class MovieController {
     }
 
     @PostMapping("/edit/{id}")
-    public String updateMovie(@PathVariable Long id, 
+    public String updateMovie(@PathVariable int id, 
                             @ModelAttribute Movie movie, 
                             @RequestParam(value = "coverImage", required = false) MultipartFile coverImage, 
                             HttpSession session) {
@@ -104,7 +104,7 @@ public class MovieController {
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteMovie(@PathVariable Long id, HttpSession session) {
+    public String deleteMovie(@PathVariable int id, HttpSession session) {
         if (!isAdminAuthenticated(session)) {
             return "redirect:/loginadmin";
         }

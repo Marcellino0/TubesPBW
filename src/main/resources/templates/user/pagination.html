@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <link th:href="@{/css/pagination.css}" rel="stylesheet" />
+</head>
+
+<body>
+    <div th:fragment="pagination">
+        <nav th:if="${pageCount > 1}">
+            <ul class="pagination-container">
+                <!-- Previous Button -->
+                <li>
+                    <a class="pagination-link"
+                        th:href="@{/userdashboard(page=${currentPage - 1}, search=${search}, genre=${selectedGenre})}"
+                        th:class="${currentPage == 1 ? 'pagination-link disabled' : 'pagination-link'}"
+                        aria-label="Previous">
+                        <span class="pagination-arrow" aria-hidden="true">&lsaquo;</span>
+                    </a>
+                </li>
+
+                <!-- Page Numbers -->
+                <li th:each="i : ${#numbers.sequence(1, pageCount)}">
+                    <a class="pagination-link"
+                        th:href="@{/userdashboard(page=${i}, search=${search}, genre=${selectedGenre})}" th:text="${i}"
+                        th:class="${currentPage == i ? 'pagination-link active' : 'pagination-link'}">
+                    </a>
+                </li>
+
+                <!-- Next Button -->
+                <li>
+                    <a class="pagination-link"
+                        th:href="@{/userdashboard(page=${currentPage + 1}, search=${search}, genre=${selectedGenre})}"
+                        th:class="${currentPage == pageCount ? 'pagination-link disabled' : 'pagination-link'}"
+                        aria-label="Next">
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</body>
+
+</html>

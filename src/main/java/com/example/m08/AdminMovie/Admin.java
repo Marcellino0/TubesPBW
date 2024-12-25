@@ -22,9 +22,6 @@ public class Admin {
     @Column(name = "password", nullable = false, unique = true)
     private String password;
 
-
-   
-
     @Transient
     private String confirmPassword;
 }
