@@ -6,16 +6,13 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class PelangganController {
 
     @Autowired
     private UserService userService;
-
-    @GetMapping("/dashboard")
-    public String dashboard() {
-        return "dashboard";
-    }
 
     @GetMapping("/register")
     public String registerView(Model model) {
@@ -43,5 +40,39 @@ public class PelangganController {
         }
 
         return "redirect:/login";
+    }
+
+    @GetMapping("/profile")
+    public String viewProfile(Model model, HttpSession session) {
+        // Check if user is logged in
+        Pelanggan pelanggan = (Pelanggan) session.getAttribute("pelanggan");
+        if (pelanggan == null) {
+            return "redirect:/login";
+        }
+        
+        model.addAttribute("user", pelanggan);
+        return "user/profile";
+    }
+
+    @PostMapping("/profile/update")
+    public String updateProfile(@ModelAttribute Pelanggan pelanggan, HttpSession session) {
+        userService.updateProfile(pelanggan);
+        // Update the session with the new user data
+        session.setAttribute("pelanggan", pelanggan);
+        return "redirect:/profile?success";
+    }
+
+    @PostMapping("/topup")
+    public String topUpSaldo(@RequestParam Double amount, HttpSession session) {
+        Pelanggan pelanggan = (Pelanggan) session.getAttribute("pelanggan");
+        if (pelanggan == null) {
+            return "redirect:/login";
+        }
+        
+        userService.topUpSaldo(pelanggan.getUserId(), amount);
+        // Update the session with the new balance
+        pelanggan = userService.getCurrentUserProfile(pelanggan.getUsername());
+        session.setAttribute("pelanggan", pelanggan);
+        return "redirect:/profile?topup=success";
     }
 }
