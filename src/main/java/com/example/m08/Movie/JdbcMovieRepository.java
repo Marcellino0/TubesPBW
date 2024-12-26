@@ -25,7 +25,9 @@ public class JdbcMovieRepository implements MovieRepository {
             movie.setGenre(rs.getString("genre"));
             movie.setAktor(rs.getString("aktor"));
             movie.setStok(rs.getInt("stok"));
-            movie.setHargaPerFilm(rs.getDouble("hargaperfilm"));
+            movie.setHarga7Hari(rs.getDouble("harga_7_hari"));
+            movie.setHarga14Hari(rs.getDouble("harga_14_hari"));
+            movie.setHarga30Hari(rs.getDouble("harga_30_hari"));
             return movie;
         }
     };
@@ -103,30 +105,34 @@ public int countMoviesByGenre(String genre) {
     return jdbcTemplate.queryForObject(sql, Integer.class, genre);
 }
 
-    @Override
-    public void save(Movie movie) {
-        String sql = "INSERT INTO film (cover, judul, genre, aktor, stok, hargaperfilm) VALUES (?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql,
-                movie.getCover(),
-                movie.getJudul(),
-                movie.getGenre(),
-                movie.getAktor(),
-                movie.getStok(),
-                movie.getHargaPerFilm());
-    }
+@Override
+public void save(Movie movie) {
+    String sql = "INSERT INTO film (cover, judul, genre, aktor, stok, harga_7_hari, harga_14_hari, harga_30_hari) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    jdbcTemplate.update(sql,
+            movie.getCover(),
+            movie.getJudul(),
+            movie.getGenre(),
+            movie.getAktor(),
+            movie.getStok(),
+            movie.getHarga7Hari(),
+            movie.getHarga14Hari(),
+            movie.getHarga30Hari());
+}
 
-    @Override
-    public void update(Movie movie) {
-        String sql = "UPDATE film SET cover = ?, judul = ?, genre = ?, aktor = ?, stok = ?, hargaperfilm = ? WHERE film_id = ?";
-        jdbcTemplate.update(sql,
-                movie.getCover(),
-                movie.getJudul(),
-                movie.getGenre(),
-                movie.getAktor(),
-                movie.getStok(),
-                movie.getHargaPerFilm(),
-                movie.getFilmId());
-    }
+@Override
+public void update(Movie movie) {
+    String sql = "UPDATE film SET cover = ?, judul = ?, genre = ?, aktor = ?, stok = ?, harga_7_hari = ?, harga_14_hari = ?, harga_30_hari = ? WHERE film_id = ?";
+    jdbcTemplate.update(sql,
+            movie.getCover(),
+            movie.getJudul(),
+            movie.getGenre(),
+            movie.getAktor(),
+            movie.getStok(),
+            movie.getHarga7Hari(),
+            movie.getHarga14Hari(),
+            movie.getHarga30Hari(),
+            movie.getFilmId());
+}
 
     @Override
     public List<Movie> findAll() {

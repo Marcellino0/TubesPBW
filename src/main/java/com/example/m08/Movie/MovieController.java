@@ -37,9 +37,8 @@ public class MovieController {
             return "redirect:/loginadmin";
         }
         model.addAttribute("movie", new Movie());
-        return "admin/kelolaFilm";
+        return "admin/kelolaFilm"; 
     }
-
     @PostMapping("/add")
     public String addMovie(@ModelAttribute Movie movie, 
                           @RequestParam("coverImage") MultipartFile coverImage, 

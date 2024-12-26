@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+// Movie.java
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,33 +14,37 @@ import lombok.NoArgsConstructor;
 public class Movie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    // @Column(name = "film_id")
     private int filmId;
-    // @Column(nullable = false)
     private byte[] cover;
-
-    // @Column(nullable = false)
     private String judul;
-
-    // @Column(nullable = false)
     private String genre;
-
-    // @Column(nullable = false)
     private String aktor;
-
-    // @Column(nullable = false)
     private Integer stok;
-
-    // @Column(name = "hargaperfilm")
-    private Double hargaPerFilm;
     
-    // @Transient
-    // private String base64Cover;
+    // Replace single hargaPerFilm with duration-specific prices
+    @Column(name = "harga_7_hari")
+    private Double harga7Hari;
+    
+    @Column(name = "harga_14_hari")
+    private Double harga14Hari;
+    
+    @Column(name = "harga_30_hari")
+    private Double harga30Hari;
     
     public String getBase64Cover() {
         if (cover != null) {
             return java.util.Base64.getEncoder().encodeToString(cover);
         }
         return null;
+    }
+    
+    // Helper method to get price by duration
+    public Double getPriceByDuration(int duration) {
+        return switch (duration) {
+            case 7 -> harga7Hari;
+            case 14 -> harga14Hari;
+            case 30 -> harga30Hari;
+            default -> throw new IllegalArgumentException("Invalid duration: " + duration);
+        };
     }
 }
