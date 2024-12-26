@@ -7,7 +7,7 @@
     <title>Movie Rental - User Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link th:href="@{/css/userdashboard.css}" rel="stylesheet" />
-    
+
 </head>
 
 <body>
@@ -74,16 +74,20 @@
                             <p><strong>Genre:</strong> <span th:text="${movie.genre}">Genre</span></p>
                             <p><strong>Actor:</strong> <span th:text="${movie.aktor}">Actor</span></p>
                             <p><strong>Stock:</strong> <span th:text="${movie.stok}">Stock</span></p>
-                            <p><strong>Price:</strong> Rp<span
-                                    th:text="${#numbers.formatDecimal(movie.hargaPerFilm, 0, 'COMMA', 0, 'POINT')}">Price</span>
+                            <p><strong>Price:</strong> Rp<span th:id="'price-' + ${movie.filmId}"
+                                    th:data-price7="${movie.harga7Hari}" th:data-price14="${movie.harga14Hari}"
+                                    th:data-price30="${movie.harga30Hari}"
+                                    th:text="${#numbers.formatDecimal(movie.harga7Hari, 0, 'COMMA', 0, 'POINT')}">
+                                </span>
                             </p>
-                            
+
                             <!-- Rental Form -->
-                            <form th:if="${movie.stok > 0}" th:action="@{/rent/{filmId}(filmId=${movie.filmId})}" method="post" 
-                                  class="rental-form">
+                            <form th:if="${movie.stok > 0}" th:action="@{/rent/{filmId}(filmId=${movie.filmId})}"
+                                method="post" class="rental-form">
                                 <div class="form-group">
                                     <label for="duration">Rental Duration:</label>
-                                    <select name="duration" id="duration" required>
+                                    <select th:id="'duration-' + ${movie.filmId}" name="duration"
+                                        th:onchange="'updatePrice(' + ${movie.filmId} + ')'" required>
                                         <option value="7">7 days</option>
                                         <option value="14">14 days</option>
                                         <option value="30">30 days</option>
@@ -95,7 +99,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- Pagination -->
                 <nav th:if="${pageCount > 1}">
                     <ul class="pagination-container">
@@ -106,9 +109,8 @@
                             </a>
                         </li>
                         <li th:each="i : ${#numbers.sequence(1, pageCount)}">
-                            <a th:href="@{/userdashboard(page=${i}, search=${search}, genre=${selectedGenre})}" 
-                               th:text="${i}"
-                               th:class="${currentPage == i ? 'active' : null}"></a>
+                            <a th:href="@{/userdashboard(page=${i}, search=${search}, genre=${selectedGenre})}"
+                                th:text="${i}" th:class="${currentPage == i ? 'active' : null}"></a>
                         </li>
                         <li>
                             <a th:href="@{/userdashboard(page=${currentPage + 1}, search=${search}, genre=${selectedGenre})}"
@@ -118,30 +120,44 @@
                         </li>
                     </ul>
                 </nav>
-            </div>
-        </div>
-    </div>
-    <script>
-        function redirectToCatalog() {
-            window.location.href = '/userdashboard';
-        }
-    
-        function redirectToRentals() {
-            window.location.href = '/rental';
-        }
-    
-        function redirectToHistory() {
-            window.location.href = '/history-rental';
-        }
-    
-        function redirectToProfile() {
-            window.location.href = '/profile';
-        }
-    
-        function logout() {
-            window.location.href = '/logout';
-        }
-    </script>
+
+                <!-- Update script section -->
+                <script>
+                    function updatePrice(movieId) {
+                        const duration = document.getElementById(`duration-${movieId}`).value;
+                        const priceElement = document.getElementById(`price-${movieId}`);
+
+                        const prices = {
+                            '7': parseFloat(priceElement.dataset.price7),
+                            '14': parseFloat(priceElement.dataset.price14),
+                            '30': parseFloat(priceElement.dataset.price30)
+                        };
+
+                        const formattedPrice = new Intl.NumberFormat('id-ID').format(prices[duration]);
+                        priceElement.textContent = formattedPrice;
+                    }
+
+                    // Fungsi-fungsi redirect yang sudah ada
+                    function redirectToCatalog() {
+                        window.location.href = '/userdashboard';
+                    }
+
+                    function redirectToRentals() {
+                        window.location.href = '/rental';
+                    }
+
+                    function redirectToHistory() {
+                        window.location.href = '/history-rental';
+                    }
+
+                    function redirectToProfile() {
+                        window.location.href = '/profile';
+                    }
+
+                    function logout() {
+                        window.location.href = '/logout';
+                    }
+                </script>
 </body>
 
 </html>
