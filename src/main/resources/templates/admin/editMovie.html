@@ -256,8 +256,18 @@
                     </div>
                     
                     <div class="form-group">
-                        <label>Harga Per Film</label>
-                        <input type="number" step="0.01" th:field="*{hargaPerFilm}" required min="0">
+                        <label>Harga Rental 7 Hari</label>
+                        <input type="number" step="0.01" th:field="*{harga7Hari}" required min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Harga Rental 14 Hari</label>
+                        <input type="number" step="0.01" th:field="*{harga14Hari}" required min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Harga Rental 30 Hari</label>
+                        <input type="number" step="0.01" th:field="*{harga30Hari}" required min="0">
                     </div>
                     
                     <button type="submit" class="submit-btn">Update Film</button>

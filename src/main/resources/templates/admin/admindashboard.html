@@ -174,7 +174,9 @@
                             <th>Genre</th>
                             <th>Aktor</th>
                             <th>Stok</th>
-                            <th>Harga Per Film</th>
+                            <th>Harga 7 Hari</th>
+                            <th>Harga 14 Hari</th>
+                            <th>Harga 30 Hari</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -190,7 +192,9 @@
                             <td th:text="${movie.genre}"></td>
                             <td th:text="${movie.aktor}"></td>
                             <td th:text="${movie.stok}"></td>
-                            <td th:text="${movie.hargaPerFilm}"></td>
+                            <td>Rp<span th:text="${#numbers.formatDecimal(movie.harga7Hari, 0, 'COMMA', 0, 'POINT')}">0</span></td>
+                            <td>Rp<span th:text="${#numbers.formatDecimal(movie.harga14Hari, 0, 'COMMA', 0, 'POINT')}">0</span></td>
+                            <td>Rp<span th:text="${#numbers.formatDecimal(movie.harga30Hari, 0, 'COMMA', 0, 'POINT')}">0</span></td>
                             <td>
                                 <a th:href="@{/admin/movies/edit/{id}(id=${movie.filmId})}" class="edit-btn">Edit</a>
                                 <a th:href="@{/admin/movies/delete/{id}(id=${movie.filmId})}" class="delete-btn"
@@ -202,6 +206,42 @@
             </div>
         </div>
     </div>
+
+    <!-- Tambahkan CSS baru untuk memperbaiki tampilan tabel -->
+    <style>
+        .data-table td {
+            text-align: center;
+            vertical-align: middle;
+        }
+        
+        .data-table img {
+            max-width: 100px;
+            height: auto;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Memperbaiki tampilan kolom harga */
+        .data-table td:nth-child(6),
+        .data-table td:nth-child(7),
+        .data-table td:nth-child(8) {
+            text-align: right;
+            padding-right: 20px;
+        }
+
+        /* Memperbaiki lebar tabel */
+        .data-table {
+            min-width: 1200px;
+            overflow-x: auto;
+        }
+
+        /* Wrapper untuk tabel dengan scroll horizontal */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 0 -1rem;
+            padding: 0 1rem;
+        }
+    </style>
 </body>
 
 </html>
