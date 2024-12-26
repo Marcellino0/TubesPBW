@@ -1,126 +1,108 @@
+// RentalController.java
 package com.example.m08.Rental;
 
-import com.example.m08.Movie.Movie;
-import com.example.m08.Movie.MovieRepository;
-import com.example.m08.User.Pelanggan;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import jakarta.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.example.m08.User.Pelanggan;
+import com.example.m08.User.PelangganRepository;
+
 @Controller
 public class RentalController {
-    private final MovieRepository movieRepository;
-    private final RentalRepository rentalRepository;
-
+    
     @Autowired
-    public RentalController(MovieRepository movieRepository, RentalRepository rentalRepository) {
-        this.movieRepository = movieRepository;
-        this.rentalRepository = rentalRepository;
-    }
+    private RentalRepository rentalRepository;
+    
+    @Autowired
+    private PelangganRepository pelangganRepository;
 
-    // Halaman rental
-    @GetMapping("/rental")
-    public String getRentalPage(Model model, HttpSession session) {
-        Pelanggan pelanggan = (Pelanggan) session.getAttribute("pelanggan");
-        if (pelanggan == null) {
-            return "redirect:/login";
-        }
-        
-        List<RentalWithMovie> currentRentals = rentalRepository.findCurrentRentals();
-        model.addAttribute("rentals", currentRentals);
-        
-        return "user/rental";
-    }
-
-    // API untuk melakukan rental
-    @PostMapping("/api/rental/{filmId}")
-    @ResponseBody
-    public ResponseEntity<?> rentMovie(
-        @PathVariable int filmId,
-        @RequestBody RentalRequest rentalRequest,
-        HttpSession session
-    ) {
+    @PostMapping("/rent/{filmId}")
+    public String rentMovie(@PathVariable int filmId,
+                          @RequestParam int duration,
+                          HttpSession session,
+                          RedirectAttributes redirectAttributes) {
         try {
-            Pelanggan pelanggan = (Pelanggan) session.getAttribute("pelanggan");
-            if (pelanggan == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Please login first");
+            Pelanggan user = (Pelanggan) session.getAttribute("pelanggan");
+            if (user == null) {
+                return "redirect:/login";
             }
 
-            Movie movie = movieRepository.findById(filmId);
-            if (movie == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Movie not found");
-            }
-
-            if (movie.getStok() <= 0) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Movie out of stock");
-            }
-
-            // Create rental
-            LocalDate rentDate = LocalDate.parse(rentalRequest.getRentDate());
-            LocalDate dueDate = rentDate.plusDays(rentalRequest.getDuration());
-
+            // Create rental object
             Rental rental = new Rental();
             rental.setFilmId(filmId);
-            rental.setRentDate(rentDate);
-            rental.setDueDate(dueDate);
+            rental.setRentDate(LocalDate.now());
+            rental.setDueDate(LocalDate.now().plusDays(duration));
             rental.setStatus("ACTIVE");
 
             // Save rental
-            rentalRepository.save(rental);
-
-            // Update movie stock
-            movie.setStok(movie.getStok() - 1);
-            movieRepository.update(movie);
-
-            return ResponseEntity.ok("Movie rented successfully");
+            rentalRepository.save(rental, user.getUserId());
+            
+            // Update session with new user data
+            Pelanggan updatedUser = pelangganRepository.findById(user.getUserId()).orElse(null);
+            if (updatedUser != null) {
+                session.setAttribute("pelanggan", updatedUser);
+            }
+            
+            redirectAttributes.addFlashAttribute("success", "Movie rented successfully!");
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Failed to rent movie: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
+        return "redirect:/userdashboard";
     }
 
-    // API untuk mengembalikan film
-    @PostMapping("/api/rental/return/{rentalId}")
-    @ResponseBody
-    public ResponseEntity<?> returnMovie(@PathVariable Long rentalId, HttpSession session) {
+    @GetMapping("/rental")
+    public String viewRentals(Model model, HttpSession session) {
+        Pelanggan user = (Pelanggan) session.getAttribute("pelanggan");
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        List<RentalWithMovie> rentals = rentalRepository.findCurrentRentals();
+        model.addAttribute("rentals", rentals);
+        return "user/rental";
+    }
+
+    @PostMapping("/rental/confirm-return/{rentalId}")
+    public String confirmReturn(@PathVariable Long rentalId,
+                              HttpSession session,
+                              RedirectAttributes redirectAttributes) {
+        Pelanggan user = (Pelanggan) session.getAttribute("pelanggan");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        
+        // Instead of returning, we'll show confirmation
+        return "redirect:/rental?confirm=" + rentalId;
+    }
+
+    @PostMapping("/rental/return/{rentalId}")
+    public String returnMovie(@PathVariable Long rentalId,
+                            HttpSession session,
+                            RedirectAttributes redirectAttributes) {
         try {
-            Pelanggan pelanggan = (Pelanggan) session.getAttribute("pelanggan");
-            if (pelanggan == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body("Please login first");
+            Pelanggan user = (Pelanggan) session.getAttribute("pelanggan");
+            if (user == null) {
+                return "redirect:/login";
             }
 
             Rental rental = rentalRepository.findById(rentalId);
             if (rental == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("Rental not found");
+                redirectAttributes.addFlashAttribute("error", "Rental not found");
+                return "redirect:/rental";
             }
 
             rental.setStatus("RETURNED");
             rentalRepository.update(rental);
-
-            // Increase movie stock
-            Movie movie = movieRepository.findById(rental.getFilmId());
-            movie.setStok(movie.getStok() + 1);
-            movieRepository.update(movie);
-
-            return ResponseEntity.ok().body("Movie returned successfully");
-
+            redirectAttributes.addFlashAttribute("success", "Movie returned successfully!");
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to return movie: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
+        return "redirect:/rental";
     }
 }

@@ -3,38 +3,74 @@ package com.example.m08.Rental;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import java.util.ArrayList;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Optional;
+import java.sql.Date;
+
+import com.example.m08.User.Pelanggan;
+import com.example.m08.User.PelangganRepository;
 
 @Repository
 public class JdbcRentalRepository implements RentalRepository {
     
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    
+    @Autowired
+    private PelangganRepository pelangganRepository;
 
     @Override
-    public void save(Rental rental) {
-        String sql = "INSERT INTO penyewaan (idFilm, rentDate, dueDate, status) VALUES (?, ?, ?, ?)";
-        
+    @Transactional
+    public void save(Rental rental, int userId) {
         try {
-            // Debug logging
-            System.out.println("Saving rental with values:");
-            System.out.println("idFilm: " + rental.getFilmId());
-            System.out.println("rentDate: " + rental.getRentDate());
-            System.out.println("dueDate: " + rental.getDueDate());
-            System.out.println("status: " + rental.getStatus());
+            // Check movie price and stock
+            String checkMovieSql = "SELECT hargaperfilm, stok FROM film WHERE film_id = ?";
+            var movieData = jdbcTemplate.queryForMap(checkMovieSql, rental.getFilmId());
+            Double price = ((Number) movieData.get("hargaperfilm")).doubleValue();
+            int stock = ((Number) movieData.get("stok")).intValue();
 
-            int result = jdbcTemplate.update(
-                sql,
-                rental.getFilmId(),
-                java.sql.Date.valueOf(rental.getRentDate()),
-                java.sql.Date.valueOf(rental.getDueDate()),
-                rental.getStatus()
-            );
-            
-            if (result != 1) {
-                throw new RuntimeException("Failed to insert rental record");
+            if (stock <= 0) {
+                throw new RuntimeException("Movie is out of stock");
             }
+
+            // Check user balance
+            Optional<Pelanggan> userOpt = pelangganRepository.findById(userId);
+            if (userOpt.isEmpty()) {
+                throw new RuntimeException("User not found");
+            }
+
+            Pelanggan user = userOpt.get();
+            if (user.getSaldo() < price) {
+                throw new RuntimeException("Insufficient balance. Required: " + price + ", Available: " + user.getSaldo());
+            }
+
+            rental.setUserId(userId); // Set userId in rental object
+
+            // Insert rental
+            String insertSql = "INSERT INTO penyewaan (idfilm, rentdate, duedate, status, user_id) VALUES (?, ?, ?, ?, ?)";
+            
+            int result = jdbcTemplate.update(
+                insertSql,
+                rental.getFilmId(),
+                Date.valueOf(rental.getRentDate()),
+                Date.valueOf(rental.getDueDate()),
+                rental.getStatus(),
+                rental.getUserId()
+            );
+
+            if (result != 1) {
+                throw new RuntimeException("Failed to save rental");
+            }
+
+            // Update stock
+            String updateStockSql = "UPDATE film SET stok = stok - 1 WHERE film_id = ?";
+            jdbcTemplate.update(updateStockSql, rental.getFilmId());
+
+            // Update user balance
+            user.setSaldo(user.getSaldo() - price);
+            pelangganRepository.save(user);
+
         } catch (Exception e) {
             System.err.println("Error in save rental: " + e.getMessage());
             e.printStackTrace();
@@ -44,64 +80,69 @@ public class JdbcRentalRepository implements RentalRepository {
 
     @Override
     public List<RentalWithMovie> findCurrentRentals() {
-        String sql = "SELECT p.idSewa, p.idFilm, p.rentDate, p.dueDate, p.status, " +
-                     "f.judul as movieTitle, f.genre, f.aktor as actor, f.hargaPerFilm as price " +
-                     "FROM penyewaan p " +
-                     "JOIN film f ON p.idFilm = f.film_id " +
-                     "WHERE p.status = 'ACTIVE' " +
-                     "ORDER BY p.rentDate DESC";
+        String sql = """
+            SELECT p.idsewa, p.idfilm, p.rentdate, p.duedate, p.status, 
+                   f.judul as movietitle, f.genre, f.aktor as actor, f.hargaperfilm as price,
+                   p.user_id
+            FROM penyewaan p
+            JOIN film f ON p.idfilm = f.film_id
+            WHERE p.status = 'ACTIVE'
+            ORDER BY p.rentdate DESC
+            """;
 
-        try {
-            return jdbcTemplate.query(sql, (rs, rowNum) -> {
-                RentalWithMovie rental = new RentalWithMovie();
-                rental.setIdSewa(rs.getInt("idSewa"));
-                rental.setFilmId(rs.getInt("idFilm"));
-                rental.setRentDate(rs.getDate("rentDate").toLocalDate());
-                rental.setDueDate(rs.getDate("dueDate").toLocalDate());
-                rental.setStatus(rs.getString("status"));
-                rental.setMovieTitle(rs.getString("movieTitle"));
-                rental.setGenre(rs.getString("genre"));
-                rental.setActor(rs.getString("actor"));
-                rental.setPrice(rs.getDouble("price"));
-                return rental;
-            });
-        } catch (Exception e) {
-            System.err.println("Error in findCurrentRentals: " + e.getMessage());
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            RentalWithMovie rental = new RentalWithMovie();
+            rental.setIdSewa(rs.getInt("idsewa"));
+            rental.setFilmId(rs.getInt("idfilm"));
+            rental.setRentDate(rs.getDate("rentdate").toLocalDate());
+            rental.setDueDate(rs.getDate("duedate").toLocalDate());
+            rental.setStatus(rs.getString("status"));
+            rental.setMovieTitle(rs.getString("movietitle"));
+            rental.setGenre(rs.getString("genre"));
+            rental.setActor(rs.getString("actor"));
+            rental.setPrice(rs.getDouble("price"));
+            rental.setUserId(rs.getInt("user_id"));
+            return rental;
+        });
     }
 
     @Override
     public Rental findById(Long id) {
-        String sql = "SELECT * FROM penyewaan WHERE idSewa = ?";
-        List<Rental> results = jdbcTemplate.query(sql, (rs, rowNum) -> {
+        String sql = "SELECT * FROM penyewaan WHERE idsewa = ?";
+        List<Rental> rentals = jdbcTemplate.query(sql, (rs, rowNum) -> {
             Rental rental = new Rental();
-            rental.setIdSewa(rs.getInt("idSewa"));
-            rental.setFilmId(rs.getInt("idFilm"));
-            rental.setRentDate(rs.getDate("rentDate").toLocalDate());
-            rental.setDueDate(rs.getDate("dueDate").toLocalDate());
+            rental.setIdSewa(rs.getInt("idsewa"));
+            rental.setFilmId(rs.getInt("idfilm"));
+            rental.setRentDate(rs.getDate("rentdate").toLocalDate());
+            rental.setDueDate(rs.getDate("duedate").toLocalDate());
             rental.setStatus(rs.getString("status"));
             return rental;
         }, id);
-        return results.isEmpty() ? null : results.get(0);
+        return rentals.isEmpty() ? null : rentals.get(0);
     }
 
     @Override
     public void update(Rental rental) {
-        String sql = "UPDATE penyewaan SET status = ? WHERE idSewa = ?";
+        String sql = "UPDATE penyewaan SET status = ? WHERE idsewa = ?";
         jdbcTemplate.update(sql, rental.getStatus(), rental.getIdSewa());
+
+        if (rental.getStatus().equals("RETURNED")) {
+            // Increment stock when movie is returned
+            String updateStockSql = "UPDATE film SET stok = stok + 1 WHERE film_id = ?";
+            jdbcTemplate.update(updateStockSql, rental.getFilmId());
+        }
     }
 
+    @Override
     public List<MovieRentalStats> getMovieRentalStats() {
         String sql = """
-            SELECT f.judul as movieTitle, COUNT(p.idFilm) as rentalCount 
-            FROM penyewaan p 
-            JOIN film f ON p.idFilm = f.film_id 
-            GROUP BY f.judul 
+            SELECT f.judul as movieTitle, COUNT(p.idfilm) as rentalCount
+            FROM penyewaan p
+            JOIN film f ON p.idfilm = f.film_id
+            GROUP BY f.judul
             ORDER BY rentalCount DESC
             """;
-        
+            
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             MovieRentalStats stats = new MovieRentalStats();
             stats.setMovieTitle(rs.getString("movieTitle"));

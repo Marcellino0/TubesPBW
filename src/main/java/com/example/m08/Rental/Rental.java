@@ -10,19 +10,21 @@ import java.time.LocalDate;
 public class Rental {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    
-    @Column(name = "idSewa" , nullable = false)
+    @Column(name = "idsewa")
     private int idSewa;
     
-    @Column(name = "idFilm", nullable = false)
+    @Column(name = "idfilm")
     private int filmId;
     
-    @Column(name = "rentDate", nullable = false)
+    @Column(name = "rentdate")
     private LocalDate rentDate;
     
-    @Column(name = "dueDate", nullable = false)
+    @Column(name = "duedate")
     private LocalDate dueDate;
     
     @Column(name = "status")
     private String status = "ACTIVE";
+    
+    @Column(name = "user_id")
+    private int userId;
 }
