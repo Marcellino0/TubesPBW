@@ -1,4 +1,3 @@
-// RentalController.java
 package com.example.m08.Rental;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,30 @@ public class RentalController {
     @Autowired
     private PelangganRepository pelangganRepository;
 
+    @GetMapping("/rental")
+    public String viewRentals(Model model, HttpSession session) {
+        Pelanggan user = (Pelanggan) session.getAttribute("pelanggan");
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("rentals", rentalRepository.findCurrentRentals());
+        model.addAttribute("today", LocalDate.now());
+        return "user/rental";
+    }
+
+    @GetMapping("/history-rental")
+    public String viewRentalHistory(Model model, HttpSession session) {
+        Pelanggan user = (Pelanggan) session.getAttribute("pelanggan");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        
+        model.addAttribute("rentals", rentalRepository.findCurrentRentals());
+        model.addAttribute("today", LocalDate.now());
+        return "user/history-rental";
+    }
+
     @PostMapping("/rent/{filmId}")
     public String rentMovie(@PathVariable int filmId,
                           @RequestParam int duration,
@@ -40,45 +63,22 @@ public class RentalController {
             rental.setDueDate(LocalDate.now().plusDays(duration));
             rental.setStatus("ACTIVE");
 
-            // Save rental
+            // Attempt to save
             rentalRepository.save(rental, user.getUserId());
-            
-            // Update session with new user data
-            Pelanggan updatedUser = pelangganRepository.findById(user.getUserId()).orElse(null);
-            if (updatedUser != null) {
-                session.setAttribute("pelanggan", updatedUser);
+
+            // Update session with new balance
+            user = pelangganRepository.findById(user.getUserId()).orElse(null);
+            if (user != null) {
+                session.setAttribute("pelanggan", user);
             }
-            
+
             redirectAttributes.addFlashAttribute("success", "Movie rented successfully!");
+            return "redirect:/rental";
+            
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/userdashboard";
         }
-        return "redirect:/userdashboard";
-    }
-
-    @GetMapping("/rental")
-    public String viewRentals(Model model, HttpSession session) {
-        Pelanggan user = (Pelanggan) session.getAttribute("pelanggan");
-        if (user == null) {
-            return "redirect:/login";
-        }
-
-        List<RentalWithMovie> rentals = rentalRepository.findCurrentRentals();
-        model.addAttribute("rentals", rentals);
-        return "user/rental";
-    }
-
-    @PostMapping("/rental/confirm-return/{rentalId}")
-    public String confirmReturn(@PathVariable Long rentalId,
-                              HttpSession session,
-                              RedirectAttributes redirectAttributes) {
-        Pelanggan user = (Pelanggan) session.getAttribute("pelanggan");
-        if (user == null) {
-            return "redirect:/login";
-        }
-        
-        // Instead of returning, we'll show confirmation
-        return "redirect:/rental?confirm=" + rentalId;
     }
 
     @PostMapping("/rental/return/{rentalId}")
@@ -99,10 +99,33 @@ public class RentalController {
 
             rental.setStatus("RETURNED");
             rentalRepository.update(rental);
-            redirectAttributes.addFlashAttribute("success", "Movie returned successfully!");
+
+            if (rental.getDenda() > 0) {
+                redirectAttributes.addFlashAttribute("warning", 
+                    String.format("Movie returned with late fee: Rp%.2f", rental.getDenda()));
+                
+                user = pelangganRepository.findById(user.getUserId()).orElse(null);
+                if (user != null) {
+                    session.setAttribute("pelanggan", user);
+                }
+            } else {
+                redirectAttributes.addFlashAttribute("success", "Movie returned successfully!");
+            }
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Failed to return movie: " + e.getMessage());
         }
         return "redirect:/rental";
+    }
+
+    @GetMapping("/rental/stats")
+    public String viewRentalStats(Model model, HttpSession session) {
+        Pelanggan user = (Pelanggan) session.getAttribute("pelanggan");
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        List<MovieRentalStats> stats = rentalRepository.getMovieRentalStats();
+        model.addAttribute("rentalStats", stats);
+        return "user/rental-stats";
     }
 }

@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.sql.Date;
 
 import com.example.m08.User.Pelanggan;
 import com.example.m08.User.PelangganRepository;
@@ -24,7 +24,7 @@ public class JdbcRentalRepository implements RentalRepository {
     @Transactional
     public void save(Rental rental, int userId) {
         try {
-            // Check movie price and stock
+            // Get movie price and check stock
             String checkMovieSql = "SELECT hargaperfilm, stok FROM film WHERE film_id = ?";
             var movieData = jdbcTemplate.queryForMap(checkMovieSql, rental.getFilmId());
             Double price = ((Number) movieData.get("hargaperfilm")).doubleValue();
@@ -45,18 +45,18 @@ public class JdbcRentalRepository implements RentalRepository {
                 throw new RuntimeException("Insufficient balance. Required: " + price + ", Available: " + user.getSaldo());
             }
 
-            rental.setUserId(userId); // Set userId in rental object
+            rental.setUserId(userId);
 
-            // Insert rental
-            String insertSql = "INSERT INTO penyewaan (idfilm, rentdate, duedate, status, user_id) VALUES (?, ?, ?, ?, ?)";
-            
+            // Save rental
+            String insertSql = "INSERT INTO penyewaan (idfilm, rentdate, duedate, status, user_id, denda) VALUES (?, ?, ?, ?, ?, ?)";
             int result = jdbcTemplate.update(
                 insertSql,
                 rental.getFilmId(),
-                Date.valueOf(rental.getRentDate()),
-                Date.valueOf(rental.getDueDate()),
+                rental.getRentDate(),
+                rental.getDueDate(),
                 rental.getStatus(),
-                rental.getUserId()
+                rental.getUserId(),
+                0.0
             );
 
             if (result != 1) {
@@ -72,8 +72,6 @@ public class JdbcRentalRepository implements RentalRepository {
             pelangganRepository.save(user);
 
         } catch (Exception e) {
-            System.err.println("Error in save rental: " + e.getMessage());
-            e.printStackTrace();
             throw new RuntimeException("Failed to save rental: " + e.getMessage());
         }
     }
@@ -81,7 +79,7 @@ public class JdbcRentalRepository implements RentalRepository {
     @Override
     public List<RentalWithMovie> findCurrentRentals() {
         String sql = """
-            SELECT p.idsewa, p.idfilm, p.rentdate, p.duedate, p.status, 
+            SELECT p.idsewa, p.idfilm, p.rentdate, p.duedate, p.status, p.denda,
                    f.judul as movietitle, f.genre, f.aktor as actor, f.hargaperfilm as price,
                    p.user_id
             FROM penyewaan p
@@ -97,6 +95,7 @@ public class JdbcRentalRepository implements RentalRepository {
             rental.setRentDate(rs.getDate("rentdate").toLocalDate());
             rental.setDueDate(rs.getDate("duedate").toLocalDate());
             rental.setStatus(rs.getString("status"));
+            rental.setDenda(rs.getDouble("denda"));
             rental.setMovieTitle(rs.getString("movietitle"));
             rental.setGenre(rs.getString("genre"));
             rental.setActor(rs.getString("actor"));
@@ -108,7 +107,13 @@ public class JdbcRentalRepository implements RentalRepository {
 
     @Override
     public Rental findById(Long id) {
-        String sql = "SELECT * FROM penyewaan WHERE idsewa = ?";
+        String sql = """
+            SELECT p.*, f.hargaperfilm as price
+            FROM penyewaan p
+            JOIN film f ON p.idfilm = f.film_id
+            WHERE p.idsewa = ?
+            """;
+        
         List<Rental> rentals = jdbcTemplate.query(sql, (rs, rowNum) -> {
             Rental rental = new Rental();
             rental.setIdSewa(rs.getInt("idsewa"));
@@ -116,21 +121,43 @@ public class JdbcRentalRepository implements RentalRepository {
             rental.setRentDate(rs.getDate("rentdate").toLocalDate());
             rental.setDueDate(rs.getDate("duedate").toLocalDate());
             rental.setStatus(rs.getString("status"));
+            rental.setUserId(rs.getInt("user_id"));
+            rental.setDenda(rs.getDouble("denda"));
             return rental;
         }, id);
         return rentals.isEmpty() ? null : rentals.get(0);
     }
 
     @Override
+    @Transactional
     public void update(Rental rental) {
-        String sql = "UPDATE penyewaan SET status = ? WHERE idsewa = ?";
-        jdbcTemplate.update(sql, rental.getStatus(), rental.getIdSewa());
+        // Calculate denda if it's a return operation and status is being changed to RETURNED
+        if ("RETURNED".equals(rental.getStatus())) {
+            LocalDate returnDate = LocalDate.now();
+            if (returnDate.isAfter(rental.getDueDate())) {
+                Double moviePrice = getMoviePrice(rental.getFilmId());
+                long daysLate = java.time.temporal.ChronoUnit.DAYS.between(rental.getDueDate(), returnDate);
+                rental.setDenda(daysLate * (moviePrice * 0.1));
+            }
 
-        if (rental.getStatus().equals("RETURNED")) {
-            // Increment stock when movie is returned
+            // Update film stock
             String updateStockSql = "UPDATE film SET stok = stok + 1 WHERE film_id = ?";
             jdbcTemplate.update(updateStockSql, rental.getFilmId());
+
+            // If there's a denda, update user balance
+            if (rental.getDenda() > 0) {
+                Optional<Pelanggan> userOpt = pelangganRepository.findById(rental.getUserId());
+                if (userOpt.isPresent()) {
+                    Pelanggan user = userOpt.get();
+                    user.setSaldo(user.getSaldo() - rental.getDenda());
+                    pelangganRepository.save(user);
+                }
+            }
         }
+
+        // Update rental status and denda
+        String sql = "UPDATE penyewaan SET status = ?, denda = ? WHERE idsewa = ?";
+        jdbcTemplate.update(sql, rental.getStatus(), rental.getDenda(), rental.getIdSewa());
     }
 
     @Override
@@ -149,5 +176,10 @@ public class JdbcRentalRepository implements RentalRepository {
             stats.setRentalCount(rs.getInt("rentalCount"));
             return stats;
         });
+    }
+
+    private Double getMoviePrice(int filmId) {
+        String sql = "SELECT hargaperfilm FROM film WHERE film_id = ?";
+        return jdbcTemplate.queryForObject(sql, Double.class, filmId);
     }
 }

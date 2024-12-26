@@ -27,4 +27,15 @@ public class Rental {
     
     @Column(name = "user_id")
     private int userId;
+    
+    @Column(name = "denda")
+    private Double denda = 0.0;
+
+    public void calculateDenda(LocalDate returnDate, Double moviePrice) {
+        if (returnDate.isAfter(dueDate)) {
+            long daysLate = java.time.temporal.ChronoUnit.DAYS.between(dueDate, returnDate);
+            // Denda per hari 10% dari harga sewa
+            this.denda = daysLate * (moviePrice * 0.1);
+        }
+    }
 }
