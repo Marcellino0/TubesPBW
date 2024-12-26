@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="id" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie Rental - Rental</title>
+    <title>Movie Rental - Current Rentals</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link th:href="@{/css/rental.css}" rel="stylesheet" />
+    
 </head>
+
 <body>
     <div class="admin-container">
         <!-- Sidebar -->
@@ -14,14 +18,17 @@
                 <h2>User Dashboard</h2>
             </div>
             <ul class="sidebar-menu">
-                <li onclick="redirectToCatalog()">
+                <li onclick="redirectToCatalog()" class="active">
                     <i class="fas fa-film"></i> Catalog
                 </li>
-                <li class="active">
+                <li onclick="redirectToRentals()">
                     <i class="fas fa-ticket-alt"></i> Rentals
                 </li>
                 <li onclick="redirectToHistory()">
                     <i class="fas fa-history"></i> History
+                </li>
+                <li onclick="redirectToProfile()">
+                    <i class="fas fa-user"></i> Profile
                 </li>
                 <li onclick="logout()">
                     <i class="fas fa-sign-out-alt"></i> Logout
@@ -31,12 +38,17 @@
 
         <!-- Main Content -->
         <div class="main-content">
+            <!-- Alert Messages -->
+            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+            <div th:if="${warning}" class="alert warning" th:text="${warning}"></div>
+
             <div class="section">
                 <div class="content-header">
                     <h2>Current Rentals</h2>
                 </div>
 
-                <!-- Add message if no rentals -->
+                <!-- No rentals message -->
                 <div th:if="${#lists.isEmpty(rentals)}" class="no-rentals">
                     <p>You don't have any active rentals.</p>
                 </div>
@@ -52,23 +64,40 @@
                                 <th>Due Date</th>
                                 <th>Price</th>
                                 <th>Status</th>
+                                <th>Late Fee</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="rental : ${rentals}">
+                            <tr th:each="rental : ${rentals}" 
+                                th:class="${rental.dueDate.isBefore(today) ? 'overdue' : ''}">
                                 <td th:text="${rental.movieTitle}">Movie Title</td>
                                 <td th:text="${rental.genre}">Genre</td>
                                 <td th:text="${#temporals.format(rental.rentDate, 'dd-MM-yyyy')}">Rent Date</td>
-                                <td th:text="${#temporals.format(rental.dueDate, 'dd-MM-yyyy')}">Due Date</td>
-                                <td>Rp<span th:text="${#numbers.formatDecimal(rental.price, 0, 'COMMA', 0, 'POINT')}">Price</span></td>
-                                <td th:text="${rental.status}">Status</td>
                                 <td>
-                                    <button th:if="${rental.status == 'ACTIVE'}" 
-                                    
-                                            th:onclick="'returnMovie(' + ${rental.idSewa}  + ')'"
-                                            class="return-btn">Return</button>
-
+                                    <span th:text="${#temporals.format(rental.dueDate, 'dd-MM-yyyy')}">Due Date</span>
+                                    <span th:if="${rental.dueDate.isBefore(today)}" class="badge badge-danger">OVERDUE</span>
+                                </td>
+                                <td>Rp<span th:text="${#numbers.formatDecimal(rental.price, 0, 'COMMA', 0, 'POINT')}">Price</span></td>
+                                <td>
+                                    <span class="badge" th:classappend="${rental.status == 'ACTIVE' ? 'badge-success' : 'badge-secondary'}"
+                                          th:text="${rental.status}">Status</span>
+                                </td>
+                                <td>
+                                    <span th:if="${rental.dueDate.isBefore(today)}" class="late-fee">
+                                        <!-- Hitung denda: 10% dari harga sewa per hari -->
+                                        Rp<span th:with="daysLate=${T(java.time.temporal.ChronoUnit).DAYS.between(rental.dueDate, today)}"
+                                               th:text="${#numbers.formatDecimal(daysLate * (rental.price * 0.1), 0, 'COMMA', 0, 'POINT')}">
+                                        </span>
+                                    </span>
+                                    <span th:unless="${rental.dueDate.isBefore(today)}">-</span>
+                                </td>
+                                <td>
+                                    <form th:if="${rental.status == 'ACTIVE'}" 
+                                          th:action="@{/rental/return/{rentalId}(rentalId=${rental.idSewa})}" 
+                                          method="post">
+                                        <button type="submit" class="btn btn-danger btn-sm">Return</button>
+                                    </form>
                                 </td>
                             </tr>
                         </tbody>
@@ -77,142 +106,27 @@
             </div>
         </div>
     </div>
-<!-- Nambah tabel baru idSewa di database line 70-->
-    <style>
-        .rental-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background-color: white;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-        }
-
-        .rental-table th,
-        .rental-table td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .rental-table th {
-            background-color: #f4f4f4;
-            font-weight: bold;
-        }
-
-        .rental-table tr:hover {
-            background-color: #f5f5f5;
-        }
-
-        .no-rentals {
-            text-align: center;
-            padding: 40px;
-            background-color: white;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-
-        .main-content {
-            padding: 20px;
-            margin-left: 250px;
-        }
-
-        .content-header {
-            margin-bottom: 20px;
-        }
-
-        .content-header h2 {
-            color: #333;
-            margin: 0;
-        }
-
-        .sidebar {
-            width: 250px;
-            position: fixed;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            background-color: #2c3e50;
-            color: white;
-            padding-top: 20px;
-        }
-
-        .sidebar-header {
-            padding: 0 20px;
-            margin-bottom: 20px;
-        }
-
-        .sidebar-menu {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .sidebar-menu li {
-            padding: 15px 20px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .sidebar-menu li:hover,
-        .sidebar-menu li.active {
-            background-color: #34495e;
-        }
-
-        .sidebar-menu i {
-            margin-right: 10px;
-        }
-
-        .return-btn {
-            padding: 6px 12px;
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .return-btn:hover {
-            background-color: #c0392b;
-        }
-    </style>
-
     <script>
         function redirectToCatalog() {
             window.location.href = '/userdashboard';
         }
-
-        function redirectToHistory() {
-            window.location.href = '/user/history-rental';
+    
+        function redirectToRentals() {
+            window.location.href = '/rental';
         }
-
+    
+        function redirectToHistory() {
+            window.location.href = '/history-rental';
+        }
+    
+        function redirectToProfile() {
+            window.location.href = '/profile';
+        }
+    
         function logout() {
             window.location.href = '/logout';
         }
-
-        function returnMovie(rentalId) {
-            if (confirm('Are you sure you want to return this movie?')) {
-                fetch(`/api/rental/return/${rentalId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.text().then(text => { throw new Error(text) });
-                    }
-                    return response.text();
-                })
-                .then(result => {
-                    alert('Movie returned successfully!');
-                    window.location.reload();
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Failed to return movie: ' + error.message);
-                });
-            }
-        }
     </script>
 </body>
+
 </html>
