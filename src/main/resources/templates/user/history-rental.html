@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -19,14 +19,14 @@
                 <li onclick="redirectToCatalog()">
                     <i class="fas fa-film"></i> Catalog
                 </li>
-                <li onclick="redirectToSearch()">
-                    <i class="fas fa-search"></i> Search
-                </li>
                 <li onclick="redirectToRentals()">
                     <i class="fas fa-ticket-alt"></i> Rentals
                 </li>
-                <li class="active">
+                <li onclick="redirectToHistory()" class="active">
                     <i class="fas fa-history"></i> History
+                </li>
+                <li onclick="redirectToProfile()">
+                    <i class="fas fa-user"></i> Profile
                 </li>
                 <li onclick="logout()">
                     <i class="fas fa-sign-out-alt"></i> Logout
@@ -34,83 +34,54 @@
             </ul>
         </div>
         <!-- Main Content -->
-    <div class="main-content">
-        <!-- History Section -->
-        <div id="historySection" class="section">
-            <div class="content-header">
-                <h2>Rental History</h2>
+        <div class="main-content">
+            <!-- History Section -->
+            <div id="historySection" class="section">
+                <div class="content-header">
+                    <h2>Rental History</h2>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Movie</th>
+                            <th>Rented On</th>
+                            <th>Returned On</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="rental : ${rentalHistory}">
+                            <td th:text="${rental.movieTitle}"></td>
+                            <td th:text="${rental.rentedOn}"></td>
+                            <td th:text="${rental.returnedOn != null ? rental.returnedOn : '-'}"></td>  
+                            <td th:text="${'Rp ' + #numbers.formatDecimal(rental.price, 0, 'COMMA', 2, 'POINT')}"></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Movie</th>
-                        <th>Rented On</th>
-                        <th>Returned On</th>
-                    </tr>
-                </thead>
-                <tbody id="historyTableBody">
-                    <!-- History data will be populated here -->
-                </tbody>
-            </table>
         </div>
     </div>
-</div>
 
-<script>
-    // Function to redirect to catalog page
-    function redirectToCatalog() {
-        window.location.href = 'catalog.html';
-    }
-
-    // Function to redirect to search page
-    function redirectToSearch() {
-        window.location.href = 'search-rental.html';
-    }
-
-    // Function to redirect to rentals page
-    function redirectToRentals() {
-        window.location.href = 'rental.html';
-    }
-
-    // Function to handle logout
-    function logout() {
-        window.location.href = 'login.html';
-    }
-
-    // Fetch rental history data from the server and populate the history table
-    function fetchHistoryData() {
-        // Use AJAX or fetch to retrieve rental history data from the server
-        // and populate the 'historyTableBody' with the retrieved data
-
-        // Example history data (replace with actual data from the server)
-        const historyData = [
-            {
-                movie: 'Movie 1',
-                rentedOn: '2023-05-01',
-                returnedOn: '2023-05-08',
-            },
-            {
-                movie: 'Movie 2',
-                rentedOn: '2023-05-10',
-                returnedOn: '2023-05-17',
-            },
-            // Add more history data
-        ];
-
-        const historyTableBody = document.getElementById('historyTableBody');
-        historyTableBody.innerHTML = '';
-
-        historyData.forEach(history => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${history.movie}</td>
-                <td>${history.rentedOn}</td>
-                <td>${history.returnedOn}</td>
-            `;
-            historyTableBody.appendChild(row);
-        });
-    }
-
-    // Fetch rental history data when the page loads
-    window.addEventListener('load', fetchHistoryData);
-</script>
+    <script>
+        function redirectToCatalog() {
+            window.location.href = '/userdashboard';
+        }
+    
+        function redirectToRentals() {
+            window.location.href = '/rental';
+        }
+    
+        function redirectToHistory() {
+            window.location.href = '/history-rental';
+        }
+    
+        function redirectToProfile() {
+            window.location.href = '/profile';
+        }
+    
+        function logout() {
+            window.location.href = '/logout';
+        }
+    </script>
+</body>
+</html>
