@@ -129,36 +129,41 @@ public class JdbcRentalRepository implements RentalRepository {
     }
 
     @Override
-    @Transactional
-    public void update(Rental rental) {
-        // Calculate denda if it's a return operation and status is being changed to RETURNED
-        if ("RETURNED".equals(rental.getStatus())) {
-            LocalDate returnDate = LocalDate.now();
-            if (returnDate.isAfter(rental.getDueDate())) {
-                Double moviePrice = getMoviePrice(rental.getFilmId());
-                long daysLate = java.time.temporal.ChronoUnit.DAYS.between(rental.getDueDate(), returnDate);
-                rental.setDenda(daysLate * (moviePrice * 0.1));
-            }
-
-            // Update film stock
-            String updateStockSql = "UPDATE film SET stok = stok + 1 WHERE film_id = ?";
-            jdbcTemplate.update(updateStockSql, rental.getFilmId());
-
-            // If there's a denda, update user balance
-            if (rental.getDenda() > 0) {
-                Optional<Pelanggan> userOpt = pelangganRepository.findById(rental.getUserId());
-                if (userOpt.isPresent()) {
-                    Pelanggan user = userOpt.get();
-                    user.setSaldo(user.getSaldo() - rental.getDenda());
-                    pelangganRepository.save(user);
-                }
-            }
+@Transactional
+public void update(Rental rental) {
+    if ("RETURNED".equals(rental.getStatus())) {
+        LocalDate returnDate = LocalDate.now();
+        
+        // Calculate late fee if applicable
+        if (returnDate.isAfter(rental.getDueDate())) {
+            Double moviePrice = getMoviePrice(rental.getFilmId());
+            long daysLate = java.time.temporal.ChronoUnit.DAYS.between(rental.getDueDate(), returnDate);
+            rental.setDenda(daysLate * (moviePrice * 0.1));
         }
 
-        // Update rental status and denda
+        // Update film stock
+        String updateStockSql = "UPDATE film SET stok = stok + 1 WHERE film_id = ?";
+        jdbcTemplate.update(updateStockSql, rental.getFilmId());
+
+        // Update rental with return date and status
+        String sql = "UPDATE penyewaan SET status = ?, denda = ?, updated_date = ? WHERE idsewa = ?";
+        jdbcTemplate.update(sql, rental.getStatus(), rental.getDenda(), returnDate, rental.getIdSewa());
+
+        // Handle late fee if applicable
+        if (rental.getDenda() > 0) {
+            Optional<Pelanggan> userOpt = pelangganRepository.findById(rental.getUserId());
+            if (userOpt.isPresent()) {
+                Pelanggan user = userOpt.get();
+                user.setSaldo(user.getSaldo() - rental.getDenda());
+                pelangganRepository.save(user);
+            }
+        }
+    } else {
+        // Update rental status and denda only
         String sql = "UPDATE penyewaan SET status = ?, denda = ? WHERE idsewa = ?";
         jdbcTemplate.update(sql, rental.getStatus(), rental.getDenda(), rental.getIdSewa());
     }
+}
 
     @Override
     public List<MovieRentalStats> getMovieRentalStats() {
@@ -177,6 +182,33 @@ public class JdbcRentalRepository implements RentalRepository {
             return stats;
         });
     }
+    @Override
+public List<RentalHistory> findRentalHistory(int userId) {
+    String sql = """
+        SELECT f.judul as movieTitle, p.rentdate as rentedOn, 
+               CASE 
+                   WHEN p.status = 'RETURNED' THEN p.updated_date 
+                   ELSE NULL 
+               END as returnedOn,
+               f.hargaperfilm as price
+        FROM penyewaan p
+        JOIN film f ON p.idfilm = f.film_id
+        WHERE p.user_id = ?
+        ORDER BY p.rentdate DESC
+        """;
+
+    return jdbcTemplate.query(sql, (rs, rowNum) -> {
+        RentalHistory history = new RentalHistory();
+        history.setMovieTitle(rs.getString("movieTitle"));
+        history.setRentedOn(rs.getDate("rentedOn").toLocalDate());
+        java.sql.Date returnedOn = rs.getDate("returnedOn");
+        if (returnedOn != null) {
+            history.setReturnedOn(returnedOn.toLocalDate());
+        }
+        history.setPrice(rs.getDouble("price"));
+        return history;
+    }, userId);
+}
 
     private Double getMoviePrice(int filmId) {
         String sql = "SELECT hargaperfilm FROM film WHERE film_id = ?";

@@ -34,16 +34,16 @@ public class RentalController {
     }
 
     @GetMapping("/history-rental")
-    public String viewRentalHistory(Model model, HttpSession session) {
-        Pelanggan user = (Pelanggan) session.getAttribute("pelanggan");
-        if (user == null) {
-            return "redirect:/login";
-        }
-        
-        model.addAttribute("rentals", rentalRepository.findCurrentRentals());
-        model.addAttribute("today", LocalDate.now());
-        return "user/history-rental";
+public String viewRentalHistory(Model model, HttpSession session) {
+    Pelanggan user = (Pelanggan) session.getAttribute("pelanggan");
+    if (user == null) {
+        return "redirect:/login";
     }
+    
+    List<RentalHistory> rentalHistory = rentalRepository.findRentalHistory(user.getUserId());
+    model.addAttribute("rentalHistory", rentalHistory);
+    return "user/history-rental";
+}
 
     @PostMapping("/rent/{filmId}")
     public String rentMovie(@PathVariable int filmId,

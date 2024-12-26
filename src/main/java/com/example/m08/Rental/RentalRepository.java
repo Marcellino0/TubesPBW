@@ -8,4 +8,5 @@ public interface RentalRepository {
     Rental findById(Long id);
     void update(Rental rental);
     List<MovieRentalStats> getMovieRentalStats();
+    List<RentalHistory> findRentalHistory(int userId);
 }
