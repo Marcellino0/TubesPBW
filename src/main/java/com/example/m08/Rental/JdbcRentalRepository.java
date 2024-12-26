@@ -121,14 +121,19 @@ public List<RentalWithMovie> findCurrentRentals() {
     });
 }
 
-    @Override
-    public Rental findById(Long id) {
-        String sql = """
-            SELECT p.*, f.hargaperfilm as price
-            FROM penyewaan p
-            JOIN film f ON p.idfilm = f.film_id
-            WHERE p.idsewa = ?
-            """;
+@Override
+public Rental findById(Long id) {
+    String sql = """
+        SELECT p.*,
+        CASE 
+            WHEN (p.duedate - p.rentdate) <= 7 THEN f.harga_7_hari
+            WHEN (p.duedate - p.rentdate) <= 14 THEN f.harga_14_hari
+            ELSE f.harga_30_hari
+        END as price
+        FROM penyewaan p
+        JOIN film f ON p.idfilm = f.film_id
+        WHERE p.idsewa = ?
+        """;
         
         List<Rental> rentals = jdbcTemplate.query(sql, (rs, rowNum) -> {
             Rental rental = new Rental();
