@@ -21,89 +21,105 @@ public class JdbcRentalRepository implements RentalRepository {
     private PelangganRepository pelangganRepository;
 
     @Override
-    @Transactional
-    public void save(Rental rental, int userId) {
-        try {
-            // Get movie price and check stock
-            String checkMovieSql = "SELECT hargaperfilm, stok FROM film WHERE film_id = ?";
-            var movieData = jdbcTemplate.queryForMap(checkMovieSql, rental.getFilmId());
-            Double price = ((Number) movieData.get("hargaperfilm")).doubleValue();
-            int stock = ((Number) movieData.get("stok")).intValue();
-
-            if (stock <= 0) {
-                throw new RuntimeException("Movie is out of stock");
-            }
-
-            // Check user balance
-            Optional<Pelanggan> userOpt = pelangganRepository.findById(userId);
-            if (userOpt.isEmpty()) {
-                throw new RuntimeException("User not found");
-            }
-
-            Pelanggan user = userOpt.get();
-            if (user.getSaldo() < price) {
-                throw new RuntimeException("Insufficient balance. Required: " + price + ", Available: " + user.getSaldo());
-            }
-
-            rental.setUserId(userId);
-
-            // Save rental
-            String insertSql = "INSERT INTO penyewaan (idfilm, rentdate, duedate, status, user_id, denda) VALUES (?, ?, ?, ?, ?, ?)";
-            int result = jdbcTemplate.update(
-                insertSql,
-                rental.getFilmId(),
-                rental.getRentDate(),
-                rental.getDueDate(),
-                rental.getStatus(),
-                rental.getUserId(),
-                0.0
-            );
-
-            if (result != 1) {
-                throw new RuntimeException("Failed to save rental");
-            }
-
-            // Update stock
-            String updateStockSql = "UPDATE film SET stok = stok - 1 WHERE film_id = ?";
-            jdbcTemplate.update(updateStockSql, rental.getFilmId());
-
-            // Update user balance
-            user.setSaldo(user.getSaldo() - price);
-            pelangganRepository.save(user);
-
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to save rental: " + e.getMessage());
+@Transactional
+public void save(Rental rental, int userId) {
+    try {
+        // Get movie price based on duration and check stock
+        String checkMovieSql = "SELECT harga_7_hari, harga_14_hari, harga_30_hari, stok FROM film WHERE film_id = ?";
+        var movieData = jdbcTemplate.queryForMap(checkMovieSql, rental.getFilmId());
+        
+        // Get correct price based on rental duration
+        double price;
+        long days = java.time.temporal.ChronoUnit.DAYS.between(rental.getRentDate(), rental.getDueDate());
+        if (days <= 7) {
+            price = ((Number) movieData.get("harga_7_hari")).doubleValue();
+        } else if (days <= 14) {
+            price = ((Number) movieData.get("harga_14_hari")).doubleValue();
+        } else {
+            price = ((Number) movieData.get("harga_30_hari")).doubleValue();
         }
-    }
+        
+        int stock = ((Number) movieData.get("stok")).intValue();
 
-    @Override
-    public List<RentalWithMovie> findCurrentRentals() {
-        String sql = """
-            SELECT p.idsewa, p.idfilm, p.rentdate, p.duedate, p.status, p.denda,
-                   f.judul as movietitle, f.genre, f.aktor as actor, f.hargaperfilm as price,
-                   p.user_id
-            FROM penyewaan p
-            JOIN film f ON p.idfilm = f.film_id
-            WHERE p.status = 'ACTIVE'
-            ORDER BY p.rentdate DESC
-            """;
+        if (stock <= 0) {
+            throw new RuntimeException("Movie is out of stock");
+        }
 
-        return jdbcTemplate.query(sql, (rs, rowNum) -> {
-            RentalWithMovie rental = new RentalWithMovie();
-            rental.setIdSewa(rs.getInt("idsewa"));
-            rental.setFilmId(rs.getInt("idfilm"));
-            rental.setRentDate(rs.getDate("rentdate").toLocalDate());
-            rental.setDueDate(rs.getDate("duedate").toLocalDate());
-            rental.setStatus(rs.getString("status"));
-            rental.setDenda(rs.getDouble("denda"));
-            rental.setMovieTitle(rs.getString("movietitle"));
-            rental.setGenre(rs.getString("genre"));
-            rental.setActor(rs.getString("actor"));
-            rental.setPrice(rs.getDouble("price"));
-            rental.setUserId(rs.getInt("user_id"));
-            return rental;
-        });
+        // Check user balance
+        Optional<Pelanggan> userOpt = pelangganRepository.findById(userId);
+        if (userOpt.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+
+        Pelanggan user = userOpt.get();
+        if (user.getSaldo() < price) {
+            throw new RuntimeException("Insufficient balance. Required: " + price + ", Available: " + user.getSaldo());
+        }
+
+        rental.setUserId(userId);
+
+        // Save rental
+        String insertSql = "INSERT INTO penyewaan (idfilm, rentdate, duedate, status, user_id, denda) VALUES (?, ?, ?, ?, ?, ?)";
+        int result = jdbcTemplate.update(
+            insertSql,
+            rental.getFilmId(),
+            rental.getRentDate(),
+            rental.getDueDate(),
+            rental.getStatus(),
+            rental.getUserId(),
+            0.0
+        );
+
+        if (result != 1) {
+            throw new RuntimeException("Failed to save rental");
+        }
+
+        // Update stock
+        String updateStockSql = "UPDATE film SET stok = stok - 1 WHERE film_id = ?";
+        jdbcTemplate.update(updateStockSql, rental.getFilmId());
+
+        // Update user balance
+        user.setSaldo(user.getSaldo() - price);
+        pelangganRepository.save(user);
+
+    } catch (Exception e) {
+        throw new RuntimeException("Failed to save rental: " + e.getMessage());
     }
+}
+
+@Override
+public List<RentalWithMovie> findCurrentRentals() {
+    String sql = """
+        SELECT p.idsewa, p.idfilm, p.rentdate, p.duedate, p.status, p.denda,
+               f.judul as movietitle, f.genre, f.aktor as actor,
+               CASE 
+                   WHEN (p.duedate - p.rentdate) <= 7 THEN f.harga_7_hari
+                   WHEN (p.duedate - p.rentdate) <= 14 THEN f.harga_14_hari
+                   ELSE f.harga_30_hari
+               END as price,
+               p.user_id
+        FROM penyewaan p
+        JOIN film f ON p.idfilm = f.film_id
+        WHERE p.status = 'ACTIVE'
+        ORDER BY p.rentdate DESC
+        """;
+
+    return jdbcTemplate.query(sql, (rs, rowNum) -> {
+        RentalWithMovie rental = new RentalWithMovie();
+        rental.setIdSewa(rs.getInt("idsewa"));
+        rental.setFilmId(rs.getInt("idfilm"));
+        rental.setRentDate(rs.getDate("rentdate").toLocalDate());
+        rental.setDueDate(rs.getDate("duedate").toLocalDate());
+        rental.setStatus(rs.getString("status"));
+        rental.setDenda(rs.getDouble("denda"));
+        rental.setMovieTitle(rs.getString("movietitle"));
+        rental.setGenre(rs.getString("genre"));
+        rental.setActor(rs.getString("actor"));
+        rental.setPrice(rs.getDouble("price"));
+        rental.setUserId(rs.getInt("user_id"));
+        return rental;
+    });
+}
 
     @Override
     public Rental findById(Long id) {
@@ -136,7 +152,21 @@ public void update(Rental rental) {
         
         // Calculate late fee if applicable
         if (returnDate.isAfter(rental.getDueDate())) {
-            Double moviePrice = getMoviePrice(rental.getFilmId());
+            // Get the rental duration from the original rental
+            long rentalDuration = java.time.temporal.ChronoUnit.DAYS.between(
+                rental.getRentDate(), 
+                rental.getDueDate()
+            );
+            int duration;
+            if (rentalDuration <= 7) {
+                duration = 7;
+            } else if (rentalDuration <= 14) {
+                duration = 14;
+            } else {
+                duration = 30;
+            }
+            
+            Double moviePrice = getMoviePrice(rental.getFilmId(), duration);
             long daysLate = java.time.temporal.ChronoUnit.DAYS.between(rental.getDueDate(), returnDate);
             rental.setDenda(daysLate * (moviePrice * 0.1));
         }
@@ -190,7 +220,11 @@ public List<RentalHistory> findRentalHistory(int userId) {
                    WHEN p.status = 'RETURNED' THEN p.updated_date 
                    ELSE NULL 
                END as returnedOn,
-               f.hargaperfilm as price
+               CASE 
+                   WHEN (p.duedate - p.rentdate) <= 7 THEN f.harga_7_hari
+                   WHEN (p.duedate - p.rentdate) <= 14 THEN f.harga_14_hari
+                   ELSE f.harga_30_hari
+               END as price
         FROM penyewaan p
         JOIN film f ON p.idfilm = f.film_id
         WHERE p.user_id = ?
@@ -210,8 +244,16 @@ public List<RentalHistory> findRentalHistory(int userId) {
     }, userId);
 }
 
-    private Double getMoviePrice(int filmId) {
-        String sql = "SELECT hargaperfilm FROM film WHERE film_id = ?";
-        return jdbcTemplate.queryForObject(sql, Double.class, filmId);
+private Double getMoviePrice(int filmId, int duration) {
+    String sql = "SELECT harga_7_hari, harga_14_hari, harga_30_hari FROM film WHERE film_id = ?";
+    var movieData = jdbcTemplate.queryForMap(sql, filmId);
+    
+    if (duration <= 7) {
+        return ((Number) movieData.get("harga_7_hari")).doubleValue();
+    } else if (duration <= 14) {
+        return ((Number) movieData.get("harga_14_hari")).doubleValue();
+    } else {
+        return ((Number) movieData.get("harga_30_hari")).doubleValue();
     }
+}
 }
