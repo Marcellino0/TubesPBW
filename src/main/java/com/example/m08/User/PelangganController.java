@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -63,16 +64,32 @@ public class PelangganController {
     }
 
     @PostMapping("/topup")
-    public String topUpSaldo(@RequestParam Double amount, HttpSession session) {
-        Pelanggan pelanggan = (Pelanggan) session.getAttribute("pelanggan");
-        if (pelanggan == null) {
-            return "redirect:/login";
+    public String topUpSaldo(@RequestParam Double amount, 
+                           HttpSession session,
+                           RedirectAttributes redirectAttributes) {
+        try {
+            // Validasi minimum amount
+            if (amount < 10000) {
+                redirectAttributes.addFlashAttribute("error", "Minimum top up amount is Rp 10.000");
+                return "redirect:/profile";
+            }
+
+            Pelanggan pelanggan = (Pelanggan) session.getAttribute("pelanggan");
+            if (pelanggan == null) {
+                return "redirect:/login";
+            }
+            
+            userService.topUpSaldo(pelanggan.getUserId(), amount);
+            
+            // Update session dengan saldo baru
+            pelanggan = userService.getCurrentUserProfile(pelanggan.getUsername());
+            session.setAttribute("pelanggan", pelanggan);
+            
+            redirectAttributes.addFlashAttribute("success", 
+                String.format("Successfully topped up Rp %.0f", amount));
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
-        
-        userService.topUpSaldo(pelanggan.getUserId(), amount);
-        // Update the session with the new balance
-        pelanggan = userService.getCurrentUserProfile(pelanggan.getUsername());
-        session.setAttribute("pelanggan", pelanggan);
-        return "redirect:/profile?topup=success";
+        return "redirect:/profile";
     }
 }
