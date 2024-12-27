@@ -9,8 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.m08.Laporan.JdbcLaporanRepository;
-import com.example.m08.Laporan.Laporan;
-import com.example.m08.Laporan.LaporanRepository;
+
 import com.example.m08.User.Pelanggan;
 import com.example.m08.User.PelangganRepository;
 
@@ -27,8 +26,6 @@ public class JdbcRentalRepository implements RentalRepository {
     @Autowired
     private JdbcLaporanRepository laporanRepository;
     
-    @Autowired
-    private LaporanRepository laporanJpaRepository;
 
     @Override
 @Transactional
