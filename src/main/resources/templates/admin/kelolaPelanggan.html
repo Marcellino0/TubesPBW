@@ -116,31 +116,26 @@
     <div class="admin-container">
         <div class="sidebar">
             <div class="sidebar-header">
-                <h2>Admin Panel</h2>
+              <h2>Admin Panel</h2>
             </div>
             <ul class="sidebar-menu">
-                <li>
-                    <a href="/admin/dashboard">
-                        Kelola Film
-                    </a>
-                </li>
-                <li>
-                    <a href="/admin/manage-customers">
-                        Kelola Pelanggan
-                    </a>
-                </li>
-                <li>
-                    <a href="/admin/reports">
-                        Laporan
-                    </a>
-                </li>
-                <li>
-                    <a href="#" onclick="handleLogout(); return false;">
-                        Logout
-                    </a>
-                </li>
+              <li onclick="redirectToAdminDashboard()">
+                <i class="fas fa-cogs"></i> Kelola Film
+              </li>
+              <li onclick="redirectToManageCustomers()">
+                <i class="fas fa-users"></i> Kelola Pelanggan
+              </li>
+              <li onclick="redirectToReports()">
+                <i class="fas fa-chart-bar"></i> Laporan
+              </li>
+              <li onclick="redirectToMonthlyReports()">
+                <i class="fas fa-calendar-alt"></i> Laporan Bulanan
+              </li>
+              <li onclick="handleLogout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+              </li>
             </ul>
-        </div>
+          </div>
 
         <div class="main-content">
             <div class="section">
@@ -181,22 +176,26 @@
     </div>
 
     <script>
-        function handleLogout() {
-            fetch('/admin/logout', {
-                method: 'GET',
-                credentials: 'include'
-            })
-            .then(response => {
-                if (response.ok) {
-                    window.location.href = '/loginadmin';
-                } else {
-                    console.error('Logout failed');
-                }
-            })
-            .catch(error => {
-                console.error('Error during logout:', error);
-            });
+        // Fungsi redirect untuk admin panel
+        function redirectToAdminDashboard() {
+          window.location.href = '/admin/dashboard';
         }
-    </script>
+      
+        function redirectToManageCustomers() {
+          window.location.href = '/admin/manage-customers';
+        }
+      
+        function redirectToReports() {
+          window.location.href = '/admin/reports';
+        }
+      
+        function redirectToMonthlyReports() {
+          window.location.href = '/admin/kelolaLaporan';
+        }
+      
+        function handleLogout() {
+          window.location.href = '/logout';
+        }
+      </script>
 </body>
 </html>

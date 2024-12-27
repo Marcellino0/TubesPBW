@@ -14,7 +14,7 @@ public class Pelanggan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private Long userId;
+    private int userId;
 
     @Column(name = "username", nullable = false)
     private String username;
@@ -30,6 +30,9 @@ public class Pelanggan {
 
     @Column(name = "notelp", nullable = false)
     private String noTelp;
+
+    @Column(name = "saldo", nullable = false)
+    private Double saldo = 0.0;
 
     @Transient
     private String confirmPassword;

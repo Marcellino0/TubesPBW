@@ -66,6 +66,7 @@
             padding: 2rem;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
         }
 
         .content-header {
@@ -75,68 +76,217 @@
             margin-bottom: 2rem;
         }
 
+        .content-header h2 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+        }
+
+        /* Summary Grid Styles */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .summary-item {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .summary-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .summary-item h4 {
+            margin-bottom: 0.8rem;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+
+        .summary-item p {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #3498db;
+            margin: 0;
+        }
+
+        /* Chart Container */
         .chart-container {
             width: 100%;
             height: 400px;
-            margin-top: 2rem;
+            margin: 2rem 0;
             padding: 1rem;
             background: white;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+
+        /* Table Styles */
+        .table-container {
+            margin-top: 2rem;
+            overflow-x: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: white;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .data-table th {
+            background: #f8f9fa;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* Report Header */
+        .report-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .report-header h3 {
+            color: #2c3e50;
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .report-header p {
+            color: #6c757d;
+            font-size: 1rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .admin-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        /* Additional Utility Classes */
+        .mt-4 {
+            margin-top: 2rem;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
     </style>
 </head>
 <body>
     <div class="admin-container">
+        <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
-                <h2>Admin Panel</h2>
+              <h2>Admin Panel</h2>
             </div>
             <ul class="sidebar-menu">
-                <li>
-                    <a href="/admin/dashboard">
-                        Kelola Film
-                    </a>
-                </li>
-                <li>
-                    <a href="/admin/manage-customers">
-                        Kelola Pelanggan
-                    </a>
-                </li>
-                <li>
-                    <a href="/admin/reports">
-                        Laporan
-                    </a>
-                </li>
-                <li>
-                    <a href="#" onclick="handleLogout(); return false;">
-                        Logout
-                    </a>
-                </li>
+              <li onclick="redirectToAdminDashboard()">
+                <i class="fas fa-cogs"></i> Kelola Film
+              </li>
+              <li onclick="redirectToManageCustomers()">
+                <i class="fas fa-users"></i> Kelola Pelanggan
+              </li>
+              <li onclick="redirectToReports()">
+                <i class="fas fa-chart-bar"></i> Laporan
+              </li>
+              <li onclick="redirectToMonthlyReports()">
+                <i class="fas fa-calendar-alt"></i> Laporan Bulanan
+              </li>
+              <li onclick="handleLogout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+              </li>
             </ul>
-        </div>
+          </div>
 
+        <!-- Main Content -->
         <div class="main-content">
             <div class="section">
                 <div class="content-header">
                     <h2>Laporan Penyewaan Film</h2>
                 </div>
+
+                <!-- Monthly Report Summary -->
+                <div class="report-header" th:if="${currentReport != null}">
+                    <h3>Laporan Bulan <span th:text="${currentReport.periode}"></span></h3>
+                </div>
+
+                <div class="summary-grid" th:if="${currentReport != null}">
+                    <div class="summary-item">
+                        <h4>Total Penyewaan</h4>
+                        <p th:text="${currentReport.totalPenyewaan}">0</p>
+                    </div>
+                    <div class="summary-item">
+                        <h4>Total Pendapatan</h4>
+                        <p>Rp<span th:text="${#numbers.formatDecimal(currentReport.pendapatan, 0, 'COMMA', 0, 'POINT')}">0</span></p>
+                    </div>
+                    <div class="summary-item">
+                        <h4>Film Terpopuler</h4>
+                        <p th:text="${currentReport.filmPopuler}">-</p>
+                    </div>
+                </div>
+                
+                <!-- Alert jika tidak ada data -->
+                <div th:if="${currentReport == null}" class="alert alert-info">
+                    Belum ada data laporan untuk bulan ini
+                </div>
+
+                <!-- Chart -->
                 <div class="chart-container">
                     <canvas id="rentalChart"></canvas>
                 </div>
-                
+
+                <!-- Detailed Stats Table -->
                 <div class="table-container mt-4">
                     <table class="data-table">
                         <thead>
                             <tr>
                                 <th>Judul Film</th>
-                                <th>Jumlah Penyewaan</th>
+                                <th class="text-right">Jumlah Penyewaan</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="stat : ${rentalStats}">
                                 <td th:text="${stat.movieTitle}"></td>
-                                <td th:text="${stat.rentalCount}"></td>
+                                <td class="text-right" th:text="${stat.rentalCount}"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -156,8 +306,8 @@
                 datasets: [{
                     label: 'Jumlah Penyewaan',
                     data: rentalStats.map(stat => stat.rentalCount),
-                    backgroundColor: 'rgba(54, 162, 235, 0.8)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(52, 152, 219, 0.8)',
+                    borderColor: 'rgba(52, 152, 219, 1)',
                     borderWidth: 1
                 }]
             },
@@ -174,19 +324,42 @@
                 },
                 plugins: {
                     legend: {
-                        position: 'top',
+                        display: true,
+                        position: 'top'
                     },
                     title: {
                         display: true,
-                        text: 'Film Terpopuler Berdasarkan Jumlah Penyewaan'
+                        text: 'Film Terpopuler Berdasarkan Jumlah Penyewaan',
+                        font: {
+                            size: 16
+                        }
                     }
                 }
             }
         });
 
-        function handleLogout() {
-            window.location.href = "/logout";
-        }
+    
+  // Fungsi redirect untuk admin panel
+  function redirectToAdminDashboard() {
+    window.location.href = '/admin/dashboard';
+  }
+
+  function redirectToManageCustomers() {
+    window.location.href = '/admin/manage-customers';
+  }
+
+  function redirectToReports() {
+    window.location.href = '/admin/reports';
+  }
+
+  function redirectToMonthlyReports() {
+    window.location.href = '/admin/kelolaLaporan';
+  }
+
+  function handleLogout() {
+    window.location.href = '/logout';
+  }
+
     </script>
 </body>
 </html>

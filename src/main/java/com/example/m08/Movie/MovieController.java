@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.List;
+
 
 @Controller
 @RequestMapping("/admin/movies")
@@ -37,9 +37,8 @@ public class MovieController {
             return "redirect:/loginadmin";
         }
         model.addAttribute("movie", new Movie());
-        return "admin/kelolaFilm";
+        return "admin/kelolaFilm"; 
     }
-
     @PostMapping("/add")
     public String addMovie(@ModelAttribute Movie movie, 
                           @RequestParam("coverImage") MultipartFile coverImage, 
