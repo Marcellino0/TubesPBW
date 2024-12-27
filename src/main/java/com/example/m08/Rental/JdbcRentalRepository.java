@@ -8,8 +8,12 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.m08.Laporan.JdbcLaporanRepository;
+import com.example.m08.Laporan.Laporan;
+import com.example.m08.Laporan.LaporanRepository;
 import com.example.m08.User.Pelanggan;
 import com.example.m08.User.PelangganRepository;
+
 
 @Repository
 public class JdbcRentalRepository implements RentalRepository {
@@ -19,6 +23,12 @@ public class JdbcRentalRepository implements RentalRepository {
     
     @Autowired
     private PelangganRepository pelangganRepository;
+
+    @Autowired
+    private JdbcLaporanRepository laporanRepository;
+    
+    @Autowired
+    private LaporanRepository laporanJpaRepository;
 
     @Override
 @Transactional
@@ -81,6 +91,9 @@ public void save(Rental rental, int userId) {
         // Update user balance
         user.setSaldo(user.getSaldo() - price);
         pelangganRepository.save(user);
+
+         // Save rental report
+         laporanRepository.createLaporanFromRental(userId, rental.getFilmId(), rental.getRentDate(), rental.getDueDate(), price, rental.getIdSewa());
 
     } catch (Exception e) {
         throw new RuntimeException("Failed to save rental: " + e.getMessage());
@@ -174,6 +187,9 @@ public void update(Rental rental) {
             Double moviePrice = getMoviePrice(rental.getFilmId(), duration);
             long daysLate = java.time.temporal.ChronoUnit.DAYS.between(rental.getDueDate(), returnDate);
             rental.setDenda(daysLate * (moviePrice * 0.1));
+
+            // Update rental report status and late fee
+        laporanRepository.updateLaporanStatus(rental.getIdSewa(), rental.getStatus(), rental.getDenda());
         }
 
         // Update film stock
