@@ -131,24 +131,30 @@
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
-              <h2>Admin Panel</h2>
+                <h2>Admin Panel</h2>
             </div>
             <ul class="sidebar-menu">
-              <li onclick="redirectToAdminDashboard()">
-                <i class="fas fa-cogs"></i> Kelola Film
-              </li>
-              <li onclick="redirectToManageCustomers()">
-                <i class="fas fa-users"></i> Kelola Pelanggan
-              </li>
-              <li onclick="redirectToReports()">
-                <i class="fas fa-chart-bar"></i> Laporan
-              </li>
-              <li onclick="redirectToMonthlyReports()">
-                <i class="fas fa-calendar-alt"></i> Laporan Bulanan
-              </li>
-              <li onclick="handleLogout()">
-                <i class="fas fa-sign-out-alt"></i> Logout
-              </li>
+                <li onclick="redirectToAdminDashboard()">
+                    <i class="fas fa-cogs"></i> Kelola Film
+                </li>
+                <li onclick="redirectToManageCustomers()">
+                    <i class="fas fa-users"></i> Kelola Pelanggan
+                </li>
+                <li onclick="redirectToManageGenres()">
+                    <i class="fas fa-theater-masks"></i> Kelola Genre
+                </li>
+                <li onclick="redirectToManageActors()">
+                    <i class="fas fa-user-tie"></i> Kelola Aktor
+                </li>
+                <li onclick="redirectToReports()">
+                    <i class="fas fa-chart-bar"></i> Laporan
+                </li>
+                <li onclick="redirectToMonthlyReports()">
+                    <i class="fas fa-calendar-alt"></i> Laporan Bulanan
+                </li>
+                <li onclick="handleLogout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </li>
             </ul>
         </div>
 
@@ -187,9 +193,15 @@
                             <td th:text="${movie.genre}"></td>
                             <td th:text="${movie.aktor}"></td>
                             <td th:text="${movie.stok}"></td>
-                            <td>Rp<span th:text="${#numbers.formatDecimal(movie.harga7Hari, 0, 'COMMA', 0, 'POINT')}">0</span></td>
-                            <td>Rp<span th:text="${#numbers.formatDecimal(movie.harga14Hari, 0, 'COMMA', 0, 'POINT')}">0</span></td>
-                            <td>Rp<span th:text="${#numbers.formatDecimal(movie.harga30Hari, 0, 'COMMA', 0, 'POINT')}">0</span></td>
+                            <td>Rp<span
+                                    th:text="${#numbers.formatDecimal(movie.harga7Hari, 0, 'COMMA', 0, 'POINT')}">0</span>
+                            </td>
+                            <td>Rp<span
+                                    th:text="${#numbers.formatDecimal(movie.harga14Hari, 0, 'COMMA', 0, 'POINT')}">0</span>
+                            </td>
+                            <td>Rp<span
+                                    th:text="${#numbers.formatDecimal(movie.harga30Hari, 0, 'COMMA', 0, 'POINT')}">0</span>
+                            </td>
                             <td>
                                 <a th:href="@{/admin/movies/edit/{id}(id=${movie.filmId})}" class="edit-btn">Edit</a>
                                 <a th:href="@{/admin/movies/delete/{id}(id=${movie.filmId})}" class="delete-btn"
@@ -202,28 +214,34 @@
         </div>
     </div>
 
-<script>
-    // Fungsi redirect untuk admin panel
-    function redirectToAdminDashboard() {
-      window.location.href = '/admin/dashboard';
-    }
-  
-    function redirectToManageCustomers() {
-      window.location.href = '/admin/manage-customers';
-    }
-  
-    function redirectToReports() {
-      window.location.href = '/admin/reports';
-    }
-  
-    function redirectToMonthlyReports() {
-      window.location.href = '/admin/kelolaLaporan';
-    }
-  
-    function handleLogout() {
-      window.location.href = '/logout';
-    }
-  </script>
+    <script>
+        // Fungsi redirect untuk admin panel
+        function redirectToAdminDashboard() {
+            window.location.href = '/admin/dashboard';
+        }
+
+        function redirectToManageCustomers() {
+            window.location.href = '/admin/manage-customers';
+        }
+
+        function redirectToReports() {
+            window.location.href = '/admin/reports';
+        }
+
+        function redirectToMonthlyReports() {
+            window.location.href = '/admin/kelolaLaporan';
+        }
+        function redirectToManageGenres() {
+            window.location.href = '/admin/genres/manage';
+        }
+
+        function redirectToManageActors() {
+            window.location.href = '/admin/actors/manage';
+        }
+        function handleLogout() {
+            window.location.href = '/logout';
+        }
+    </script>
 </body>
 
 </html>

@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="id" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelola Pelanggan - Admin</title>
+    <title>Movie Rental - Kelola Aktor</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        /* Gunakan style yang sama dengan kelolaGenre.html */
         * {
             margin: 0;
             padding: 0;
@@ -51,14 +53,6 @@
             width: 20px;
         }
 
-        .sidebar-menu a {
-            text-decoration: none;
-            color: white;
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-
         .main-content {
             flex: 1;
             padding: 2rem;
@@ -89,31 +83,48 @@
         .data-table td {
             padding: 0.8rem;
             border: 1px solid #ddd;
+            text-align: left;
         }
 
         .data-table th {
             background: #f8f9fa;
         }
 
-        .edit-btn, .delete-btn {
-            padding: 6px 12px;
-            margin: 0 4px;
-            border-radius: 4px;
-            text-decoration: none;
-            color: white;
+        .add-form {
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
         }
 
-        .edit-btn {
-            background-color: #3498db;
+        .add-form input {
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            flex: 1;
+        }
+
+        .submit-btn {
+            background: #3498db;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
         }
 
         .delete-btn {
             background-color: #e74c3c;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
         }
     </style>
 </head>
+
 <body>
     <div class="admin-container">
+        <!-- Sidebar - sama dengan kelolaGenre.html -->
         <div class="sidebar">
             <div class="sidebar-header">
                 <h2>Admin Panel</h2>
@@ -146,32 +157,28 @@
         <div class="main-content">
             <div class="section">
                 <div class="content-header">
-                    <h2>Kelola Pelanggan</h2>
+                    <h2>Kelola Aktor</h2>
                 </div>
+
+                <form th:action="@{/admin/actors/add}" method="post" th:object="${newActor}" class="add-form">
+                    <input type="text" th:field="*{name}" placeholder="Nama Aktor" required>
+                    <button type="submit" class="submit-btn">Tambah Aktor</button>
+                </form>
+
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Username</th>
-                            <th>Nama</th>
-                            <th>Email</th>
-                            <th>No. Telepon</th>
+                            <th>Aktor</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="customer : ${customers}">
-                            <td th:text="${customer.username}"></td>
-                            <td th:text="${customer.nama}"></td>
-                            <td th:text="${customer.email}"></td>
-                            <td th:text="${customer.noTelp}"></td>
+                        <tr th:each="actor : ${actors}">
+                            <td th:text="${actor.name}"></td>
                             <td>
-                                <a th:href="@{/admin/edit-customer/{id}(id=${customer.userId})}" class="edit-btn">
-                                    <i class="fas fa-edit"></i> Edit
-                                </a>
-                                <a th:href="@{/admin/delete-customer/{id}(id=${customer.userId})}" 
-                                   class="delete-btn"
-                                   onclick="return confirm('Apakah Anda yakin ingin menghapus pelanggan ini?')">
-                                    <i class="fas fa-trash"></i> Hapus
+                                <a th:href="@{/admin/actors/delete/{id}(id=${actor.id})}" class="delete-btn"
+                                    onclick="return confirm('Apakah Anda yakin ingin menghapus aktor ini?')">
+                                    Hapus
                                 </a>
                             </td>
                         </tr>
@@ -182,13 +189,21 @@
     </div>
 
     <script>
-        // Fungsi redirect untuk admin panel
+        // Gunakan script yang sama dengan kelolaGenre.html
         function redirectToAdminDashboard() {
             window.location.href = '/admin/dashboard';
         }
 
         function redirectToManageCustomers() {
             window.location.href = '/admin/manage-customers';
+        }
+
+        function redirectToManageGenres() {
+            window.location.href = '/admin/genres/manage';
+        }
+
+        function redirectToManageActors() {
+            window.location.href = '/admin/actors/manage';
         }
 
         function redirectToReports() {
@@ -198,16 +213,11 @@
         function redirectToMonthlyReports() {
             window.location.href = '/admin/kelolaLaporan';
         }
-        function redirectToManageGenres() {
-            window.location.href = '/admin/genres/manage';
-        }
 
-        function redirectToManageActors() {
-            window.location.href = '/admin/actors/manage';
-        }
         function handleLogout() {
             window.location.href = '/logout';
         }
-      </script>
+    </script>
 </body>
+
 </html>
