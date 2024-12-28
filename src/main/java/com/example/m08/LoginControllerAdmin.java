@@ -35,7 +35,7 @@ public class LoginControllerAdmin {
         Admin admin = adminService.login(username, password);
         if (admin == null) {
             model.addAttribute("error", "Invalid credentials");
-            return "loginadmin";
+            return "login";
         }
         
         session.setAttribute("admin", admin);
@@ -45,6 +45,6 @@ public class LoginControllerAdmin {
     @GetMapping("/admin/logout")
     public String logout(HttpSession session) {
         session.removeAttribute("admin");
-        return "redirect:/loginadmin";
+        return "redirect:/login";
     }
 }
