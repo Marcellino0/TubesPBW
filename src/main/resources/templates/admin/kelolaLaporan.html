@@ -1,4 +1,3 @@
-<!-- kelolaLaporan.html -->
 <!DOCTYPE html>
 <html lang="id" xmlns:th="http://www.thymeleaf.org">
 
@@ -7,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Rental - Kelola Laporan</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -21,6 +19,7 @@
             min-height: 100vh;
         }
 
+        /* Updated sidebar styling to match adminDashboard */
         .sidebar {
             width: 250px;
             background: #2c3e50;
@@ -54,14 +53,6 @@
             width: 20px;
         }
 
-        .sidebar-menu a {
-            text-decoration: none;
-            color: white;
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-
         .main-content {
             flex: 1;
             padding: 2rem;
@@ -82,54 +73,106 @@
             margin-bottom: 2rem;
         }
 
-        .submit-btn {
-            background: #3498db;
-            color: white;
-            padding: 0.8rem;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            text-decoration: none;
+        /* Updated form styling */
+        .filter-form {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
         }
 
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+        }
+
+        /* Updated table styling */
         .data-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 1rem;
+            background: white;
         }
 
         .data-table th,
         .data-table td {
-            padding: 0.8rem;
+            padding: 1rem;
             border: 1px solid #ddd;
+            text-align: left;
         }
 
         .data-table th {
             background: #f8f9fa;
+            font-weight: 600;
         }
 
-        .edit-btn,
-        .delete-btn {
-            padding: 6px 12px;
-            margin: 0 4px;
+        /* Updated button styling */
+        .btn {
+            padding: 0.5rem 1rem;
             border-radius: 4px;
-            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary {
+            background: #3498db;
             color: white;
         }
 
-        .edit-btn {
-            background-color: #3498db;
+        .btn-primary:hover {
+            background: #2980b9;
         }
 
-        .delete-btn {
-            background-color: #e74c3c;
+        .total-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .total-revenue {
+            font-weight: 600;
+        }
+
+        .download-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .download-btn i {
+            font-size: 1.1rem;
         }
     </style>
 </head>
 
 <body>
     <div class="admin-container">
-        <!-- Sidebar -->
+        <!-- Sidebar remains the same -->
         <div class="sidebar">
             <div class="sidebar-header">
                 <h2>Admin Panel</h2>
@@ -140,6 +183,12 @@
                 </li>
                 <li onclick="redirectToManageCustomers()">
                     <i class="fas fa-users"></i> Kelola Pelanggan
+                </li>
+                <li onclick="redirectToManageGenres()">
+                    <i class="fas fa-theater-masks"></i> Kelola Genre
+                </li>
+                <li onclick="redirectToManageActors()">
+                    <i class="fas fa-user-tie"></i> Kelola Aktor
                 </li>
                 <li onclick="redirectToReports()">
                     <i class="fas fa-chart-bar"></i> Laporan
@@ -153,104 +202,87 @@
             </ul>
         </div>
 
-        <!-- Main Content -->
+        <!-- Updated Main Content -->
         <div class="main-content">
             <div class="section">
                 <div class="content-header">
                     <h2>Laporan Rental Film</h2>
                 </div>
 
-                <!-- Search Form -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">Filter Laporan</h5>
-                    </div>
-                    <div class="card-body">
-                        <form th:action="@{/admin/laporan/search}" method="get" class="row g-3">
-                            <div class="col-md-4">
-                                <label for="month" class="form-label">Bulan</label>
+                <!-- Updated Filter Form -->
+                <div class="filter-form">
+                    <h3 class="mb-3">Filter Laporan</h3>
+                    <form th:action="@{/admin/laporan/search}" method="get">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="month">Bulan</label>
                                 <select class="form-select" id="month" name="month">
-                                    <option th:each="month : ${T(java.time.Month).values()}" th:value="${month.value}"
-                                        th:text="${month.getDisplayName(T(java.time.format.TextStyle).FULL, T(java.util.Locale).getDefault())}"
-                                        th:selected="${month.value == selectedMonth}"></option>
+                                    <option th:each="month : ${T(java.time.Month).values()}" 
+                                            th:value="${month.value}"
+                                            th:text="${month.getDisplayName(T(java.time.format.TextStyle).FULL, T(java.util.Locale).getDefault())}"
+                                            th:selected="${month.value == selectedMonth}">
+                                    </option>
                                 </select>
                             </div>
-                            <div class="col-md-4">
-                                <label for="year" class="form-label">Tahun</label>
+                            <div class="form-group">
+                                <label class="form-label" for="year">Tahun</label>
                                 <select class="form-select" id="year" name="year">
-                                    <option th:each="year : ${#numbers.sequence(2023, 2030)}" th:value="${year}"
-                                        th:text="${year}" th:selected="${year == selectedYear}"></option>
+                                    <option th:each="year : ${#numbers.sequence(2023, 2030)}"
+                                            th:value="${year}"
+                                            th:text="${year}"
+                                            th:selected="${year == selectedYear}">
+                                    </option>
                                 </select>
                             </div>
-                            <div class="col-md-4 d-flex align-items-end">
+                            <div class="form-group" style="display: flex; align-items: flex-end;">
                                 <button type="submit" class="btn btn-primary">Filter</button>
                             </div>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
 
-                <!-- Reports Table -->
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">Daftar Transaksi Rental</h5>
+                <!-- Updated Table Section -->
+                <div class="table-section">
+                    <h3 class="mb-3">Daftar Transaksi Rental</h3>
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Judul Film</th>
+                                    <th>Tanggal Rental</th>
+                                    <th>Tanggal Kembali</th>
+                                    <th>Harga Sewa</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="report : ${reports}">
+                                    <td th:text="${report.movieTitle}"></td>
+                                    <td th:text="${#temporals.format(report.rentDate, 'dd-MM-yyyy')}"></td>
+                                    <td th:text="${#temporals.format(report.dueDate, 'dd-MM-yyyy')}"></td>
+                                    <td>Rp<span th:text="${#numbers.formatDecimal(report.hargaSewa, 0, 'COMMA', 0, 'POINT')}">0</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="card-body">
-                        <div class="table-wrapper">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
 
-                                        <th>Judul Film</th>
-                                        <th>Tanggal Rental</th>
-                                        <th>Tanggal Kembali</th>
-                                        <th>Harga Sewa</th>
-                                        <!-- <th>Denda</th> -->
-
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr th:each="report : ${reports}">
-
-                                        <td th:text="${report.movieTitle}"></td>
-
-                                        <td th:text="${#temporals.format(report.rentDate, 'dd-MM-yyyy')}"></td>
-                                        <td th:text="${#temporals.format(report.dueDate, 'dd-MM-yyyy')}"></td>
-                                        <td>Rp<span
-                                                th:text="${#numbers.formatDecimal(report.hargaSewa, 0, 'COMMA', 0, 'POINT')}">0</span>
-                                        </td>
-                                        <!-- <td>Rp<span th:text="${#numbers.formatDecimal(report.denda, 0, 'COMMA', 0, 'POINT')}">0</span></td> -->
-
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <!-- Updated Total Section -->
+                    <div class="total-section">
+                        <div class="total-revenue">
+                            Total Pendapatan: Rp<span th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')}">0</span>
                         </div>
-
-                        <!-- Total Revenue -->
-                        <div class="row mt-3">
-                            <div class="col-md-6">
-                                <h6>Total Pendapatan (Harga Sewa): Rp<span
-                                        th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')}">0</span>
-                                </h6>
-                            </div>
-                            <!-- Ubah bagian tombol download -->
-                            <!-- Change the download button form to: -->
-                            <div class="col-md-6 text-end">
-                                <a th:href="@{/admin/laporan/download(month=${selectedMonth != null ? selectedMonth : 1}, year=${selectedYear != null ? selectedYear : 2024})}"
-                                    class="btn btn-primary">
-                                    Unduh Laporan
-                                </a>
-                            </div>
-                        </div>
-
+                        <a th:href="@{/admin/laporan/download(month=${selectedMonth != null ? selectedMonth : 1}, year=${selectedYear != null ? selectedYear : 2024})}"
+                           class="btn btn-primary download-btn">
+                            <i class="fas fa-download"></i>
+                            <span>Unduh Laporan</span>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Fungsi redirect untuk admin panel
+        // JavaScript functions remain the same
         function redirectToAdminDashboard() {
             window.location.href = '/admin/dashboard';
         }
@@ -267,10 +299,18 @@
             window.location.href = '/admin/kelolaLaporan';
         }
 
+        function redirectToManageGenres() {
+            window.location.href = '/admin/genres/manage';
+        }
+
+        function redirectToManageActors() {
+            window.location.href = '/admin/actors/manage';
+        }
+
         function handleLogout() {
             window.location.href = '/logout';
         }
     </script>
 </body>
-
 </html>
+
