@@ -30,7 +30,7 @@ public class ExportPdf {
             title.setSpacingAfter(20);
             
             // Add period
-            DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMMM");
+            // DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMMM");
             Paragraph period = new Paragraph(
                 "Periode: " + month + " " + year,
                 FontFactory.getFont(FontFactory.HELVETICA, 12)
