@@ -11,15 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.time.LocalDate;
-import java.time.YearMonth;
 import java.util.List;
 
-import com.example.m08.User.Pelanggan;
 import com.example.m08.export.ExportPdf;
 
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
