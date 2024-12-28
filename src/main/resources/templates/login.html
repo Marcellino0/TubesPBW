@@ -5,6 +5,196 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MovieMate - Login</title>
     <link th:href="@{/css/login.css}" rel="stylesheet"/>
+    <style>
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #1a1a1a;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Video Background */
+#myVideo {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    z-index: -1;
+}
+
+/* Login Container */
+.login-container {
+    background: rgba(25, 25, 25, 0.9);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    width: 100%;
+    max-width: 400px;
+    transition: all 0.3s ease;
+}
+
+/* Form Wrapper */
+.form-wrapper {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.form-wrapper.active {
+    display: block;
+    opacity: 1;
+}
+
+/* Login Type Selector */
+.login-type-selector {
+    display: flex;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 5px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.type-btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: transparent;
+    color: #ffffff80;
+}
+
+.type-btn.active {
+    background: #007bff;
+    color: white;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+}
+
+/* Input Fields */
+.input-group {
+    margin-bottom: 25px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: white;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #007bff;
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.1);
+}
+
+/* Login Button */
+.login-btn {
+    width: 100%;
+    padding: 15px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.login-btn:hover {
+    background: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+}
+
+.login-btn:active {
+    transform: translateY(0);
+}
+
+/* Switch Form (Register Link) */
+.switch-form {
+    margin-top: 20px;
+    text-align: center;
+    color: #ffffff80;
+    font-size: 14px;
+}
+
+.switch-form a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.switch-form a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+/* Error Message */
+.error-message {
+    background: rgba(255, 0, 0, 0.1);
+    border-left: 4px solid #ff3333;
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    color: #ff3333;
+    font-size: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .login-container {
+        padding: 30px 20px;
+        margin: 20px;
+    }
+    
+    .type-btn {
+        padding: 10px;
+        font-size: 13px;
+    }
+    
+    .input-group input {
+        padding: 12px;
+        font-size: 14px;
+    }
+    
+    .login-btn {
+        padding: 12px;
+        font-size: 15px;
+    }
+}
+    </style>
 </head>
 <body>
     <video autoplay muted loop id="myVideo">
@@ -12,22 +202,68 @@
     </video>
     
     <div class="login-container">
-        <!-- ... -->
-        <form class="login-form" th:action="@{/login}" method="post">
-            <div class="input-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required>
-            </div>
-            <div class="input-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <button type="submit" class="login-btn">Login</button>
-        </form>
-        
-        <div class="switch-form">
-            Don't have an account? <a th:href="@{/register}">Register</a>
+        <div class="login-type-selector">
+            <button type="button" class="type-btn active" onclick="switchForm('user')">User Login</button>
+            <button type="button" class="type-btn" onclick="switchForm('admin')">Admin Login</button>
+        </div>
+
+        <div th:if="${error}" class="error-message">
+            <p th:text="${error}"></p>
+        </div>
+
+        <!-- User Login Form -->
+        <div id="userForm" class="form-wrapper active">
+            <form class="login-form" th:action="@{/login}" method="post">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="login-btn">Login</button>
+                
+                <div class="switch-form">
+                    Don't have an account? <a th:href="@{/register}">Register</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Admin Login Form -->
+        <div id="adminForm" class="form-wrapper">
+            <form class="login-form" th:action="@{/loginadmin}" method="post">
+                <div class="input-group">
+                    <label for="adminUsername">Username</label>
+                    <input type="text" id="adminUsername" name="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="adminPassword">Password</label>
+                    <input type="password" id="adminPassword" name="password" required>
+                </div>
+                <button type="submit" class="login-btn">Login as Admin</button>
+            </form>
         </div>
     </div>
+
+    <script>
+        function switchForm(type) {
+            const userForm = document.getElementById('userForm');
+            const adminForm = document.getElementById('adminForm');
+            const buttons = document.querySelectorAll('.type-btn');
+            
+            if (type === 'admin') {
+                userForm.classList.remove('active');
+                adminForm.classList.add('active');
+                buttons[0].classList.remove('active');
+                buttons[1].classList.add('active');
+            } else {
+                adminForm.classList.remove('active');
+                userForm.classList.add('active');
+                buttons[1].classList.remove('active');
+                buttons[0].classList.add('active');
+            }
+        }
+    </script>
 </body>
 </html>
