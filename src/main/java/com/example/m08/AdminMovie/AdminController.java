@@ -112,4 +112,12 @@ public class AdminController {
         model.addAttribute("rentalStats", rentalStats);
         return "admin/report";
     }
+
+    @GetMapping("/addDataMaster")
+    public String addDataMaster(Model model, HttpSession session) {
+        if (!isAdminAuthenticated(session)) {
+            return "redirect:/loginadmin";
+        }
+        return "admin/tambahDataMaster";
+    }
 }
