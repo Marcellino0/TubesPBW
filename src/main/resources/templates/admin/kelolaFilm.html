@@ -180,19 +180,22 @@
                         <input type="text" th:field="*{judul}" required>
                     </div>
                     <div class="form-group">
-                        <label>Genre</label>
-                        <select th:field="*{genre}" required>
+                        <label for="genre">Genre</label>
+                        <select th:field="*{genre}" class="form-control" required>
                             <option value="">Pilih Genre</option>
-                            <option value="Action">Action</option>
-                            <option value="Comedy">Comedy</option>
-                            <option value="Drama">Drama</option>
-                            <option value="Horror">Horror</option>
-                            <option value="Romance">Romance</option>
+                            <option th:each="genre : ${genres}" 
+                                    th:value="${genre.name}" 
+                                    th:text="${genre.name}"></option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Aktor</label>
-                        <input type="text" th:field="*{aktor}" required>
+                        <label for="aktor">Aktor</label>
+                        <select th:field="*{aktor}" class="form-control" required>
+                            <option value="">Pilih Aktor</option>
+                            <option th:each="actor : ${actors}" 
+                                    th:value="${actor.name}" 
+                                    th:text="${actor.name}"></option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>Stok</label>
