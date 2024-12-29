@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Rental - User Dashboard</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"> -->
     <link th:href="@{/css/userdashboard.css}" rel="stylesheet" />
 
 </head>
@@ -46,6 +46,7 @@
                 <div class="content-header">
                     <h2>Movie Catalog</h2>
                 </div>
+                <br>
 
                 <!-- Search and Filter -->
                 <div class="search-filter-container">
@@ -69,12 +70,13 @@
                 <div class="movie-grid">
                     <div th:each="movie : ${movies}" class="movie-card">
                         <img th:src="@{'data:image/jpeg;base64,' + ${movie.base64Cover}}" th:alt="${movie.judul}">
+                        
                         <div class="movie-card-content">
                             <h3 th:text="${movie.judul}">Movie Title</h3>
                             <p><strong>Genre:</strong> <span th:text="${movie.genre}">Genre</span></p>
                             <p><strong>Actor:</strong> <span th:text="${movie.aktor}">Actor</span></p>
                             <p><strong>Stock:</strong> <span th:text="${movie.stok}">Stock</span></p>
-                            <p><strong>Price:</strong> Rp<span th:id="'price-' + ${movie.filmId}"
+                            <p><strong>Price:</strong>Rp<span th:id="'price-' + ${movie.filmId}"
                                     th:data-price7="${movie.harga7Hari}" th:data-price14="${movie.harga14Hari}"
                                     th:data-price30="${movie.harga30Hari}"
                                     th:text="${#numbers.formatDecimal(movie.harga7Hari, 0, 'COMMA', 0, 'POINT')}">
@@ -85,7 +87,8 @@
                             <form th:if="${movie.stok > 0}" th:action="@{/rent/{filmId}(filmId=${movie.filmId})}"
                                 method="post" class="rental-form">
                                 <div class="form-group">
-                                    <label for="duration">Rental Duration:</label>
+                                    <label for="duration">Rental Duration:</label><br><br>
+
                                     <select th:id="'duration-' + ${movie.filmId}" name="duration"
                                         th:onchange="'updatePrice(' + ${movie.filmId} + ')'" required>
                                         <option value="7">7 days</option>
