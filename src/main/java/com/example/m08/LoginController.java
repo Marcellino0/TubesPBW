@@ -33,47 +33,48 @@ public class LoginController {
     }
     
     @GetMapping("/userdashboard")
-public String userDashboardView(
-        @RequestParam(defaultValue = "1") int page,
-        @RequestParam(required = false) String search,
-        @RequestParam(required = false) String genre,
-        HttpSession session, 
-        Model model) {
-    if (session.getAttribute("pelanggan") == null) {
-        return "redirect:/login";
+    public String userDashboardView(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String genre,
+            HttpSession session, 
+            Model model) {
+        // Verifikasi session
+        if (session.getAttribute("pelanggan") == null) {
+            return "redirect:/login";
+        }
+
+        int show = 4;
+        int start = (page - 1) * show;
+        
+        List<Movie> movies;
+        int totalMovies;
+
+        List<String> genres = movieRepository.getAllGenres();
+        model.addAttribute("genres", genres);
+        model.addAttribute("selectedGenre", genre);
+        
+        if (search != null && !search.isEmpty()) {
+            movies = movieRepository.searchMoviesPaginated(search, start, show);
+            totalMovies = movieRepository.countSearchResults(search);
+        } else if (genre != null && !genre.isEmpty()) {
+            movies = movieRepository.getMoviesByGenrePaginated(genre, start, show);
+            totalMovies = movieRepository.countMoviesByGenre(genre);
+        } else {
+            movies = movieRepository.getMoviesPaginated(start, show);
+            totalMovies = movieRepository.countAllMovies();
+        }
+
+        int pageCount = (int) Math.ceil((double) totalMovies / show);
+        
+        model.addAttribute("movies", movies);
+        model.addAttribute("search", search);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("pageCount", pageCount);
+        model.addAttribute("user", session.getAttribute("pelanggan"));
+        
+        return "user/userdashboard";
     }
-
-    int show = 4; // Jumlah film per halaman
-    int start = (page - 1) * show;
-    
-    List<Movie> movies;
-    int totalMovies;
-
-    List<String> genres = movieRepository.getAllGenres();
-    model.addAttribute("genres", genres);
-    model.addAttribute("selectedGenre", genre);
-    
-    if (search != null && !search.isEmpty()) {
-        movies = movieRepository.searchMoviesPaginated(search, start, show);
-        totalMovies = movieRepository.countSearchResults(search);
-    } else if (genre != null && !genre.isEmpty()) {
-        movies = movieRepository.getMoviesByGenrePaginated(genre, start, show);
-        totalMovies = movieRepository.countMoviesByGenre(genre);
-    } else {
-        movies = movieRepository.getMoviesPaginated(start, show);
-        totalMovies = movieRepository.countAllMovies();
-    }
-
-    int pageCount = (int) Math.ceil((double) totalMovies / show);
-    
-    model.addAttribute("movies", movies);
-    model.addAttribute("search", search);
-    model.addAttribute("currentPage", page);
-    model.addAttribute("pageCount", pageCount);
-    model.addAttribute("user", session.getAttribute("pelanggan"));
-    
-    return "user/userdashboard";
-}
     
     @PostMapping("/login")
     public String processLogin(@RequestParam String username, 
@@ -87,12 +88,13 @@ public String userDashboardView(
         }
         
         session.setAttribute("pelanggan", pelanggan);
+        session.setAttribute("role", "user");
         return "redirect:/userdashboard";
     }
     
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.removeAttribute("pelanggan");
+        session.invalidate();
         return "redirect:/login";
     }
 }

@@ -1,4 +1,3 @@
-// LoginControllerAdmin.java
 package com.example.m08;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,7 @@ public class LoginControllerAdmin {
         if (session.getAttribute("admin") != null) {
             return "redirect:/admin/dashboard";
         }
-        return "loginadmin";
+        return "login"; // Menggunakan template login.html
     }
     
     @PostMapping("/loginadmin")
@@ -35,16 +34,17 @@ public class LoginControllerAdmin {
         Admin admin = adminService.login(username, password);
         if (admin == null) {
             model.addAttribute("error", "Invalid credentials");
-            return "login";
+            return "login"; // Menggunakan template login.html
         }
         
         session.setAttribute("admin", admin);
+        session.setAttribute("role", "admin");
         return "redirect:/admin/dashboard";
     }
     
     @GetMapping("/admin/logout")
     public String logout(HttpSession session) {
-        session.removeAttribute("admin");
-        return "redirect:/login";
+        session.invalidate();
+        return "redirect:/loginadmin";
     }
 }
