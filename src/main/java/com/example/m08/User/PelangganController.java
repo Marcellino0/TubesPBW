@@ -7,6 +7,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.m08.RequiredRole;
+
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -44,44 +46,35 @@ public class PelangganController {
     }
 
     @GetMapping("/profile")
+    @RequiredRole("user")
     public String viewProfile(Model model, HttpSession session) {
-        // Check if user is logged in
         Pelanggan pelanggan = (Pelanggan) session.getAttribute("pelanggan");
-        if (pelanggan == null) {
-            return "redirect:/login";
-        }
-        
         model.addAttribute("user", pelanggan);
         return "user/profile";
     }
 
     @PostMapping("/profile/update")
+    @RequiredRole("user")
     public String updateProfile(@ModelAttribute Pelanggan pelanggan, HttpSession session) {
         userService.updateProfile(pelanggan);
-        // Update the session with the new user data
         session.setAttribute("pelanggan", pelanggan);
         return "redirect:/profile?success";
     }
 
     @PostMapping("/topup")
+    @RequiredRole("user")
     public String topUpSaldo(@RequestParam Double amount, 
                            HttpSession session,
                            RedirectAttributes redirectAttributes) {
         try {
-            // Validasi minimum amount
             if (amount < 10000) {
                 redirectAttributes.addFlashAttribute("error", "Minimum top up amount is Rp 10.000");
                 return "redirect:/profile";
             }
 
-            Pelanggan pelanggan = (Pelanggan) session.getAttribute("pelanggan");
-            if (pelanggan == null) {
-                return "redirect:/login";
-            }
-            
+            Pelanggan pelanggan = (Pelanggan) session.getAttribute("pelanggan");            
             userService.topUpSaldo(pelanggan.getUserId(), amount);
             
-            // Update session dengan saldo baru
             pelanggan = userService.getCurrentUserProfile(pelanggan.getUsername());
             session.setAttribute("pelanggan", pelanggan);
             
