@@ -1,21 +1,19 @@
 package com.example.m08.AdminMovie;
 
-import com.example.m08.Movie.MovieRepository;
-import com.example.m08.Rental.MovieRentalStats;
-import com.example.m08.User.Pelanggan;
-import com.example.m08.User.PelangganRepository;
-
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import jakarta.servlet.http.HttpSession;
 
+import com.example.m08.RequiredRole;
+import com.example.m08.Movie.MovieRepository;
+import com.example.m08.Rental.MovieRentalStats;
+import com.example.m08.User.Pelanggan;
+import com.example.m08.User.PelangganRepository;
 import com.example.m08.Rental.RentalRepository;
 
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
@@ -30,39 +28,23 @@ public class AdminController {
     @Autowired
     private RentalRepository rentalRepository;
 
-    private boolean isAdminAuthenticated(HttpSession session) {
-        return session.getAttribute("admin") != null;
-    }
-
-    @GetMapping("")
-    public String adminRoot() {
-        return "redirect:/loginadmin";
-    }
-
     @GetMapping("/dashboard")
-    public String dashboard(Model model, HttpSession session) {
-        if (!isAdminAuthenticated(session)) {
-            return "redirect:/loginadmin";
-        }
+    @RequiredRole("admin")
+    public String dashboard(Model model) {
         model.addAttribute("movies", movieRepository.findAll());
         return "admin/admindashboard";
     }
 
     @GetMapping("/manage-customers")
-    public String manageCustomers(Model model, HttpSession session) {
-        if (!isAdminAuthenticated(session)) {
-            return "redirect:/loginadmin";
-        }
+    @RequiredRole("admin")
+    public String manageCustomers(Model model) {
         model.addAttribute("customers", pelangganRepository.findAll());
         return "admin/kelolaPelanggan";
     }
 
     @GetMapping("/edit-customer/{id}")
-    public String editCustomer(@PathVariable int id, Model model, HttpSession session) {
-        if (!isAdminAuthenticated(session)) {
-            return "redirect:/loginadmin";
-        }
-        
+    @RequiredRole("admin")
+    public String editCustomer(@PathVariable int id, Model model) {
         Pelanggan customer = pelangganRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Customer not found"));
         model.addAttribute("customer", customer);
@@ -70,12 +52,9 @@ public class AdminController {
     }
 
     @PostMapping("/update-customer/{id}")
+    @RequiredRole("admin")
     public String updateCustomer(@PathVariable int id, @ModelAttribute Pelanggan customer, 
-                               BindingResult result, HttpSession session) {
-        if (!isAdminAuthenticated(session)) {
-            return "redirect:/loginadmin";
-        }
-
+                               BindingResult result) {
         if (result.hasErrors()) {
             return "admin/editPelanggan";
         }
@@ -93,21 +72,15 @@ public class AdminController {
     }
 
     @GetMapping("/delete-customer/{id}")
-    public String deleteCustomer(@PathVariable int id, HttpSession session) {
-        if (!isAdminAuthenticated(session)) {
-            return "redirect:/loginadmin";
-        }
-        
+    @RequiredRole("admin")
+    public String deleteCustomer(@PathVariable int id) {
         pelangganRepository.deleteById(id);
         return "redirect:/admin/manage-customers";
     }
 
     @GetMapping("/reports")
-    public String viewReports(Model model, HttpSession session) {
-        if (!isAdminAuthenticated(session)) {
-            return "redirect:/loginadmin";
-        }
-        
+    @RequiredRole("admin")
+    public String viewReports(Model model) {
         List<MovieRentalStats> rentalStats = rentalRepository.getMovieRentalStats();
         model.addAttribute("rentalStats", rentalStats);
         return "admin/report";
