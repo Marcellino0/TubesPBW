@@ -148,11 +148,7 @@ public void update(Movie movie) {
         jdbcTemplate.update(sql, id);
     }
 
-    @Override
-    public List<Movie> findTop3ByStock() {
-    String sql = "SELECT * FROM film ORDER BY stok DESC LIMIT 3";
-    return jdbcTemplate.query(sql, movieRowMapper);
-}
+
 
 @Override
 public List<Movie> findTop3MostSoldMovies() {

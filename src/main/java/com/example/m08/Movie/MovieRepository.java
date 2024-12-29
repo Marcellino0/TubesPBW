@@ -22,6 +22,6 @@ public interface MovieRepository {
     List<String> getAllGenres();
     List<Movie> getMoviesByGenrePaginated(String genre, int start, int show);
     int countMoviesByGenre(String genre);
-    List<Movie> findTop3ByStock();
+   
     List<Movie> findTop3MostSoldMovies();
 }
