@@ -66,11 +66,13 @@
     <main class="dashboard">
         <h2>Top Movies</h2>
         <div class="movie-grid">
-            <div class="movie-card">
-                <img th:src="@{/image/movie1.jpg}" alt="Movie 1">
+           
+            <div th:each="movie : ${movies}" class="movie-card">
+                <img th:src="@{'data:image/jpeg;base64,' + ${movie.base64Cover}}" th:alt="${movie.judul}">
                 <div class="movie-info">
-                    <h3>Lorem ipsum dolor</h3>
-                    <p>Action</p>
+                    <h3 th:text="${movie.judul}">Movie Title</h3>
+                    <p><strong>Genre:</strong> <span th:text="${movie.genre}">Genre</span></p>
+                    <p><strong>Actor:</strong> <span th:text="${movie.aktor}">Actor</span></p>
                 </div>
             </div>
             <div class="movie-card">
