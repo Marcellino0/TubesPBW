@@ -303,3 +303,16 @@ body {
     margin-bottom: 1rem;
     text-align: left;
 }
+
+.top-movies {
+    margin-bottom: 2rem; /* Adds space below Top Movies */
+}
+
+.just-added {
+    margin-top: 1rem; /* Adds space above Just Added, if needed */
+}
+
+.movie-grid {
+    display: grid;
+    gap: 1rem; /* Adjusts space between movie cards */
+}
