@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
+
 
 @Repository
 public class JdbcMovieRepository implements MovieRepository {
@@ -145,4 +147,31 @@ public void update(Movie movie) {
         String sql = "DELETE FROM film WHERE film_id = ?";
         jdbcTemplate.update(sql, id);
     }
+
+
+
+@Override
+public List<Movie> findTop3MostSoldMovies() {
+    String sql = """
+        SELECT 
+            f.film_id,
+            f.cover,
+            f.judul,
+            f.genre,
+            f.aktor,
+            f.stok,
+            f.harga_7_hari,
+            f.harga_14_hari,
+            f.harga_30_hari,
+            COUNT(p.idsewa) AS sales_count
+        FROM penyewaan p
+        JOIN film f ON p.idfilm = f.film_id
+        GROUP BY f.film_id, f.cover, f.judul, f.genre, f.aktor, f.stok, f.harga_7_hari, f.harga_14_hari, f.harga_30_hari
+        ORDER BY sales_count DESC
+        LIMIT 3;
+    """;
+
+    return jdbcTemplate.query(sql, movieRowMapper);
+}
+
 }

@@ -14,6 +14,7 @@
         <div class="header-buttons">
             <a href="#" class="btn-header nav-link" data-section="home">Home</a>
             <a th:href="@{/login}" class="btn-header-logo">Log in</a>
+            <a th:href="@{/register}" class="btn-header-logo">Register</a>
         </div>
     </header>
 
@@ -65,27 +66,16 @@
     <main class="dashboard">
         <h2>Top Movies</h2>
         <div class="movie-grid">
-            <div class="movie-card">
-                <img th:src="@{/image/movie1.jpg}" alt="Movie 1">
+           
+            <div th:each="movie : ${movies}" class="movie-card">
+                <img th:src="@{'data:image/jpeg;base64,' + ${movie.base64Cover}}" th:alt="${movie.judul}">
                 <div class="movie-info">
-                    <h3>Lorem ipsum dolor</h3>
-                    <p>Action</p>
+                    <h3 th:text="${movie.judul}">Movie Title</h3>
+                    <p><strong>Genre:</strong> <span th:text="${movie.genre}">Genre</span></p>
+                    <p><strong>Actor:</strong> <span th:text="${movie.aktor}">Actor</span></p>
                 </div>
             </div>
-            <div class="movie-card">
-                <img th:src="@{/image/movie2.jpg}" alt="Naruto">
-                <div class="movie-info">
-                    <h3>Lorem ipsum dolor</h3>
-                    <p>Action</p>
-                </div>
-            </div>
-            <div class="movie-card">
-                <img th:src="@{/image/movie3.jpg}" alt="My Hero Academia">
-                <div class="movie-info">
-                    <h3>Lorem ipsum dolor</h3>
-                    <p>Action</p>
-                </div>
-            </div>
+       
         </div>
 
         <section class="info-section">
