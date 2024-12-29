@@ -24,4 +24,5 @@ public interface MovieRepository {
     int countMoviesByGenre(String genre);
    
     List<Movie> findTop3MostSoldMovies();
+    List<Movie> findLast3Movies();
 }

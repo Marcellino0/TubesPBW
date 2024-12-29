@@ -174,4 +174,16 @@ public List<Movie> findTop3MostSoldMovies() {
     return jdbcTemplate.query(sql, movieRowMapper);
 }
 
+@Override
+public List<Movie> findLast3Movies() {
+    String sql = """
+        SELECT * 
+        FROM film 
+        ORDER BY film_id DESC 
+        LIMIT 3;
+    """;
+    return jdbcTemplate.query(sql, movieRowMapper);
+}
+
+
 }

@@ -67,7 +67,21 @@
         <h2>Top Movies</h2>
         <div class="movie-grid">
            
-            <div th:each="movie : ${movies}" class="movie-card">
+            <div th:each="movie : ${topMovies}" class="movie-card">
+                <img th:src="@{'data:image/jpeg;base64,' + ${movie.base64Cover}}" th:alt="${movie.judul}">
+                <div class="movie-info">
+                    <h3 th:text="${movie.judul}">Movie Title</h3>
+                    <p><strong>Genre:</strong> <span th:text="${movie.genre}">Genre</span></p>
+                    <p><strong>Actor:</strong> <span th:text="${movie.aktor}">Actor</span></p>
+                </div>
+            </div>
+       
+        </div>
+
+        <h2>Just Added</h2>
+        <div class="movie-grid">
+           
+            <div th:each="movie : ${latestMovies}" class="movie-card">
                 <img th:src="@{'data:image/jpeg;base64,' + ${movie.base64Cover}}" th:alt="${movie.judul}">
                 <div class="movie-info">
                     <h3 th:text="${movie.judul}">Movie Title</h3>

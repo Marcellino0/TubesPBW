@@ -25,9 +25,11 @@ public class DashboardController {
     @GetMapping("/")
     public String dashboard(Model model)
     {
-        List<Movie> movies = movieRepository.findTop3MostSoldMovies();
+        List<Movie> topMovies = movieRepository.findTop3MostSoldMovies();
+        List<Movie> latestMovies = movieRepository.findLast3Movies();
         List<String> genres = movieRepository.getAllGenres();
-        model.addAttribute("movies", movies);
+        model.addAttribute("topMovies", topMovies);
+        model.addAttribute("latestMovies", latestMovies);
         model.addAttribute("genres", genres);
         return "dashboard";
     }
