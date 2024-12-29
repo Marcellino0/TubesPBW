@@ -296,3 +296,10 @@ body {
     width: 100%;
     height: 100%;
 }
+
+.sub-description {
+    font-size: 1rem;
+    color: white;
+    margin-bottom: 1rem;
+    text-align: left;
+}
