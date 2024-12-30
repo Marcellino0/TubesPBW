@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Rental - Current Rentals</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"> -->
     <link th:href="@{/css/rental.css}" rel="stylesheet" />
-    
+
 </head>
 
 <body>
@@ -69,33 +69,38 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="rental : ${rentals}" 
+                            <tr th:each="rental : ${rentals}"
                                 th:class="${rental.dueDate.isBefore(today) ? 'overdue' : ''}">
                                 <td th:text="${rental.movieTitle}">Movie Title</td>
                                 <td th:text="${rental.genre}">Genre</td>
                                 <td th:text="${#temporals.format(rental.rentDate, 'dd-MM-yyyy')}">Rent Date</td>
                                 <td>
                                     <span th:text="${#temporals.format(rental.dueDate, 'dd-MM-yyyy')}">Due Date</span>
-                                    <span th:if="${rental.dueDate.isBefore(today)}" class="badge badge-danger">OVERDUE</span>
+                                    <span th:if="${rental.dueDate.isBefore(today)}"
+                                        class="badge badge-danger">OVERDUE</span>
                                 </td>
-                                <td>Rp<span th:text="${#numbers.formatDecimal(rental.price, 0, 'COMMA', 0, 'POINT')}">Price</span></td>
+                                <td>Rp<span
+                                        th:text="${#numbers.formatDecimal(rental.price, 0, 'COMMA', 0, 'POINT')}">Price</span>
+                                </td>
                                 <td>
-                                    <span class="badge" th:classappend="${rental.status == 'ACTIVE' ? 'badge-success' : 'badge-secondary'}"
-                                          th:text="${rental.status}">Status</span>
+                                    <span class="badge"
+                                        th:classappend="${rental.status == 'ACTIVE' ? 'badge-success' : 'badge-secondary'}"
+                                        th:text="${rental.status}">Status</span>
                                 </td>
                                 <td>
                                     <span th:if="${rental.dueDate.isBefore(today)}" class="late-fee">
                                         <!-- Hitung denda: 10% dari harga sewa per hari -->
-                                        Rp<span th:with="daysLate=${T(java.time.temporal.ChronoUnit).DAYS.between(rental.dueDate, today)}"
-                                               th:text="${#numbers.formatDecimal(daysLate * (rental.price * 0.1), 0, 'COMMA', 0, 'POINT')}">
+                                        Rp<span
+                                            th:with="daysLate=${T(java.time.temporal.ChronoUnit).DAYS.between(rental.dueDate, today)}"
+                                            th:text="${#numbers.formatDecimal(daysLate * (rental.price * 0.1), 0, 'COMMA', 0, 'POINT')}">
                                         </span>
                                     </span>
                                     <span th:unless="${rental.dueDate.isBefore(today)}">-</span>
                                 </td>
                                 <td>
-                                    <form th:if="${rental.status == 'ACTIVE'}" 
-                                          th:action="@{/rental/return/{rentalId}(rentalId=${rental.idSewa})}" 
-                                          method="post">
+                                    <form th:if="${rental.status == 'ACTIVE'}"
+                                        th:action="@{/rental/return/{rentalId}(rentalId=${rental.idSewa})}"
+                                        method="post">
                                         <button type="submit" class="btn btn-danger btn-sm">Return</button>
                                     </form>
                                 </td>
@@ -110,22 +115,43 @@
         function redirectToCatalog() {
             window.location.href = '/userdashboard';
         }
-    
+
         function redirectToRentals() {
             window.location.href = '/rental';
         }
-    
+
         function redirectToHistory() {
             window.location.href = '/history-rental';
         }
-    
+
         function redirectToProfile() {
             window.location.href = '/profile';
         }
-    
+
         function logout() {
             window.location.href = '/logout';
         }
+
+        // Get current path
+        let currentPath = window.location.pathname;
+
+        // Remove active class from all menu items
+        document.querySelectorAll('.sidebar-menu li').forEach(item => {
+            item.classList.remove('active');
+        });
+
+        // Add active class based on current path
+        if (currentPath === '/rental') {
+            document.querySelector('.sidebar-menu li[onclick="redirectToRentals()"]').classList.add('active');
+        } else if (currentPath === '/userdashboard') {
+            document.querySelector('.sidebar-menu li[onclick="redirectToCatalog()"]').classList.add('active');
+        } else if (currentPath === '/history-rental') {
+            document.querySelector('.sidebar-menu li[onclick="redirectToHistory()"]').classList.add('active');
+        } else if (currentPath === '/profile') {
+            document.querySelector('.sidebar-menu li[onclick="redirectToProfile()"]').classList.add('active');
+        }
+
+
     </script>
 </body>
 
