@@ -1,6 +1,8 @@
 package com.example.m08.Movie;
 
 import java.util.List;
+import java.util.Map;
+
 
 public interface MovieRepository {
     List<Movie> getMoviesPaginated(int start, int show);
@@ -19,4 +21,7 @@ public interface MovieRepository {
     List<String> getAllGenres();
     List<Movie> getMoviesByGenrePaginated(String genre, int start, int show);
     int countMoviesByGenre(String genre);
+   
+    List<Movie> findTop3MostSoldMovies();
+    List<Movie> findLast3Movies();
 }
