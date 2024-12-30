@@ -305,14 +305,14 @@ body {
 }
 
 .top-movies {
-    margin-bottom: 2rem; /* Adds space below Top Movies */
+    margin-bottom: 2rem; 
 }
 
 .just-added {
-    margin-top: 1rem; /* Adds space above Just Added, if needed */
+    margin-top: 1rem;
 }
 
 .movie-grid {
     display: grid;
-    gap: 1rem; /* Adjusts space between movie cards */
+    gap: 1rem; 
 }

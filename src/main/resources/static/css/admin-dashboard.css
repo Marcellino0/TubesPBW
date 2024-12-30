@@ -10,8 +10,6 @@
     --success-text: #ecfdf5;
     --danger-bg: #7f1d1d;
     --danger-text: #fef2f2;
-    --warning-bg: #854d0e;
-    --warning-text: #fef9c3;
 }
 
 * {
@@ -118,8 +116,44 @@ body {
     border: 1px solid var(--border-color);
 }
 
+/* Content header */
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.content-header h2 {
+    color: var(--text-primary);
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+/* Button styles */
+.submit-btn {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.submit-btn:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
 /* Table styles */
-.rental-table {
+.data-table {
     width: 100%;
     border-collapse: collapse;
     background-color: var(--card-bg);
@@ -130,104 +164,59 @@ body {
     border: 1px solid var(--border-color);
 }
 
-.rental-table th,
-.rental-table td {
+.data-table th,
+.data-table td {
     padding: 1rem 1.5rem;
     text-align: left;
     border-bottom: 1px solid var(--border-color);
     color: var(--text-primary);
 }
 
-.rental-table th {
+.data-table th {
     background-color: rgba(99, 102, 241, 0.1);
     font-weight: 600;
     color: var(--primary-color);
+    text-transform: uppercase;
+    font-size: 0.875rem;
 }
 
-.rental-table tr:hover {
+.data-table tr:hover {
     background-color: rgba(255, 255, 255, 0.05);
 }
 
-.rental-table tr:nth-child(even) {
+.data-table tr:nth-child(even) {
     background-color: rgba(0, 0, 0, 0.2);
 }
 
-.badge {
+/* Action buttons */
+.edit-btn,
+.delete-btn {
     padding: 0.5rem 1rem;
-    border-radius: 8px;
+    margin: 0 0.25rem;
+    border-radius: 6px;
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
     font-size: 0.875rem;
-    font-weight: 500;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-.badge-danger {
-    background-color: var(--danger-bg);
-    color: var(--danger-text);
+.edit-btn {
+    background-color: var(--primary-color);
 }
 
-.badge-success {
-    background-color: var(--success-bg);
-    color: var(--success-text);
-}
-
-.badge-secondary {
-    background-color: var(--card-bg);
-    color: var(--text-secondary);
-}
-
-.overdue {
-    background-color: rgba(127, 29, 29, 0.1);
-}
-
-.late-fee {
-    color: #ef4444;
-    font-weight: 600;
-}
-
-/* Button styles */
-.btn {
-    padding: 0.75rem 1.5rem;
-    border-radius: 10px;
-    cursor: pointer;
-    border: none;
-    transition: all 0.2s ease;
-    font-weight: 600;
-    font-size: 0.95rem;
-}
-
-.btn-danger {
-    background-color: var(--danger-bg);
-    color: var(--danger-text);
-}
-
-.btn:hover {
+.edit-btn:hover {
+    background-color: var(--primary-hover);
     transform: translateY(-2px);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
 }
 
-/* Alert Messages */
-.alert {
-    padding: 1.25rem;
-    margin-bottom: 2rem;
-    border-radius: 12px;
-    font-weight: 500;
+.delete-btn {
+    background-color: var(--danger-bg);
 }
 
-.alert-success {
-    background: var(--success-bg);
-    color: var(--success-text);
-    border: 1px solid #059669;
-}
-
-.alert-danger {
-    background: var(--danger-bg);
-    color: var(--danger-text);
-    border: 1px solid #dc2626;
-}
-
-.warning {
-    background: var(--warning-bg);
-    color: var(--warning-text);
-    border: 1px solid #d97706;
+.delete-btn:hover {
+    background-color: #991b1b;
+    transform: translateY(-2px);
 }
 
 /* Responsive Design */
@@ -255,14 +244,61 @@ body {
         padding: 1.5rem;
     }
     
-    .rental-table {
+    .data-table {
         font-size: 0.875rem;
     }
     
-    .rental-table th,
-    .rental-table td {
+    .data-table th,
+    .data-table td {
         padding: 0.75rem 1rem;
+    }
+    
+    /* Stack table on mobile */
+    .data-table thead {
+        display: none;
+    }
+    
+    .data-table tr {
+        display: block;
+        margin-bottom: 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 1rem;
+    }
+    
+    .data-table td {
+        display: block;
+        text-align: right;
+        padding: 0.5rem 0;
+        border: none;
+    }
+    
+    .data-table td::before {
+        content: attr(data-label);
+        float: left;
+        font-weight: bold;
+        color: var(--primary-color);
     }
 }
 
- 
+/* Mobile menu trigger */
+.mobile-menu-trigger {
+    display: none;
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 100;
+    padding: 0.5rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-trigger {
+        display: block;
+    }
+}
+
