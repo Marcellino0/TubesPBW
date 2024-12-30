@@ -189,18 +189,16 @@
                         <label for="genre">Genre</label>
                         <select th:field="*{genre}" class="form-control" required>
                             <option value="">Pilih Genre</option>
-                            <option th:each="genre : ${genres}" 
-                                    th:value="${genre.name}" 
-                                    th:text="${genre.name}"></option>
+                            <option th:each="genre : ${genres}" th:value="${genre.name}" th:text="${genre.name}">
+                            </option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="aktor">Aktor</label>
                         <select th:field="*{aktor}" class="form-control" required>
                             <option value="">Pilih Aktor</option>
-                            <option th:each="actor : ${actors}" 
-                                    th:value="${actor.name}" 
-                                    th:text="${actor.name}"></option>
+                            <option th:each="actor : ${actors}" th:value="${actor.name}" th:text="${actor.name}">
+                            </option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -222,6 +220,12 @@
                     <div class="form-group">
                         <label>Cover Film</label>
                         <input type="file" name="coverImage" accept="image/*" required>
+                    </div>
+                   
+                    <div class="form-group">
+                        <label for="synopsis">Synopsis:</label>
+                        <textarea id="synopsis" name="synopsis" th:field="*{synopsis}" rows="4" class="form-control"
+                            placeholder="Enter movie synopsis..."></textarea>
                     </div>
                     <button type="submit" class="submit-btn">Simpan Film</button>
                 </form>
