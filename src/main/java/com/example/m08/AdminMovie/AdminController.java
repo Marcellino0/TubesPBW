@@ -85,4 +85,5 @@ public class AdminController {
         model.addAttribute("rentalStats", rentalStats);
         return "admin/report";
     }
+
 }
