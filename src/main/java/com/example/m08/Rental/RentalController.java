@@ -1,6 +1,7 @@
 package com.example.m08.Rental;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +9,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import com.example.m08.User.Pelanggan;
 import com.example.m08.User.PelangganRepository;
@@ -126,6 +128,37 @@ public String viewRentalHistory(Model model, HttpSession session) {
 
         List<MovieRentalStats> stats = rentalRepository.getMovieRentalStats();
         model.addAttribute("rentalStats", stats);
-        return "user/rental-stats";
+        return "admin/reports";
     }
+
+    @PostMapping("/admin/rental/update-target/{filmId}")
+    @ResponseBody
+    public ResponseEntity<?> updateMovieTarget(
+        @PathVariable int filmId,
+        @RequestBody TargetUpdateRequest request,
+        HttpSession session) {
+    
+    try {
+        rentalRepository.updateMovieTarget(filmId, request.getTargetCount());
+        return ResponseEntity.ok()
+            .body(Map.of("message", "Target updated successfully"));
+    } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.badRequest()
+            .body(Map.of("error", e.getMessage()));
+    }
+}
+
+    @GetMapping("/api/rental/stats")
+    @ResponseBody
+    public ResponseEntity<List<MovieRentalStats>> getRentalStats() {
+        try {
+            List<MovieRentalStats> stats = rentalRepository.getMovieRentalStats();
+            return ResponseEntity.ok(stats);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
 }
