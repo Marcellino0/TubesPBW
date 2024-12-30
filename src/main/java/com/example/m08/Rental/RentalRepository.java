@@ -9,4 +9,5 @@ public interface RentalRepository {
     void update(Rental rental);
     List<MovieRentalStats> getMovieRentalStats();
     List<RentalHistory> findRentalHistory(int userId);
+    void updateMovieTarget(int filmId, int targetCount); 
 }

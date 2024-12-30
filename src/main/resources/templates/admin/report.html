@@ -1,254 +1,42 @@
 <!DOCTYPE html>
 <html lang="id" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Rental - Reports</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-
-        .admin-container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            width: 250px;
-            background: #2c3e50;
-            color: white;
-            padding: 1rem;
-        }
-
-        .sidebar-header {
-            padding: 1rem;
-            text-align: center;
-            border-bottom: 1px solid #34495e;
-            margin-bottom: 1rem;
-        }
-
-        .sidebar-menu {
-            list-style: none;
-        }
-
-        .sidebar-menu li {
-            padding: 0.8rem 1rem;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .sidebar-menu li:hover {
-            background: #34495e;
-        }
-
-        .sidebar-menu i {
-            margin-right: 0.5rem;
-            width: 20px;
-        }
-
-        .sidebar-menu a {
-            text-decoration: none;
-            color: white;
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-
-        .sidebar-menu i {
-            margin-right: 0.5rem;
-            width: 20px;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 2rem;
-            background: #f5f6fa;
-        }
-
-        .section {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-        }
-
-        .content-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .content-header h2 {
-            color: #2c3e50;
-            font-size: 1.8rem;
-        }
-
-        /* Summary Grid Styles */
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin: 2rem 0;
-        }
-
-        .summary-item {
-            background: #f8f9fa;
-            padding: 1.5rem;
-            border-radius: 8px;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease;
-        }
-
-        .summary-item:hover {
-            transform: translateY(-5px);
-        }
-
-        .summary-item h4 {
-            margin-bottom: 0.8rem;
-            color: #2c3e50;
-            font-size: 1.1rem;
-        }
-
-        .summary-item p {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #3498db;
-            margin: 0;
-        }
-
-        /* Chart Container */
-        .chart-container {
-            width: 100%;
-            height: 400px;
-            margin: 2rem 0;
-            padding: 1rem;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        /* Table Styles */
-        .table-container {
-            margin-top: 2rem;
-            overflow-x: auto;
-        }
-
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-            background: white;
-        }
-
-        .data-table th,
-        .data-table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .data-table th {
-            background: #f8f9fa;
-            color: #2c3e50;
-            font-weight: bold;
-        }
-
-        .data-table tr:hover {
-            background: #f8f9fa;
-        }
-
-        /* Report Header */
-        .report-header {
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #e9ecef;
-        }
-
-        .report-header h3 {
-            color: #2c3e50;
-            font-size: 1.4rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .report-header p {
-            color: #6c757d;
-            font-size: 1rem;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .admin-container {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-            }
-
-            .main-content {
-                padding: 1rem;
-            }
-
-            .summary-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .chart-container {
-                height: 300px;
-            }
-        }
-
-        /* Additional Utility Classes */
-        .mt-4 {
-            margin-top: 2rem;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .text-right {
-            text-align: right;
-        }
-    </style>
+    <link th:href="@{/css/reports.css}" rel="stylesheet" />
 </head>
+
 <body>
     <div class="admin-container">
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
-                <h2>Admin Panel</h2>
+                <h2>Admin Dashboard</h2>
             </div>
             <ul class="sidebar-menu">
                 <li onclick="redirectToAdminDashboard()">
-                    <i class="fas fa-cogs"></i> Kelola Film
+                    Kelola Film
                 </li>
                 <li onclick="redirectToManageCustomers()">
-                    <i class="fas fa-users"></i> Kelola Pelanggan
+                    Kelola Pelanggan
                 </li>
                 <li onclick="redirectToManageGenres()">
-                    <i class="fas fa-theater-masks"></i> Kelola Genre
+                    Kelola Genre
                 </li>
                 <li onclick="redirectToManageActors()">
-                    <i class="fas fa-user-tie"></i> Kelola Aktor
+                    Kelola Aktor
                 </li>
-                <li onclick="redirectToReports()">
-                    <i class="fas fa-chart-bar"></i> Laporan
+                <li onclick="redirectToReports()" class="active">
+                    Laporan
                 </li>
                 <li onclick="redirectToMonthlyReports()">
-                    <i class="fas fa-calendar-alt"></i> Laporan Bulanan
+                    Laporan Bulanan
                 </li>
                 <li onclick="handleLogout()">
-                    <i class="fas fa-sign-out-alt"></i> Logout
+                    Logout
                 </li>
             </ul>
         </div>
@@ -272,15 +60,15 @@
                     </div>
                     <div class="summary-item">
                         <h4>Total Pendapatan</h4>
-                        <p>Rp<span th:text="${#numbers.formatDecimal(currentReport.pendapatan, 0, 'COMMA', 0, 'POINT')}">0</span></p>
+                        <p>Rp<span
+                                th:text="${#numbers.formatDecimal(currentReport.pendapatan, 0, 'COMMA', 0, 'POINT')}">0</span>
+                        </p>
                     </div>
                     <div class="summary-item">
                         <h4>Film Terpopuler</h4>
                         <p th:text="${currentReport.filmPopuler}">-</p>
                     </div>
                 </div>
-                
-               
 
                 <!-- Chart -->
                 <div class="chart-container">
@@ -294,12 +82,23 @@
                             <tr>
                                 <th>Judul Film</th>
                                 <th class="text-right">Jumlah Penyewaan</th>
+                                <th class="text-right">Target Penyewaan</th>
+                                <th>Aksi</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="stat : ${rentalStats}">
                                 <td th:text="${stat.movieTitle}"></td>
                                 <td class="text-right" th:text="${stat.rentalCount}"></td>
+                                <td class="text-right">
+                                    <input type="number" th:value="${stat.targetCount}"
+                                        th:attr="data-film-id=${stat.filmId}" class="target-input" />
+                                </td>
+                                <td>
+                                    <button class="update-target-btn"
+                                        th:attr="data-film-id=${stat.filmId}">Update</button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -308,77 +107,13 @@
         </div>
     </div>
 
+    <button class="mobile-menu-trigger">
+        <i class="fas fa-bars"></i>
+    </button>
     <script th:inline="javascript">
-        const rentalStats = /*[[${rentalStats}]]*/ [];
-        
-        const ctx = document.getElementById('rentalChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: rentalStats.map(stat => stat.movieTitle),
-                datasets: [{
-                    label: 'Jumlah Penyewaan',
-                    data: rentalStats.map(stat => stat.rentalCount),
-                    backgroundColor: 'rgba(52, 152, 219, 0.8)',
-                    borderColor: 'rgba(52, 152, 219, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 1
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top'
-                    },
-                    title: {
-                        display: true,
-                        text: 'Film Terpopuler Berdasarkan Jumlah Penyewaan',
-                        font: {
-                            size: 16
-                        }
-                    }
-                }
-            }
-        });
-
-    
-  // Fungsi redirect untuk admin panel
- // Fungsi redirect untuk admin panel
- function redirectToAdminDashboard() {
-            window.location.href = '/admin/dashboard';
-        }
-
-        function redirectToManageCustomers() {
-            window.location.href = '/admin/manage-customers';
-        }
-
-        function redirectToReports() {
-            window.location.href = '/admin/reports';
-        }
-
-        function redirectToMonthlyReports() {
-            window.location.href = '/admin/kelolaLaporan';
-        }
-        function redirectToManageGenres() {
-            window.location.href = '/admin/genres/manage';
-        }
-
-        function redirectToManageActors() {
-            window.location.href = '/admin/actors/manage';
-        }
-        function handleLogout() {
-            window.location.href = '/logout';
-        }
+        const rentalStats = /*[[${rentalStats}]]*/[];
     </script>
+    <script th:src="@{/js/report.js}"></script>
 </body>
+
 </html>
