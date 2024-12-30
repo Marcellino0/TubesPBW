@@ -8,8 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
-
 
 @Repository
 public class JdbcMovieRepository implements MovieRepository {
