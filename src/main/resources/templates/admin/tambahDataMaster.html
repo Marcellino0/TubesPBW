@@ -1,0 +1,339 @@
+<!-- admin/dashboard.html -->
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Rental - Admin Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: white;
+            padding: 1rem;
+        }
+
+        .sidebar-header {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid #34495e;
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .sidebar-menu li:hover {
+            background: #34495e;
+        }
+
+        .sidebar-menu i {
+            margin-right: 0.5rem;
+            width: 20px;
+        }
+
+        .sidebar-menu a {
+            text-decoration: none;
+            color: white;
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            background: #f5f6fa;
+        }
+
+        .section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .submit-btn {
+            background: #3498db;
+            color: white;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+        }
+
+        .data-table th {
+            background: #f8f9fa;
+        }
+
+        .edit-btn,
+        .delete-btn {
+            padding: 6px 12px;
+            margin: 0 4px;
+            border-radius: 4px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .edit-btn {
+            background-color: #3498db;
+        }
+
+        .delete-btn {
+            background-color: #e74c3c;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Admin Panel</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="/admin/dashboard">
+                        Kelola Film
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/manage-customers">
+                        Kelola Pelanggan
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/reports">
+                        Laporan
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="handleLogout(); return false;">
+                        Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+
+        <div class="main-content">
+            <div id="moviesSection" class="section">
+                <div class="content-header">
+                    <h2>Tambah Data Master Genre</h2>
+                    <!-- Table for displaying genres -->
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID Genre</th>
+                        <th>Nama Genre</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Example of genre data rows, replace with dynamic content -->
+                    <tr>
+                        <td>1</td>
+                        <td>Action</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Drama</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Form for adding new genre -->
+        <form action="/admin/add-genre" method="POST" style="margin-top: 2rem;">
+            <label for="genreName">Nama Genre:</label>
+            <input type="text" id="genreName" name="genreName" required>
+            <button type="submit" class="submit-btn">Tambah Genre</button>
+        </form>
+    </div>
+
+    <!-- Section for Actor Management -->
+    <div id="actorsSection" class="section" style="margin-top: 3rem;">
+        <div class="content-header">
+            <h2>Tambah Data Master Aktor</h2>
+        </div>
+
+        <!-- Table for displaying actors -->
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID Aktor</th>
+                        <th>Nama Aktor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Example of actor data rows, replace with dynamic content -->
+                    <tr>
+                        <td>1</td>
+                        <td>Robert Downey Jr.</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Scarlett Johansson</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Form for adding new actor -->
+        <form action="/admin/add-actor" method="POST" style="margin-top: 2rem;">
+            <label for="actorName">Nama Aktor:</label>
+            <input type="text" id="actorName" name="actorName" required>
+            <button type="submit" class="submit-btn">Tambah Aktor</button>
+        </form><!-- Table for displaying genres -->
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID Genre</th>
+                        <th>Nama Genre</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Example of genre data rows, replace with dynamic content -->
+                    <tr>
+                        <td>1</td>
+                        <td>Action</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Drama</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Form for adding new genre -->
+        <form action="/admin/add-genre" method="POST" style="margin-top: 2rem;">
+            <label for="genreName">Nama Genre:</label>
+            <input type="text" id="genreName" name="genreName" required>
+            <button type="submit" class="submit-btn">Tambah Genre</button>
+        </form>
+    </div>
+
+    <!-- Section for Actor Management -->
+    <div id="actorsSection" class="section" style="margin-top: 3rem;">
+        <div class="content-header">
+            <h2>Tambah Data Master Aktor</h2>
+        </div>
+
+        <!-- Table for displaying actors -->
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID Aktor</th>
+                        <th>Nama Aktor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Example of actor data rows, replace with dynamic content -->
+                    <tr>
+                        <td>1</td>
+                        <td>Robert Downey Jr.</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Scarlett Johansson</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Form for adding new actor -->
+        <form action="/admin/add-actor" method="POST" style="margin-top: 2rem;">
+            <label for="actorName">Nama Aktor:</label>
+            <input type="text" id="actorName" name="actorName" required>
+            <button type="submit" class="submit-btn">Tambah Aktor</button>
+        </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Tambahkan CSS baru untuk memperbaiki tampilan tabel -->
+    <style>
+        .data-table td {
+            text-align: center;
+            vertical-align: middle;
+        }
+        
+        .data-table img {
+            max-width: 100px;
+            height: auto;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Memperbaiki tampilan kolom harga */
+        .data-table td:nth-child(6),
+        .data-table td:nth-child(7),
+        .data-table td:nth-child(8) {
+            text-align: right;
+            padding-right: 20px;
+        }
+
+        /* Memperbaiki lebar tabel */
+        .data-table {
+            min-width: 1200px;
+            overflow-x: auto;
+        }
+
+        /* Wrapper untuk tabel dengan scroll horizontal */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 0 -1rem;
+            padding: 0 1rem;
+        }
+    </style>
+</body>
+
+</html>
