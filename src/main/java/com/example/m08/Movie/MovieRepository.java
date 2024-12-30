@@ -1,7 +1,7 @@
 package com.example.m08.Movie;
 
 import java.util.List;
-import java.util.Map;
+
 
 
 public interface MovieRepository {
@@ -18,7 +18,6 @@ public interface MovieRepository {
     void deleteById(int id);
     List<Movie> findAll();
     void update(Movie movie);
-
     List<String> getAllGenres();
     List<Movie> getMoviesByGenrePaginated(String genre, int start, int show);
     int countMoviesByGenre(String genre);
