@@ -16,7 +16,6 @@ public interface MovieRepository {
     void deleteById(int id);
     List<Movie> findAll();
     void update(Movie movie);
-
     List<String> getAllGenres();
     List<Movie> getMoviesByGenrePaginated(String genre, int start, int show);
     int countMoviesByGenre(String genre);
