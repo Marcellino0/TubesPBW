@@ -19,4 +19,6 @@ public interface MovieRepository {
     List<Movie> findAll();
     List<Movie> advancedSearchMoviesPaginated(List<String> genres, List<String> actors, String title, int start, int show);
     int countAdvancedSearchResults(List<String> genres, List<String> actors, String title);
+    List<Movie> findTop3MoviesByRentals();
+    List<Movie> findLast3Movies();
 }

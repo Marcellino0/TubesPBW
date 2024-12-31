@@ -210,4 +210,29 @@ public class JdbcMovieRepository implements MovieRepository {
         
         return jdbcTemplate.queryForObject(sql.toString(), Integer.class, params.toArray());
     }
+
+    @Override
+    public List<Movie> findTop3MoviesByRentals() {
+        String sql = """
+            SELECT f.*, COUNT(p.idfilm) AS rental_count
+            FROM film f
+            JOIN penyewaan p ON f.film_id = p.idfilm
+            GROUP BY f.film_id
+            ORDER BY rental_count DESC
+            LIMIT 3
+        """;
+        return jdbcTemplate.query(sql, movieRowMapper);
+    }
+
+    @Override
+    public List<Movie> findLast3Movies() {
+        String sql = """
+            SELECT * 
+            FROM film 
+            ORDER BY film_id DESC 
+            LIMIT 3;
+        """;
+        return jdbcTemplate.query(sql, movieRowMapper);
+    }
+
 }
