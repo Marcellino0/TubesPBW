@@ -10,6 +10,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.m08.RequiredRole;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 
 @Controller
 public class PelangganController {
@@ -24,26 +25,41 @@ public class PelangganController {
     }
 
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute("pelanggan") Pelanggan pelanggan, 
-                             BindingResult bindingResult, 
-                             Model model) {
-        if (bindingResult.hasErrors()) {
-            return "user/register";
-        }
+public String registerUser(@Valid @ModelAttribute("pelanggan") Pelanggan pelanggan, 
+                         BindingResult bindingResult, 
+                         Model model) {
+    // Validasi format input
+    if (bindingResult.hasErrors()) {
+        // Ambil pesan error dari validasi
+        String errorMessage = bindingResult.getFieldErrors()
+                .stream()
+                .map(error -> error.getDefaultMessage())
+                .findFirst()
+                .orElse("Terjadi kesalahan validasi");
+        model.addAttribute("error", errorMessage);
+        return "user/register";
+    }
 
-        if (!pelanggan.getPassword().equals(pelanggan.getConfirmPassword())) {
-            model.addAttribute("error", "Passwords do not match");
-            return "user/register";
-        }
+    // Validasi password match
+    if (!pelanggan.getPassword().equals(pelanggan.getConfirmPassword())) {
+        model.addAttribute("error", "Password dan konfirmasi password tidak cocok");
+        return "user/register";
+    }
 
+    try {
         boolean success = userService.register(pelanggan);
         if (!success) {
-            model.addAttribute("error", "Username already exists");
+            model.addAttribute("error", "Username sudah digunakan, silakan pilih username lain");
             return "user/register";
         }
-
+        
+        model.addAttribute("success", "Registrasi berhasil! Silakan login.");
         return "redirect:/login";
+    } catch (Exception e) {
+        model.addAttribute("error", "Terjadi kesalahan: " + e.getMessage());
+        return "user/register";
     }
+}
 
     @GetMapping("/profile")
     @RequiredRole("user")
