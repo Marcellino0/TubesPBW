@@ -102,69 +102,113 @@ body {
 /* Search and Filter */
 .search-filter-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
-    margin-bottom: 3rem;
-    gap: 1.5rem;
-    flex-wrap: wrap;
+    margin-bottom: 2rem;
+    gap: 1rem;
 }
 
 .search-form {
     display: flex;
     gap: 1rem;
-    margin-bottom: 1rem;
+    align-items: center;
+}
+
+.search-group {
+    position: relative;
+}
+
+.search-group label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
 }
 
 .search-input {
-    width: 100%;
-    padding: 1rem 1.25rem;
-    border: none;
-    border-radius: 12px;
-    font-size: 0.95rem;
-    transition: all 0.2s ease;
-    background: #1e293b;
+    width: 300px;
+    padding: 0.75rem 1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
     color: var(--text-primary);
+    font-size: 0.95rem;
 }
 
 .search-input:focus {
     outline: none;
-    background: #334155;
+    border-color: var(--primary-color);
 }
-
 .search-input::placeholder {
     color: var(--text-secondary);
 }
 
-.search-btn {
-    padding: 1rem 1.5rem;
-    background: var(--primary-color);
-    color: white;
+/* Genre and Actor Select Styles */
+.genre-select,
+.actor-select {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    min-height: 45px;
+}
+
+.genre-select option,
+.actor-select option {
+    background: var(--card-bg);
+    color: var(--text-primary);
+    padding: 8px;
+}
+
+.genre-select option:checked,
+.actor-select option:checked {
+    background: var(--card-bg);
+    color: var(--text-primary);
+}
+
+/* Button Group Styles */
+.button-group {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+}
+
+.search-btn,
+.reset-btn {
+    padding: 0.875rem 1.5rem;
     border: none;
     border-radius: 12px;
-    cursor: pointer;
     font-weight: 500;
-    transition: all 0.3s ease;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.search-btn {
+    background: var(--primary-color);
+    color: white;
 }
 
 .search-btn:hover {
-    background: var(--text-secondary);
-    transform: translateY(-1px);
+    background: var(--primary-hover);
+    transform: translateY(-2px);
 }
 
-.genre-select {
-    padding: 1rem 2.5rem 1rem 1.25rem;
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
+.reset-btn {
     background: var(--card-bg);
-    min-width: 220px;
-    cursor: pointer;
-    font-size: 0.95rem;
     color: var(--text-primary);
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 1rem;
+    border: 1px solid var(--border-color);
+}
+
+.reset-btn:hover {
+    background: var(--border-color);
+    transform: translateY(-2px);
 }
 
 /* Movie Grid and Cards */
@@ -217,6 +261,7 @@ body {
     backface-visibility: hidden;
     background: var(--card-bg);
 }
+
 .flipcard-front {
     padding: 0;
     overflow: hidden;
@@ -249,7 +294,6 @@ body {
     border: 1px solid var(--border-color);
     max-height: calc(100% - 120px); 
 }
-
 
 .synopsis-text {
     word-wrap: break-word;
@@ -313,6 +357,52 @@ body {
     display: flex;
     justify-content: left;
     gap: 0.5rem;
+}
+
+/* Active Filters */
+.active-filters {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: var(--card-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.active-filters h3 {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.filter-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.filter-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--bg-color);
+    border: 1px solid var(--primary-color);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.remove-filter {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 1.2rem;
+    line-height: 1;
+    padding: 2px;
+    cursor: pointer;
+}
+
+.remove-filter:hover {
+    color: var(--primary-color);
 }
 
 /* Rental Form */
@@ -454,14 +544,6 @@ body {
     border: 1px solid #dc2626;
 }
 
-/* Glass morphism effect for active menu */
-.sidebar-menu li.active {
-    background: rgba(99, 102, 241, 0.2);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(99, 102, 241, 0.1);
-}
-
 /* Responsive Design */
 @media (max-width: 1024px) {
     .sidebar {
@@ -494,6 +576,26 @@ body {
     .search-filter-container {
         flex-direction: column;
         align-items: stretch;
+    }
+
+    .search-form {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .search-group {
+        width: 100%;
+    }
+    
+    .button-group {
+        width: 100%;
+        flex-direction: column;
+    }
+    
+    .search-btn,
+    .reset-btn {
+        width: 100%;
+        justify-content: center;
     }
 
     .movie-card {
