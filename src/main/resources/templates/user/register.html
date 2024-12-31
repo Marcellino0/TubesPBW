@@ -1,49 +1,84 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Create Account</title>
-  <link th:href="@{/css/register.css}" rel="stylesheet"/>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Account</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link th:href="@{/css/register.css}" rel="stylesheet" />
 </head>
 
 <body>
-  <header>
-    <h1>Create Account</h1>
-  </header>
-  <div class="container">
-    <div class="image-section">
-      <img src="../image/camara.png" alt="Camera" />
-    </div>
+  <div class="overlay"></div>
+  
+  <div th:if="${success}" class="notification success" th:text="${success}"></div>
+  <div th:if="${error}" class="notification error" th:text="${error}"></div>
 
-    <main>
+  <div class="form-container">
+      <div class="form-header">
+          <h1>Sign Up</h1>
+      </div>
+
       <form th:action="@{/register}" th:object="${pelanggan}" method="post">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" th:field="*{username}" required />
+          <div class="form-group">
+              <label for="nama">Full Name</label>
+              <input type="text" id="nama" th:field="*{nama}" 
+                     placeholder="Enter your name"
+                     th:class="${#fields.hasErrors('nama')} ? 'error'" required />
+              <p class="hint-text">Nama harus terdiri dari 4-20 karakter</p>
+          </div>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" th:field="*{password}" required />
+          <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" th:field="*{email}" 
+                     placeholder="Enter your email"
+                     th:class="${#fields.hasErrors('email')} ? 'error'" required />
+              <p class="hint-text">Email harus terdiri dari 4-30 karakter</p>
+          </div>
 
-        <label for="confirmPassword">Confirm Password:</label>
-        <input type="password" id="confirmPassword" name="confirmPassword" required />
+          <div class="form-group">
+              <label for="username">Username</label>
+              <input type="text" id="username" th:field="*{username}" 
+                     placeholder="Choose a username"
+                     th:class="${#fields.hasErrors('username')} ? 'error'" required />
+              <p class="hint-text">Username harus terdiri dari 4-100 karakter</p>
+          </div>
 
-        <label for="nama">Name:</label>
-        <input type="text" id="nama" name="nama" th:field="*{nama}" required />
+          <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" id="password" th:field="*{password}" 
+                     placeholder="••••••••"
+                     th:class="${#fields.hasErrors('password')} ? 'error'" required />
+              <p class="hint-text">Password harus terdiri dari 4-100 karakter</p>
+          </div>
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" th:field="*{email}" required />
+          <div class="form-group">
+              <label for="confirmPassword">Repeat Password</label>
+              <input type="password" id="confirmPassword" th:field="*{confirmPassword}" 
+                     placeholder="••••••••"
+                     th:class="${#fields.hasErrors('confirmPassword')} ? 'error'" required />
+              <p class="hint-text">Masukkan password yang sama dengan di atas</p>
+          </div>
 
-        <label for="noTelp">Phone Number:</label>
-        <input type="tel" id="noTelp" name="noTelp" th:field="*{noTelp}" required />
+          <div class="form-group">
+              <label for="noTelp">Phone Number</label>
+              <input type="tel" id="noTelp" th:field="*{noTelp}" 
+                     placeholder="Enter your phone number"
+                     th:class="${#fields.hasErrors('noTelp')} ? 'error'" required />
+              <p class="hint-text">Nomor telepon harus terdiri dari 4-30 karakter</p>
+          </div>
 
-        <button class="submit_btn" type="submit">Create Account</button>
+          <div class="checkbox-group">
+              <input type="checkbox" id="terms" required />
+              <label for="terms">I agree to the Terms of User</label>
+          </div>
+
+          <button type="submit">Sign Up</button>
+
+          <div class="sign-in-link">
+              <a href="/login">Sign in →</a>
+          </div>
       </form>
-    </main>
   </div>
-
-  <div id="message" th:if="${error}" th:text="${error}"></div>
-
 </body>
-
 </html>

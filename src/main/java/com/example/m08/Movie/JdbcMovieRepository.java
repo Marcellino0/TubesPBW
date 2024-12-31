@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -40,23 +40,23 @@ public class JdbcMovieRepository implements MovieRepository {
     }
 
     @Override
-    public List<Movie> searchMoviesPaginated(String search, int start, int show) {
-        String sql = "SELECT * FROM film WHERE judul ILIKE ? OR genre ILIKE ? LIMIT ? OFFSET ?";
-        String searchPattern = "%" + search + "%";
-        return jdbcTemplate.query(sql, movieRowMapper, searchPattern, searchPattern, show, start);
-    }
-
-    @Override
     public int countAllMovies() {
         String sql = "SELECT COUNT(*) FROM film";
         return jdbcTemplate.queryForObject(sql, Integer.class);
     }
 
     @Override
-    public int countSearchResults(String search) {
-        String sql = "SELECT COUNT(*) FROM film WHERE judul ILIKE ? OR genre ILIKE ?";
+    public List<Movie> searchMoviesPaginated(String search, int start, int show) {
+        String sql = "SELECT * FROM film WHERE judul ILIKE ? OR genre ILIKE ? OR aktor ILIKE ? LIMIT ? OFFSET ?";
         String searchPattern = "%" + search + "%";
-        return jdbcTemplate.queryForObject(sql, Integer.class, searchPattern, searchPattern);
+        return jdbcTemplate.query(sql, movieRowMapper, searchPattern, searchPattern, searchPattern, show, start);
+    }
+
+    @Override
+    public int countSearchResults(String search) {
+        String sql = "SELECT COUNT(*) FROM film WHERE judul ILIKE ? OR genre ILIKE ? OR aktor ILIKE ?";
+        String searchPattern = "%" + search + "%";
+        return jdbcTemplate.queryForObject(sql, Integer.class, searchPattern, searchPattern, searchPattern);
     }
 
     @Override
@@ -79,51 +79,43 @@ public class JdbcMovieRepository implements MovieRepository {
     }
 
     @Override
-    public List<Movie> findByReleaseYear(Integer year) {
-        return null; // Not implemented
+    public List<String> getAllGenres() {
+        String sql = "SELECT DISTINCT genre FROM film ORDER BY genre";
+        return jdbcTemplate.queryForList(sql, String.class);
     }
 
     @Override
-    public List<Movie> findByRatingGreaterThanEqual(Double rating) {
-        return null; // Not implemented
+    public List<Movie> getMoviesByGenrePaginated(String genre, int start, int show) {
+        String sql = "SELECT * FROM film WHERE genre = ? LIMIT ? OFFSET ?";
+        return jdbcTemplate.query(sql, movieRowMapper, genre, show, start);
     }
 
     @Override
-public List<String> getAllGenres() {
-    String sql = "SELECT DISTINCT genre FROM film ORDER BY genre";
-    return jdbcTemplate.queryForList(sql, String.class);
-}
+    public int countMoviesByGenre(String genre) {
+        String sql = "SELECT COUNT(*) FROM film WHERE genre = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, genre);
+    }
 
-@Override
-public List<Movie> getMoviesByGenrePaginated(String genre, int start, int show) {
-    String sql = "SELECT * FROM film WHERE genre = ? LIMIT ? OFFSET ?";
-    return jdbcTemplate.query(sql, movieRowMapper, genre, show, start);
-}
+    @Override
+    public void save(Movie movie) {
+        String sql = "INSERT INTO film (cover, judul, genre, aktor, synopsis, stok, harga_7_hari, harga_14_hari, harga_30_hari) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql,
+                movie.getCover(),
+                movie.getJudul(),
+                movie.getGenre(),
+                movie.getAktor(),
+                movie.getSynopsis(),
+                movie.getStok(),
+                movie.getHarga7Hari(),
+                movie.getHarga14Hari(),
+                movie.getHarga30Hari());
+    }
 
-@Override
-public int countMoviesByGenre(String genre) {
-    String sql = "SELECT COUNT(*) FROM film WHERE genre = ?";
-    return jdbcTemplate.queryForObject(sql, Integer.class, genre);
-}
-
-@Override
-public void save(Movie movie) {
-    String sql = "INSERT INTO film (cover, judul, genre, aktor, synopsis, stok, harga_7_hari, harga_14_hari, harga_30_hari) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    jdbcTemplate.update(sql,
-            movie.getCover(),
-            movie.getJudul(),
-            movie.getGenre(),
-            movie.getAktor(),
-            movie.getSynopsis(),
-            movie.getStok(),
-            movie.getHarga7Hari(),
-            movie.getHarga14Hari(),
-            movie.getHarga30Hari());
-}
-
-@Override
+    @Override
     public void update(Movie movie) {
-        String sql = "UPDATE film SET cover = ?, judul = ?, genre = ?, aktor = ?, synopsis = ?, stok = ?, harga_7_hari = ?, harga_14_hari = ?, harga_30_hari = ? WHERE film_id = ?";
+        String sql = "UPDATE film SET cover = ?, judul = ?, genre = ?, aktor = ?, synopsis = ?, " +
+                    "stok = ?, harga_7_hari = ?, harga_14_hari = ?, harga_30_hari = ? WHERE film_id = ?";
         jdbcTemplate.update(sql,
                 movie.getCover(),
                 movie.getJudul(),
@@ -138,53 +130,84 @@ public void save(Movie movie) {
     }
 
     @Override
+    public void deleteById(int id) {
+        String sql = "DELETE FROM film WHERE film_id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
+    @Override
     public List<Movie> findAll() {
         String sql = "SELECT * FROM film";
         return jdbcTemplate.query(sql, movieRowMapper);
     }
 
     @Override
-    public void deleteById(int id) {
-        String sql = "DELETE FROM film WHERE film_id = ?";
-        jdbcTemplate.update(sql, id);
+    public List<Movie> advancedSearchMoviesPaginated(List<String> genres, List<String> actors, String title, int start, int show) {
+        StringBuilder sql = new StringBuilder("SELECT DISTINCT f.* FROM film f WHERE 1=1 ");
+        List<Object> params = new ArrayList<>();
+        
+        if (genres != null && !genres.isEmpty()) {
+            sql.append("AND (");
+            for (int i = 0; i < genres.size(); i++) {
+                if (i > 0) sql.append(" AND ");
+                sql.append("f.genre ILIKE ?");
+                params.add("%" + genres.get(i) + "%");
+            }
+            sql.append(") ");
+        }
+        
+        if (actors != null && !actors.isEmpty()) {
+            sql.append("AND (");
+            for (int i = 0; i < actors.size(); i++) {
+                if (i > 0) sql.append(" AND ");
+                sql.append("f.aktor ILIKE ?");
+                params.add("%" + actors.get(i) + "%");
+            }
+            sql.append(") ");
+        }
+        
+        if (title != null && !title.trim().isEmpty()) {
+            sql.append("AND f.judul ILIKE ? ");
+            params.add("%" + title + "%");
+        }
+        
+        sql.append("ORDER BY f.film_id LIMIT ? OFFSET ?");
+        params.add(show);
+        params.add(start);
+        
+        return jdbcTemplate.query(sql.toString(), movieRowMapper, params.toArray());
     }
 
-
-
-@Override
-public List<Movie> findTop3MostSoldMovies() {
-    String sql = """
-        SELECT 
-            f.film_id,
-            f.cover,
-            f.judul,
-            f.genre,
-            f.aktor,
-            f.stok,
-            f.harga_7_hari,
-            f.harga_14_hari,
-            f.harga_30_hari,
-            COUNT(p.idsewa) AS sales_count
-        FROM penyewaan p
-        JOIN film f ON p.idfilm = f.film_id
-        GROUP BY f.film_id, f.cover, f.judul, f.genre, f.aktor, f.stok, f.harga_7_hari, f.harga_14_hari, f.harga_30_hari
-        ORDER BY sales_count DESC
-        LIMIT 3;
-    """;
-
-    return jdbcTemplate.query(sql, movieRowMapper);
-}
-
-@Override
-public List<Movie> findLast3Movies() {
-    String sql = """
-        SELECT * 
-        FROM film 
-        ORDER BY film_id DESC 
-        LIMIT 3;
-    """;
-    return jdbcTemplate.query(sql, movieRowMapper);
-}
-
-
+    @Override
+    public int countAdvancedSearchResults(List<String> genres, List<String> actors, String title) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(DISTINCT f.film_id) FROM film f WHERE 1=1 ");
+        List<Object> params = new ArrayList<>();
+        
+        if (genres != null && !genres.isEmpty()) {
+            sql.append("AND (");
+            for (int i = 0; i < genres.size(); i++) {
+                if (i > 0) sql.append(" AND ");
+                sql.append("f.genre ILIKE ?");
+                params.add("%" + genres.get(i) + "%");
+            }
+            sql.append(") ");
+        }
+        
+        if (actors != null && !actors.isEmpty()) {
+            sql.append("AND (");
+            for (int i = 0; i < actors.size(); i++) {
+                if (i > 0) sql.append(" AND ");
+                sql.append("f.aktor ILIKE ?");
+                params.add("%" + actors.get(i) + "%");
+            }
+            sql.append(") ");
+        }
+        
+        if (title != null && !title.trim().isEmpty()) {
+            sql.append("AND f.judul ILIKE ? ");
+            params.add("%" + title + "%");
+        }
+        
+        return jdbcTemplate.queryForObject(sql.toString(), Integer.class, params.toArray());
+    }
 }

@@ -51,18 +51,70 @@
                 <!-- Search and Filter -->
                 <div class="search-filter-container">
                     <form class="search-form" method="get" th:action="@{/userdashboard}">
-                        <input type="text" name="search" th:value="${search}" class="search-input"
-                            placeholder="Search movies...">
-                        <button type="submit" class="search-btn">Search</button>
-                    </form>
-                    <div class="filter-container">
-                        <form class="filter-form" method="get" th:action="@{/userdashboard}">
-                            <select name="genre" class="genre-select" onchange="this.form.submit()">
-                                <option value="">All Genres</option>
-                                <option th:each="genre: ${genres}" th:value="${genre}" th:text="${genre}"
-                                    th:selected="${genre == selectedGenre}"></option>
+                        <!-- Title Search -->
+                        <div class="search-group">
+                            <input type="text" id="titleSearch" name="title" th:value="${title}" class="search-input"
+                                placeholder="Search movie titles...">
+                        </div>
+
+                        <!-- Genre Select -->
+                        <div class="search-group">
+                            <select name="genres" class="genre-select" id="genreSelect">
+                                <option value="">Select Genre</option>
+                                <option th:each="genre: ${allGenres}" th:value="${genre}" th:text="${genre}"
+                                    th:selected="${selectedGenres != null && selectedGenres.contains(genre)}">
+                                </option>
                             </select>
-                        </form>
+                        </div>
+
+                        <!-- Actor Select -->
+                        <div class="search-group">
+                            <select name="actors" class="actor-select" id="actorSelect">
+                                <option value="">Select Actor</option>
+                                <option th:each="actor: ${allActors}" th:value="${actor}" th:text="${actor}"
+                                    th:selected="${selectedActors != null && selectedActors.contains(actor)}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="button-group">
+                            <button type="submit" class="search-btn">Search</button>
+                            <button type="button" class="reset-btn" onclick="resetSearchForm()">Reset</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- Show active filters if any -->
+                <div class="active-filters" th:if="${(selectedGenres != null && !selectedGenres.isEmpty()) || 
+    (selectedActors != null && !selectedActors.isEmpty()) || 
+    (title != null && !title.isEmpty())}">
+                    <h3>Active Filters:</h3>
+                    <div class="filter-tags">
+                        <!-- Title filter -->
+                        <span class="filter-tag" th:if="${title != null && !title.isEmpty()}">
+                            Title: [[${title}]]
+                            <a th:href="@{/userdashboard(genres=${selectedGenres},actors=${selectedActors})}"
+                                class="remove-filter">&times;</a>
+                        </span>
+
+                        <!-- Genre filters -->
+                        <span class="filter-tag" th:each="genre : ${selectedGenres}" th:if="${selectedGenres != null}">
+                            Genre: [[${genre}]]
+                            <a th:href="@{/userdashboard(
+title=${title},
+genres=${#lists.size(selectedGenres) > 1 ? 
+#lists.toList(#arrays.asList(selectedGenres).?[!#this.equals(genre)]) : null},
+actors=${selectedActors})}" class="remove-filter">&times;</a>
+                        </span>
+
+                        <!-- Actor filters -->
+                        <span class="filter-tag" th:each="actor : ${selectedActors}" th:if="${selectedActors != null}">
+                            Actor: [[${actor}]]
+                            <a th:href="@{/userdashboard(
+title=${title},
+genres=${selectedGenres},
+actors=${#lists.size(selectedActors) > 1 ? 
+#lists.toList(#arrays.asList(selectedActors).?[!#this.equals(actor)]) : null})}" class="remove-filter">&times;</a>
+                        </span>
                     </div>
                 </div>
 
@@ -133,7 +185,26 @@
                         </li>
                     </ul>
                 </nav>
+                <script>
+                    function resetSearchForm() {
+                        window.location.href = '/userdashboard';
+                    }
 
+                    // Initialize multiple select dropdowns
+                    document.addEventListener('DOMContentLoaded', function () {
+                        new SlimSelect({
+                            select: '#genreSelect',
+                            placeholder: 'Select Genres',
+                            closeOnSelect: false
+                        });
+
+                        new SlimSelect({
+                            select: '#actorSelect',
+                            placeholder: 'Select Actors',
+                            closeOnSelect: false
+                        });
+                    });
+                </script>
                 <!-- Update script section -->
                 <script>
                     function flipCard(element) {
