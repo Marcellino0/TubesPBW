@@ -11,6 +11,8 @@ import com.example.m08.User.Pelanggan;
 import com.example.m08.User.UserService;
 import com.example.m08.Movie.MovieRepository;
 import com.example.m08.Movie.Movie;
+import com.example.m08.AdminMovie.Admin;
+import com.example.m08.AdminMovie.AdminService;
 
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
@@ -22,6 +24,9 @@ public class LoginController {
     private UserService userService;
     
     @Autowired
+    private AdminService adminService;
+    
+    @Autowired
     private MovieRepository movieRepository;
     
     @GetMapping("/login")
@@ -29,7 +34,42 @@ public class LoginController {
         if (session.getAttribute("pelanggan") != null) {
             return "redirect:/userdashboard";
         }
+        if (session.getAttribute("admin") != null) {
+            return "redirect:/admin/dashboard";
+        }
         return "login";
+    }
+    
+    @PostMapping("/login")
+    public String processLogin(@RequestParam String username, 
+                             @RequestParam String password, 
+                             HttpSession session, 
+                             Model model) {
+        Pelanggan pelanggan = userService.login(username, password);
+        if (pelanggan == null) {
+            model.addAttribute("error", "Invalid username or password");
+            return "login";
+        }
+        
+        session.setAttribute("pelanggan", pelanggan);
+        session.setAttribute("role", "user");
+        return "redirect:/userdashboard";
+    }
+    
+    @PostMapping("/loginadmin")
+    public String processAdminLogin(@RequestParam String username, 
+                                  @RequestParam String password, 
+                                  HttpSession session, 
+                                  Model model) {
+        Admin admin = adminService.login(username, password);
+        if (admin == null) {
+            model.addAttribute("error", "Invalid username or password");
+            return "login";
+        }
+        
+        session.setAttribute("admin", admin);
+        session.setAttribute("role", "admin");
+        return "redirect:/admin/dashboard";
     }
     
     @GetMapping("/userdashboard")
@@ -39,7 +79,6 @@ public class LoginController {
             @RequestParam(required = false) String genre,
             HttpSession session, 
             Model model) {
-        // Verifikasi session
         if (session.getAttribute("pelanggan") == null) {
             return "redirect:/login";
         }
@@ -74,22 +113,6 @@ public class LoginController {
         model.addAttribute("user", session.getAttribute("pelanggan"));
         
         return "user/userdashboard";
-    }
-    
-    @PostMapping("/login")
-    public String processLogin(@RequestParam String username, 
-                             @RequestParam String password, 
-                             HttpSession session, 
-                             Model model) {
-        Pelanggan pelanggan = userService.login(username, password);
-        if (pelanggan == null) {
-            model.addAttribute("status", "failed");
-            return "login";
-        }
-        
-        session.setAttribute("pelanggan", pelanggan);
-        session.setAttribute("role", "user");
-        return "redirect:/userdashboard";
     }
     
     @GetMapping("/logout")
