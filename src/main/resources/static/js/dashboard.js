@@ -105,14 +105,14 @@ function startAutoAdvance() {
         if (autoAdvanceEnabled) {
             plusMovieSlides(1, 'top');
         }
-    }, 5000);
+    }, 4000);
 
     // Auto advance for Latest Movies
     setInterval(() => {
         if (autoAdvanceEnabled) {
             plusMovieSlides(1, 'latest');
         }
-    }, 5000);
+    }, 4000);
 }
 
 // Initialize everything when document is ready
@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Auto advance main slideshow
     setInterval(() => {
         plusSlides(1);
-    }, 5000);
+    }, 4000);
 
     // Initialize movie slideshows
     showMovieSlides(topMovieIndex, 'top');
