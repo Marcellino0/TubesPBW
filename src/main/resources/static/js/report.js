@@ -45,20 +45,9 @@ document.addEventListener('click', (e) => {
 // Chart functions
 let rentalChart;
 
-function calculateAverageRentals() {
-    return rentalStats.map(stat => {
-        if (stat.rentalCount > 0 && stat.targetCount > 0) {
-            return (stat.rentalCount / stat.targetCount);
-        } else {
-            return 0;
-        }
-    });
-}
-
 // Function to initialize the chart
 function initializeChart() {
     const ctx = document.getElementById('rentalChart').getContext('2d');
-    const averageRentals = calculateAverageRentals();
 
     rentalChart = new Chart(ctx, {
         type: 'line',
@@ -176,6 +165,7 @@ function initializeChart() {
         }
     });
 }
+
 
 // Function to update chart data
 function updateChartData() {
