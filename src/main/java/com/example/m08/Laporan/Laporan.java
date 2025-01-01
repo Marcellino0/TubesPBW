@@ -10,14 +10,14 @@ import java.time.LocalDate;
 public class Laporan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idLaporan;
+    private Integer idLaporan;
     
-    private int idSewa;           // ID rental terkait
-    private String movieTitle;    // Judul film yang dirental
-    private String username;      // Username pelanggan
-    private LocalDate rentDate;   // Tanggal rental
-    private LocalDate dueDate;    // Tanggal pengembalian
-    private double hargaSewa;     // Harga sewa
-    private double denda;         // Denda jika ada
-    private String status;        // Status rental (ACTIVE/RETURNED)
+    private Integer idSewa;
+    private String movieTitle;
+    private String username;
+    private LocalDate rentDate;
+    private LocalDate dueDate;
+    private double hargaSewa;
+    private double denda;
+    private String status;
 }
