@@ -20,8 +20,8 @@ public class DashboardController {
     
     @GetMapping("/")
     public String dashboard(Model model) {
-        List<Movie> topMovies = movieRepository.findTop3MoviesByRentals();
-        List<Movie> latestMovies = movieRepository.findLast3Movies();
+        List<Movie> topMovies = movieRepository.findTop10MoviesByRentals();
+        List<Movie> latestMovies = movieRepository.findLast10Movies();
         model.addAttribute("topMovies", topMovies);
         model.addAttribute("latestMovies", latestMovies);
         return "dashboard"; // Mengarah ke dashboard.html yang berisi landing page
