@@ -1,18 +1,25 @@
 package com.example.m08.Rental;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpSession;
+
+import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 import com.example.m08.User.Pelanggan;
 import com.example.m08.User.PelangganRepository;
+import com.example.m08.export.ExportRentalStatsPdf;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 @Controller
 public class RentalController {
@@ -160,5 +167,23 @@ public String viewRentalHistory(Model model, HttpSession session) {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    @GetMapping("/rental/stats/export")
+public ResponseEntity<byte[]> exportRentalStatsPdf() {
+    try {
+        List<MovieRentalStats> stats = rentalRepository.getMovieRentalStats();
+        ByteArrayInputStream bis = ExportRentalStatsPdf.rentalStatsReport(stats);
+        
+        byte[] pdfBytes = bis.readAllBytes();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("filename", "rental_stats_report.pdf");
+        
+        return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+    } catch (Exception e) {
+        e.printStackTrace();
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
 
 }
