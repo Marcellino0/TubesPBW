@@ -1,93 +1,158 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Rental</title>
-    <link th:href="@{/css/dashboard.css}" rel="stylesheet"/>
-    <link th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/dashboard.css}" rel="stylesheet" />
 </head>
+
 <body>
     <!-- Header -->
     <header class="header">
-        <div class="logo">MovieMate</div>
+        <div class="logo">MovieMate</div><br>
         <div class="header-buttons">
-            <a href="#" class="btn-header nav-link" data-section="home">Home</a>
+            <a href="#" class="btn-header nav-link">Home</a>
             <a th:href="@{/login}" class="btn-header-logo">Log in</a>
             <a th:href="@{/register}" class="btn-header-logo">Register</a>
         </div>
     </header>
 
-    <!-- Section Container -->
-    <div class="section-container">
-        <!-- Navigation Arrows -->
+    <div class="slideshow-container">
+        <div class="slides fade">
+            <video autoplay muted loop class="slide-video">
+                <source th:src="@{/video/marvel.mp4}" type="video/mp4">
+            </video>
+            <div class="slide-content">
+                <h1>Welcome to MovieMate</h1>
+                <p>Platform terbaik untuk menyewa film favorit Anda. Temukan berbagai genre film dengan kualitas
+                    terbaik.</p>
+            </div>
+        </div>
+
+        <div class="slides fade">
+            <video autoplay muted loop class="slide-video">
+                <source th:src="@{/video/superhero.mp4}" type="video/mp4">
+            </video>
+            <div class="slide-content">
+                <h2>About Us</h2>
+                <p>Kami adalah pengembang platform MovieMate yang bertujuan untuk memberikan pengalaman menonton terbaik
+                    bagi pengguna.</p>
+                <p>Dibuat oleh Mahasiswa UNPAR, kami percaya pada kekuatan Film untuk menyatukan orang.</p>
+            </div>
+        </div>
+
+        <div class="slides fade">
+            <video autoplay muted loop class="slide-video">
+                <source th:src="@{/video/short.mp4}" type="video/mp4">
+            </video>
+            <div class="slide-content">
+                <h2>Our Services</h2>
+                <p>Kami menyediakan layanan bantuan 24/7 untuk memandu Anda menggunakan platform ini.</p>
+                <p>Panduan mencakup cara menyewa film, melihat koleksi, dan mengelola langganan Anda.</p>
+            </div>
+        </div>
+
         <a class="prev" onclick="plusSlides(-1)">❮</a>
         <a class="next" onclick="plusSlides(1)">❯</a>
 
-        <!-- Sections -->
-        <section id="home" class="section active">
-            <video autoplay muted loop class="video-background">
-                <source th:src="@{/video/marvel.mp4}" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-            <h1>Welcome to MovieMate</h1>
-            <p>Platform terbaik untuk menyewa film favorit Anda. Temukan berbagai genre film dengan kualitas terbaik.</p>
-        </section>
-
-        <section id="about" class="section">
-            <video autoplay muted loop class="video-background">
-                <source th:src="@{/video/superhero.mp4}" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-            <h2>About Us</h2>
-            <p>Kami adalah pengembang platform MovieMate yang bertujuan untuk memberikan pengalaman menonton terbaik bagi pengguna.</p>
-            <p>Dibuat oleh Mahasiswa UNPAR, kami percaya pada kekuatan Film untuk menyatukan orang.</p>
-        </section>
-
-        <section id="service" class="section">
-            <video autoplay muted loop class="video-background">
-                <source th:src="@{/video/short.mp4}" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-            <h2>Our Services</h2>
-            <p>Kami menyediakan layanan bantuan 24/7 untuk memandu Anda menggunakan platform ini.</p>
-            <p>Panduan mencakup cara menyewa film, melihat koleksi, dan mengelola langganan Anda.</p>
-        </section>
-    </div>
-
-    <!-- Navigation Dots -->
-    <div style="text-align:center">
-        <span class="dot" onclick="currentSlide(1)"></span>
-        <span class="dot" onclick="currentSlide(2)"></span>
-        <span class="dot" onclick="currentSlide(3)"></span>
+        <div class="dot-container">
+            <span class="dot" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+            <span class="dot" onclick="currentSlide(3)"></span>
+        </div>
     </div>
 
     <!-- Dashboard -->
     <main class="dashboard">
+        <!-- Premiere Section -->
+        <section class="premiere-section">
+            <div class="premiere-info">
+                <h2>Premiere Mission Impossible: The Final Reckoning</h2>
+                <p>*Mission: Impossible – The Final Reckoning* adalah film mata-mata aksi Amerika yang akan datang,
+                    disutradarai oleh Christopher McQuarrie dan ditulis bersama Erik Jendresen. Film ini merupakan
+                    sekuel dari *Mission: Impossible – Dead Reckoning Part One* (2023) sekaligus bagian kedelapan dari
+                    seri ini. Tom Cruise dan beberapa pemeran lainnya kembali memerankan karakter mereka, sementara
+                    Lorne Balfe kembali sebagai komposer. Awalnya direncanakan untuk syuting berurutan dengan film
+                    ketujuh, produksi dimulai pada Maret 2022 di lokasi seperti Inggris, Malta, Afrika Selatan, dan
+                    Norwegia. Produksi sempat tertunda akibat mogok kerja SAG-AFTRA, tetapi dilanjutkan dan selesai pada
+                    November 2024. Film ini diberi judul baru pada akhir 2023 dan dijadwalkan rilis pada 23 Mei 2025
+                    oleh Paramount Pictures.
+                </p>
+                <!-- gak dipake <a href="#" class="btn-header">Remind Me</a> -->
+            </div>
+            <div class="premiere-video">
+                <video autoplay loop muted>
+                    <source th:src="@{/video/mi.mp4}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </section>
         <h2>Top Movies</h2>
-        <p class="sub-description">Discover the most popular movies loved by our users. These top-rated picks are perfect for movie enthusiasts.</p>
-        <div class="movie-grid top-movies">
-            <div th:each="movie : ${topMovies}" class="movie-card">
-                <img th:src="@{'data:image/jpeg;base64,' + ${movie.base64Cover}}" th:alt="${movie.judul}">
-                <div class="movie-info">
-                    <h3 th:text="${movie.judul}">Movie Title</h3>
-                    <p><strong>Genre:</strong> <span th:text="${movie.genre}">Genre</span></p>
-                    <p><strong>Actor:</strong> <span th:text="${movie.aktor}">Actor</span></p>
+        <div class="movie-slideshow" id="topMoviesSlideshow">
+            <div class="movie-slide active">
+                <div th:each="movie, iterStat : ${topMovies}" th:if="${iterStat.index < 4}" class="movie-card">
+                    <img th:src="@{'data:image/jpeg;base64,' + ${movie.base64Cover}}" th:alt="${movie.judul}">
+                    <div class="movie-info">
+                        <h3 th:text="${movie.judul}">Movie Title</h3>
+                        <p><strong>Genre:</strong> <span th:text="${movie.genre}">Genre</span></p>
+                        <p><strong>Actor:</strong> <span th:text="${movie.aktor}">Actor</span></p>
+                    </div>
                 </div>
             </div>
+            <div class="movie-slide">
+                <div th:each="movie, iterStat : ${topMovies}" th:if="${iterStat.index >= 4 && iterStat.index < 8}"
+                    class="movie-card">
+                    <img th:src="@{'data:image/jpeg;base64,' + ${movie.base64Cover}}" th:alt="${movie.judul}">
+                    <div class="movie-info">
+                        <h3 th:text="${movie.judul}">Movie Title</h3>
+                        <p><strong>Genre:</strong> <span th:text="${movie.genre}">Genre</span></p>
+                        <p><strong>Actor:</strong> <span th:text="${movie.aktor}">Actor</span></p>
+                    </div>
+                </div>
+            </div>
+            <!-- Navigation -->
+            <div class="movie-nav">
+                <span class="movie-dot active" onclick="currentMovieSlide(1, 'top')"></span>
+                <span class="movie-dot" onclick="currentMovieSlide(2, 'top')"></span>
+            </div>
+            <div class="movie-prev" onclick="plusMovieSlides(-1, 'top')">❮</div>
+            <div class="movie-next" onclick="plusMovieSlides(1, 'top')">❯</div>
         </div>
-    
+
+
+        <!-- Just Added Section - Similar structure -->
         <h2>Just Added</h2>
-        <p class="sub-description">Stay up-to-date with the latest additions to our catalog. These newly added movies are ready for you to enjoy.</p>
-        <div class="movie-grid just-added">
-            <div th:each="movie : ${latestMovies}" class="movie-card">
-                <img th:src="@{'data:image/jpeg;base64,' + ${movie.base64Cover}}" th:alt="${movie.judul}">
-                <div class="movie-info">
-                    <h3 th:text="${movie.judul}">Movie Title</h3>
-                    <p><strong>Genre:</strong> <span th:text="${movie.genre}">Genre</span></p>
-                    <p><strong>Actor:</strong> <span th:text="${movie.aktor}">Actor</span></p>
+        <div class="movie-slideshow" id="latestMoviesSlideshow">
+            <div class="movie-slide active">
+                <div th:each="movie, iterStat : ${latestMovies}" th:if="${iterStat.index < 5}" class="movie-card">
+                    <img th:src="@{'data:image/jpeg;base64,' + ${movie.base64Cover}}" th:alt="${movie.judul}">
+                    <div class="movie-info">
+                        <h3 th:text="${movie.judul}">Movie Title</h3>
+                        <p><strong>Genre:</strong> <span th:text="${movie.genre}">Genre</span></p>
+                        <p><strong>Actor:</strong> <span th:text="${movie.aktor}">Actor</span></p>
+                    </div>
                 </div>
             </div>
+            <div class="movie-slide">
+                <div th:each="movie, iterStat : ${latestMovies}" th:if="${iterStat.index >= 5 && iterStat.index < 10}"
+                    class="movie-card">
+                    <img th:src="@{'data:image/jpeg;base64,' + ${movie.base64Cover}}" th:alt="${movie.judul}">
+                    <div class="movie-info">
+                        <h3 th:text="${movie.judul}">Movie Title</h3>
+                        <p><strong>Genre:</strong> <span th:text="${movie.genre}">Genre</span></p>
+                        <p><strong>Actor:</strong> <span th:text="${movie.aktor}">Actor</span></p>
+                    </div>
+                </div>
+            </div>
+            <!-- Navigation -->
+            <div class="movie-nav">
+                <span class="movie-dot active" onclick="currentMovieSlide(1, 'latest')"></span>
+                <span class="movie-dot" onclick="currentMovieSlide(2, 'latest')"></span>
+            </div>
+            <div class="movie-prev" onclick="plusMovieSlides(-1, 'latest')">❮</div>
+            <div class="movie-next" onclick="plusMovieSlides(1, 'latest')">❯</div>
         </div>
 
         <section class="info-section">
@@ -110,31 +175,12 @@
             </ul>
         </section>
 
-        <!-- Premiere Section -->
-        <section class="premiere-section">
-            <div class="premiere-info">
-                <h2>Premiere Mission Impossible: The Final Reckoning</h2>
-                <p>Mission: Impossible – The Final Reckoning is an upcoming American action spy film directed by Christopher McQuarrie from a screenplay he co-wrote with Erik Jendresen. The direct sequel to Mission: Impossible – Dead Reckoning Part One (2023), it is the eighth installment in the Mission: Impossible film series.[3] Tom Cruise, Hayley Atwell, Ving Rhames, Simon Pegg, Vanessa Kirby, Esai Morales, Pom Klementieff, Henry Czerny, Angela Bassett, and Rolf Saxon reprise their roles from the previous films.[4][5]
-In January 2019, Cruise announced that the seventh and eighth Mission: Impossible films would be shot back-to-back with McQuarrie writing and directing both films. Plans for the film later changed in February 2021. Returning and new cast members were announced soon after, and Lorne Balfe, who composed the scores for two previous films in the series, returned to score the film. Filming began in March 2022 in the United Kingdom, with other filming locations including Malta, South Africa and Norway. 
-Production was halted in July 2023 due to the SAG-AFTRA strike, and resumed in March 2024 before wrapping by November 2024. The film, originally titled Mission: Impossible – Dead Reckoning Part Two, dropped its subtitle in October 2023, and the new subtitle was announced in November 2024.
-The Final Reckoning is scheduled to be released in the United States on May 23, 2025, by Paramount Pictures.
-                </p>
-               <!-- gak dipake <a href="#" class="btn-header">Remind Me</a> -->
-            </div>
-            <div class="premiere-video">
-                <video autoplay loop muted>
-                    <source th:src="@{/video/mi.mp4}" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-            </div>
-        </section>
     </main>
 
-    <!-- Footer -->
     <footer class="footer">
         <span th:text="${'© ' + #dates.year(#dates.createNow()) + ' Movie Rental. All rights reserved.'}"></span>
     </footer>
-
     <script th:src="@{/js/dashboard.js}"></script>
 </body>
+
 </html>
