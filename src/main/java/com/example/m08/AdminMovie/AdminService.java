@@ -8,7 +8,6 @@ import java.util.*;
 
 @Service
 public class AdminService {
-
     @Autowired
     private AdminRepository adminRepository;
 
@@ -19,23 +18,12 @@ public class AdminService {
         if (adminRepository.findByUsername(admin.getUsername()).isPresent()) {
             return false;
         }
-
         admin.setPassword(passwordEncoder.encode(admin.getPassword()));
         adminRepository.save(admin);
         return true;
     }
 
     public Admin login(String username, String password) {
-        // Check for default admin credentials
-        if ("admin".equals(username) && "admin".equals(password)) {
-            Admin defaultAdmin = new Admin();
-            defaultAdmin.setUserId(0L);
-            defaultAdmin.setUsername("admin");
-            defaultAdmin.setPassword("admin");
-            return defaultAdmin;
-        }
-
-        // Regular login flow
         Optional<Admin> adminOptional = adminRepository.findByUsername(username);
         if (adminOptional.isPresent()) {
             Admin admin = adminOptional.get();

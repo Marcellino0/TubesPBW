@@ -1,14 +1,29 @@
 package com.example.m08;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import com.example.m08.Movie.Movie;
+import com.example.m08.Movie.MovieRepository;
+
 import jakarta.servlet.http.HttpSession;
+
+import java.util.List;
+import org.springframework.ui.Model;
 
 @Controller
 public class DashboardController {
+
+    @Autowired
+    MovieRepository movieRepository;
     
     @GetMapping("/")
-    public String dashboard() {
+    public String dashboard(Model model) {
+        List<Movie> topMovies = movieRepository.findTop10MoviesByRentals();
+        List<Movie> latestMovies = movieRepository.findLast10Movies();
+        model.addAttribute("topMovies", topMovies);
+        model.addAttribute("latestMovies", latestMovies);
         return "dashboard"; // Mengarah ke dashboard.html yang berisi landing page
     }
     

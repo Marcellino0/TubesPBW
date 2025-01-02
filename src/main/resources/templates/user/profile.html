@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Rental - User Profile</title>
-    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"> -->
     <link th:href="@{/css/profile.css}" rel="stylesheet" />
     
 </head>
@@ -19,19 +18,19 @@
             </div>
             <ul class="sidebar-menu">
                 <li onclick="redirectToCatalog()">
-                    <i class="fas fa-film"></i> Catalog
+                    Catalog
                 </li>
                 <li onclick="redirectToRentals()">
-                    <i class="fas fa-ticket-alt"></i> Rentals
+                    Rentals
                 </li>
                 <li onclick="redirectToHistory()">
-                    <i class="fas fa-history"></i> History
+                    History
                 </li>
                 <li onclick="redirectToProfile()" class="active">
-                    <i class="fas fa-user"></i> Profile
+                    Profile
                 </li>
                 <li onclick="logout()">
-                    <i class="fas fa-sign-out-alt"></i> Logout
+                    Logout
                 </li>
             </ul>
         </div>
@@ -99,46 +98,7 @@
             </div>
         </div>
     </div>
-
-    <script>
-        function redirectToCatalog() {
-            window.location.href = '/userdashboard';
-        }
-
-        function redirectToRentals() {
-            window.location.href = '/rental';
-        }
-
-        function redirectToHistory() {
-            window.location.href = '/history-rental';
-        }
-
-        function redirectToProfile() {
-            window.location.href = '/profile';
-        }
-
-        function logout() {
-            window.location.href = '/logout';
-        }
-        // Get current path
-        let currentPath = window.location.pathname;
-
-        // Remove active class from all menu items
-        document.querySelectorAll('.sidebar-menu li').forEach(item => {
-            item.classList.remove('active');
-        });
-
-        // Add active class based on current path
-        if (currentPath === '/rental') {
-            document.querySelector('.sidebar-menu li[onclick="redirectToRentals()"]').classList.add('active');
-        } else if (currentPath === '/userdashboard') {
-            document.querySelector('.sidebar-menu li[onclick="redirectToCatalog()"]').classList.add('active');
-        } else if (currentPath === '/history-rental') {
-            document.querySelector('.sidebar-menu li[onclick="redirectToHistory()"]').classList.add('active');
-        } else if (currentPath === '/profile') {
-            document.querySelector('.sidebar-menu li[onclick="redirectToProfile()"]').classList.add('active');
-        }
-    </script>
+    <script th:src="@{/js/profile.js}"></script>
 </body>
 
 </html>

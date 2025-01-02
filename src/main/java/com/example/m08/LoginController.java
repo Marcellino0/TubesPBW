@@ -3,9 +3,7 @@ package com.example.m08;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.m08.User.Pelanggan;
 import com.example.m08.User.UserService;
@@ -13,26 +11,27 @@ import com.example.m08.Movie.MovieRepository;
 import com.example.m08.Movie.Movie;
 import com.example.m08.Actor.ActorRepository;
 import com.example.m08.AdminMovie.Admin;
-import com.example.m08.AdminMovie.AdminService;
+import com.example.m08.AdminMovie.AdminRepository;
 
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
 public class LoginController {
-
     @Autowired
     private UserService userService;
 
     @Autowired
-    private AdminService adminService;
+    private AdminRepository adminRepository;
 
     @Autowired
     private MovieRepository movieRepository;
 
     @Autowired
     private ActorRepository actorRepository;
+
 
     @GetMapping("/login")
     public String loginView(HttpSession session) {
@@ -66,8 +65,14 @@ public class LoginController {
             @RequestParam String password,
             HttpSession session,
             Model model) {
-        Admin admin = adminService.login(username, password);
-        if (admin == null) {
+        Optional<Admin> adminOpt = adminRepository.findByUsername(username);
+        if (!adminOpt.isPresent()) {
+            model.addAttribute("error", "Invalid username or password");
+            return "login";
+        }
+
+        Admin admin = adminOpt.get();
+        if (!password.equals(admin.getPassword())) {
             model.addAttribute("error", "Invalid username or password");
             return "login";
         }
