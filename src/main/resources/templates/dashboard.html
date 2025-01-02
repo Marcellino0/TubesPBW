@@ -1,186 +1,171 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="id">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie Rental</title>
-    <link th:href="@{/css/dashboard.css}" rel="stylesheet" />
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Movie Rental</title>
+   <link th:href="@{/css/dashboard.css}" rel="stylesheet" />
 </head>
-
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="logo">MovieMate</div><br>
-        <div class="header-buttons">
-            <a href="#" class="btn-header nav-link">Home</a>
-            <a th:href="@{/login}" class="btn-header-logo">Log in</a>
-            <a th:href="@{/register}" class="btn-header-logo">Register</a>
-        </div>
-    </header>
+   <header class="header">
+       <div class="logo">MovieMate</div><br>
+       <div class="header-buttons">
+           <a href="#" class="btn-header nav-link">Home</a>
+           <a th:href="@{/login}" class="btn-header-logo">Log in</a> 
+           <a th:href="@{/register}" class="btn-header-logo">Register</a>
+       </div>
+   </header>
 
-    <div class="slideshow-container">
-        <div class="slides fade">
-            <video autoplay muted loop class="slide-video">
-                <source th:src="@{/video/marvel.mp4}" type="video/mp4">
-            </video>
-            <div class="slide-content">
-                <h1>Welcome to MovieMate</h1>
-                <p>Platform terbaik untuk menyewa film favorit Anda. Temukan berbagai genre film dengan kualitas
-                    terbaik.</p>
-            </div>
-        </div>
+   <div class="slideshow-container">
+       <div class="slides fade">
+           <video autoplay muted loop class="slide-video">
+               <source th:src="@{/video/marvel.mp4}" type="video/mp4">
+           </video>
+           <div class="slide-content">
+               <h1>Welcome to MovieMate</h1>
+               <p>Platform terbaik untuk menyewa film favorit Anda. Temukan berbagai genre film dengan kualitas terbaik.</p>
+           </div>
+       </div>
 
-        <div class="slides fade">
-            <video autoplay muted loop class="slide-video">
-                <source th:src="@{/video/superhero.mp4}" type="video/mp4">
-            </video>
-            <div class="slide-content">
-                <h2>About Us</h2>
-                <p>Kami adalah pengembang platform MovieMate yang bertujuan untuk memberikan pengalaman menonton terbaik
-                    bagi pengguna.</p>
-                <p>Dibuat oleh Mahasiswa UNPAR, kami percaya pada kekuatan Film untuk menyatukan orang.</p>
-            </div>
-        </div>
+       <div class="slides fade">
+           <video autoplay muted loop class="slide-video">
+               <source th:src="@{/video/superhero.mp4}" type="video/mp4">
+           </video>
+           <div class="slide-content">
+               <h2>About Us</h2>
+               <p>Kami adalah pengembang platform MovieMate yang bertujuan untuk memberikan pengalaman menonton terbaik bagi pengguna.</p>
+               <p>Dibuat oleh Mahasiswa UNPAR, kami percaya pada kekuatan Film untuk menyatukan orang.</p>
+           </div>
+       </div>
 
-        <div class="slides fade">
-            <video autoplay muted loop class="slide-video">
-                <source th:src="@{/video/short.mp4}" type="video/mp4">
-            </video>
-            <div class="slide-content">
-                <h2>Our Services</h2>
-                <p>Kami menyediakan layanan bantuan 24/7 untuk memandu Anda menggunakan platform ini.</p>
-                <p>Panduan mencakup cara menyewa film, melihat koleksi, dan mengelola langganan Anda.</p>
-            </div>
-        </div>
+       <div class="slides fade">
+           <video autoplay muted loop class="slide-video">
+               <source th:src="@{/video/short.mp4}" type="video/mp4">
+           </video>
+           <div class="slide-content">
+               <h2>Our Services</h2>
+               <p>Kami menyediakan layanan bantuan 24/7 untuk memandu Anda menggunakan platform ini.</p>
+               <p>Panduan mencakup cara menyewa film, melihat koleksi, dan mengelola langganan Anda.</p>
+           </div>
+       </div>
 
-        <a class="prev" onclick="plusSlides(-1)">❮</a>
-        <a class="next" onclick="plusSlides(1)">❯</a>
+       <a class="prev" onclick="plusSlides(-1)">❮</a>
+       <a class="next" onclick="plusSlides(1)">❯</a>
 
-        <div class="dot-container">
-            <span class="dot" onclick="currentSlide(1)"></span>
-            <span class="dot" onclick="currentSlide(2)"></span>
-            <span class="dot" onclick="currentSlide(3)"></span>
-        </div>
-    </div>
+       <div class="dot-container">
+           <span class="dot" onclick="currentSlide(1)"></span>
+           <span class="dot" onclick="currentSlide(2)"></span>
+           <span class="dot" onclick="currentSlide(3)"></span>
+       </div>
+   </div>
 
-    <!-- Dashboard -->
-    <main class="dashboard">
-        <!-- Premiere Section -->
-        <section class="premiere-section">
-            <div class="premiere-info">
-                <h2>Premiere Mission Impossible: The Final Reckoning</h2>
-                <p>*Mission: Impossible – The Final Reckoning* adalah film mata-mata aksi Amerika yang akan datang,
-                    disutradarai oleh Christopher McQuarrie dan ditulis bersama Erik Jendresen. Film ini merupakan
-                    sekuel dari *Mission: Impossible – Dead Reckoning Part One* (2023) sekaligus bagian kedelapan dari
-                    seri ini. Tom Cruise dan beberapa pemeran lainnya kembali memerankan karakter mereka, sementara
-                    Lorne Balfe kembali sebagai komposer. Awalnya direncanakan untuk syuting berurutan dengan film
-                    ketujuh, produksi dimulai pada Maret 2022 di lokasi seperti Inggris, Malta, Afrika Selatan, dan
-                    Norwegia. Produksi sempat tertunda akibat mogok kerja SAG-AFTRA, tetapi dilanjutkan dan selesai pada
-                    November 2024. Film ini diberi judul baru pada akhir 2023 dan dijadwalkan rilis pada 23 Mei 2025
-                    oleh Paramount Pictures.
-                </p>
-                <!-- gak dipake <a href="#" class="btn-header">Remind Me</a> -->
-            </div>
-            <div class="premiere-video">
-                <video autoplay loop muted>
-                    <source th:src="@{/video/mi.mp4}" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-            </div>
-        </section>
-        <h2>Top Movies</h2>
-        <div class="movie-slideshow" id="topMoviesSlideshow">
-            <div class="movie-slide active">
-                <div th:each="movie, iterStat : ${topMovies}" th:if="${iterStat.index < 4}" class="movie-card">
-                    <img th:src="@{'data:image/jpeg;base64,' + ${movie.base64Cover}}" th:alt="${movie.judul}">
-                    <div class="movie-info">
-                        <h3 th:text="${movie.judul}">Movie Title</h3>
-                        <p><strong>Genre:</strong> <span th:text="${movie.genre}">Genre</span></p>
-                        <p><strong>Actor:</strong> <span th:text="${movie.aktor}">Actor</span></p>
-                    </div>
-                </div>
-            </div>
-            <div class="movie-slide">
-                <div th:each="movie, iterStat : ${topMovies}" th:if="${iterStat.index >= 4 && iterStat.index < 8}"
-                    class="movie-card">
-                    <img th:src="@{'data:image/jpeg;base64,' + ${movie.base64Cover}}" th:alt="${movie.judul}">
-                    <div class="movie-info">
-                        <h3 th:text="${movie.judul}">Movie Title</h3>
-                        <p><strong>Genre:</strong> <span th:text="${movie.genre}">Genre</span></p>
-                        <p><strong>Actor:</strong> <span th:text="${movie.aktor}">Actor</span></p>
-                    </div>
-                </div>
-            </div>
-            <!-- Navigation -->
-            <div class="movie-nav">
-                <span class="movie-dot active" onclick="currentMovieSlide(1, 'top')"></span>
-                <span class="movie-dot" onclick="currentMovieSlide(2, 'top')"></span>
-            </div>
-            <div class="movie-prev" onclick="plusMovieSlides(-1, 'top')">❮</div>
-            <div class="movie-next" onclick="plusMovieSlides(1, 'top')">❯</div>
-        </div>
+   <main class="dashboard">
+       <section class="premiere-section">
+           <div class="premiere-info">
+               <h2>Premiere Mission Impossible: The Final Reckoning</h2>
+               <p>*Mission: Impossible – The Final Reckoning* adalah film mata-mata aksi Amerika yang akan datang, disutradarai oleh Christopher McQuarrie dan ditulis bersama Erik Jendresen. Film ini merupakan sekuel dari *Mission: Impossible – Dead Reckoning Part One* (2023) sekaligus bagian kedelapan dari seri ini...</p>
+           </div>
+           <div class="premiere-video">
+               <video autoplay loop muted>
+                   <source th:src="@{/video/mi.mp4}" type="video/mp4">
+                   Your browser does not support the video tag.
+               </video>
+           </div>
+       </section>
 
+       <h2>Top Movies</h2>
+       <div class="movie-slideshow" id="topMoviesSlideshow">
+           <div class="movie-slide active">
+               <div th:each="movie, iterStat : ${topMovies}" th:if="${iterStat.index < 4}" class="movie-card">
+                   <img th:src="@{'data:image/jpeg;base64,' + ${movie.base64Cover}}" th:alt="${movie.judul}">
+                   <div class="movie-info">
+                       <h3 th:text="${movie.judul}">Movie Title</h3>
+                       <p><strong>Genre:</strong> <span th:text="${movie.genre}">Genre</span></p>
+                       <p><strong>Actors:</strong> 
+                           <span th:text="${#strings.listJoin(movie.actors.![name], ', ')}">Actors</span>
+                       </p>
+                   </div>
+               </div>
+           </div>
+           <div class="movie-slide">
+               <div th:each="movie, iterStat : ${topMovies}" th:if="${iterStat.index >= 4 && iterStat.index < 8}" class="movie-card">
+                   <img th:src="@{'data:image/jpeg;base64,' + ${movie.base64Cover}}" th:alt="${movie.judul}">
+                   <div class="movie-info">
+                       <h3 th:text="${movie.judul}">Movie Title</h3>
+                       <p><strong>Genre:</strong> <span th:text="${movie.genre}">Genre</span></p>
+                       <p><strong>Actors:</strong> 
+                           <span th:text="${#strings.listJoin(movie.actors.![name], ', ')}">Actors</span>
+                       </p>
+                   </div>
+               </div>
+           </div>
+           <div class="movie-nav">
+               <span class="movie-dot active" onclick="currentMovieSlide(1, 'top')"></span>
+               <span class="movie-dot" onclick="currentMovieSlide(2, 'top')"></span>
+           </div>
+           <div class="movie-prev" onclick="plusMovieSlides(-1, 'top')">❮</div>
+           <div class="movie-next" onclick="plusMovieSlides(1, 'top')">❯</div>
+       </div>
 
-        <!-- Just Added Section - Similar structure -->
-        <h2>Just Added</h2>
-        <div class="movie-slideshow" id="latestMoviesSlideshow">
-            <div class="movie-slide active">
-                <div th:each="movie, iterStat : ${latestMovies}" th:if="${iterStat.index < 5}" class="movie-card">
-                    <img th:src="@{'data:image/jpeg;base64,' + ${movie.base64Cover}}" th:alt="${movie.judul}">
-                    <div class="movie-info">
-                        <h3 th:text="${movie.judul}">Movie Title</h3>
-                        <p><strong>Genre:</strong> <span th:text="${movie.genre}">Genre</span></p>
-                        <p><strong>Actor:</strong> <span th:text="${movie.aktor}">Actor</span></p>
-                    </div>
-                </div>
-            </div>
-            <div class="movie-slide">
-                <div th:each="movie, iterStat : ${latestMovies}" th:if="${iterStat.index >= 5 && iterStat.index < 10}"
-                    class="movie-card">
-                    <img th:src="@{'data:image/jpeg;base64,' + ${movie.base64Cover}}" th:alt="${movie.judul}">
-                    <div class="movie-info">
-                        <h3 th:text="${movie.judul}">Movie Title</h3>
-                        <p><strong>Genre:</strong> <span th:text="${movie.genre}">Genre</span></p>
-                        <p><strong>Actor:</strong> <span th:text="${movie.aktor}">Actor</span></p>
-                    </div>
-                </div>
-            </div>
-            <!-- Navigation -->
-            <div class="movie-nav">
-                <span class="movie-dot active" onclick="currentMovieSlide(1, 'latest')"></span>
-                <span class="movie-dot" onclick="currentMovieSlide(2, 'latest')"></span>
-            </div>
-            <div class="movie-prev" onclick="plusMovieSlides(-1, 'latest')">❮</div>
-            <div class="movie-next" onclick="plusMovieSlides(1, 'latest')">❯</div>
-        </div>
+       <h2>Just Added</h2>
+       <div class="movie-slideshow" id="latestMoviesSlideshow">
+           <div class="movie-slide active">
+               <div th:each="movie, iterStat : ${latestMovies}" th:if="${iterStat.index < 5}" class="movie-card">
+                   <img th:src="@{'data:image/jpeg;base64,' + ${movie.base64Cover}}" th:alt="${movie.judul}">
+                   <div class="movie-info">
+                       <h3 th:text="${movie.judul}">Movie Title</h3>
+                       <p><strong>Genre:</strong> <span th:text="${movie.genre}">Genre</span></p>
+                       <p><strong>Actors:</strong> 
+                           <span th:text="${#strings.listJoin(movie.actors.![name], ', ')}">Actors</span>
+                       </p>
+                   </div>
+               </div>
+           </div>
+           <div class="movie-slide">
+               <div th:each="movie, iterStat : ${latestMovies}" th:if="${iterStat.index >= 5 && iterStat.index < 10}" class="movie-card">
+                   <img th:src="@{'data:image/jpeg;base64,' + ${movie.base64Cover}}" th:alt="${movie.judul}">
+                   <div class="movie-info">
+                       <h3 th:text="${movie.judul}">Movie Title</h3>
+                       <p><strong>Genre:</strong> <span th:text="${movie.genre}">Genre</span></p>
+                       <p><strong>Actors:</strong> 
+                           <span th:text="${#strings.listJoin(movie.actors.![name], ', ')}">Actors</span>
+                       </p>
+                   </div>
+               </div>
+           </div>
+           <div class="movie-nav">
+               <span class="movie-dot active" onclick="currentMovieSlide(1, 'latest')"></span>
+               <span class="movie-dot" onclick="currentMovieSlide(2, 'latest')"></span>
+           </div>
+           <div class="movie-prev" onclick="plusMovieSlides(-1, 'latest')">❮</div>
+           <div class="movie-next" onclick="plusMovieSlides(1, 'latest')">❯</div>
+       </div>
 
-        <section class="info-section">
-            <h3>How to Rent Movies</h3>
-            <ul>
-                <li>Browse our movie catalog and select the movie you want to rent.</li>
-                <li>Click on the "Rent" button for the desired movie.</li>
-                <li>Choose the rental period and confirm your order.</li>
-                <li>You can watch the rented movie within the specified period.</li>
-            </ul>
-        </section>
+       <section class="info-section">
+           <h3>How to Rent Movies</h3>
+           <ul>
+               <li>Browse our movie catalog and select the movie you want to rent.</li>
+               <li>Click on the "Rent" button for the desired movie.</li>
+               <li>Choose the rental period and confirm your order.</li>
+               <li>You can watch the rented movie within the specified period.</li>
+           </ul>
+       </section>
 
-        <section class="info-section">
-            <h3>Membership Benefits</h3>
-            <ul>
-                <li>Exclusive access to newly released movies.</li>
-                <li>Discounted rental prices for members.</li>
-                <li>Priority customer support.</li>
-                <li>Personalized movie recommendations based on your viewing history.</li>
-            </ul>
-        </section>
+       <section class="info-section">
+           <h3>Membership Benefits</h3>
+           <ul>
+               <li>Exclusive access to newly released movies.</li>
+               <li>Discounted rental prices for members.</li>
+               <li>Priority customer support.</li>
+               <li>Personalized movie recommendations based on your viewing history.</li>
+           </ul>
+       </section>
+   </main>
 
-    </main>
+   <footer class="footer">
+       <span th:text="${'© ' + #dates.year(#dates.createNow()) + ' Movie Rental. All rights reserved.'}"></span>
+   </footer>
 
-    <footer class="footer">
-        <span th:text="${'© ' + #dates.year(#dates.createNow()) + ' Movie Rental. All rights reserved.'}"></span>
-    </footer>
-    <script th:src="@{/js/dashboard.js}"></script>
+   <script th:src="@{/js/dashboard.js}"></script>
 </body>
-
 </html>
