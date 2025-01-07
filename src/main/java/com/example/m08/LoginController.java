@@ -32,7 +32,7 @@ public class LoginController {
     @Autowired
     private ActorRepository actorRepository;
 
-
+    // Endpoint untuk menampilkan halaman login
     @GetMapping("/login")
     public String loginView(HttpSession session) {
         if (session.getAttribute("pelanggan") != null) {
@@ -43,7 +43,7 @@ public class LoginController {
         }
         return "login";
     }
-
+    // Endpoint untuk memproses login user 
     @PostMapping("/login")
     public String processLogin(@RequestParam String username,
             @RequestParam String password,
@@ -59,7 +59,7 @@ public class LoginController {
         session.setAttribute("role", "user");
         return "redirect:/userdashboard";
     }
-
+    // Endpoint untuk memproses login admin
     @PostMapping("/loginadmin")
     public String processAdminLogin(@RequestParam String username,
             @RequestParam String password,
@@ -81,7 +81,7 @@ public class LoginController {
         session.setAttribute("role", "admin");
         return "redirect:/admin/dashboard";
     }
-
+    // Endpoint untuk dashboard user dengan fitur pencarian dan paginasi
     @GetMapping("/userdashboard")
     public String userDashboardView(
             @RequestParam(defaultValue = "1") int page,
@@ -133,7 +133,7 @@ public class LoginController {
 
         return "user/userdashboard";
     }
-
+    // Endpoint untuk logout
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();

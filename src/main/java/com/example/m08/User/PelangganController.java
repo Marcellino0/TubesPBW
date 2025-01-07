@@ -18,49 +18,48 @@ public class PelangganController {
     @Autowired
     private UserService userService;
 
+    // Endpoint untuk menampilkan form registrasi
     @GetMapping("/register")
     public String registerView(Model model) {
         model.addAttribute("pelanggan", new Pelanggan());
         return "user/register";
     }
-
+    // Endpoint untuk memproses registrasi user baru
     @PostMapping("/register")
-public String registerUser(@Valid @ModelAttribute("pelanggan") Pelanggan pelanggan, 
-                         BindingResult bindingResult, 
-                         Model model) {
-    // Validasi format input
-    if (bindingResult.hasErrors()) {
-        // Ambil pesan error dari validasi
-        String errorMessage = bindingResult.getFieldErrors()
-                .stream()
-                .map(error -> error.getDefaultMessage())
-                .findFirst()
-                .orElse("Terjadi kesalahan validasi");
-        model.addAttribute("error", errorMessage);
-        return "user/register";
-    }
-
-    // Validasi password match
-    if (!pelanggan.getPassword().equals(pelanggan.getConfirmPassword())) {
-        model.addAttribute("error", "Password dan konfirmasi password tidak cocok");
-        return "user/register";
-    }
-
-    try {
-        boolean success = userService.register(pelanggan);
-        if (!success) {
-            model.addAttribute("error", "Username sudah digunakan, silakan pilih username lain");
+    public String registerUser(@Valid @ModelAttribute("pelanggan") Pelanggan pelanggan,
+            BindingResult bindingResult,
+            Model model) {
+        // Validasi input form
+        if (bindingResult.hasErrors()) {
+            String errorMessage = bindingResult.getFieldErrors()
+                    .stream()
+                    .map(error -> error.getDefaultMessage())
+                    .findFirst()
+                    .orElse("Terjadi kesalahan validasi");
+            model.addAttribute("error", errorMessage);
             return "user/register";
         }
-        
-        model.addAttribute("success", "Registrasi berhasil! Silakan login.");
-        return "redirect:/login";
-    } catch (Exception e) {
-        model.addAttribute("error", "Terjadi kesalahan: " + e.getMessage());
-        return "user/register";
-    }
-}
+        // Validasi password
+        if (!pelanggan.getPassword().equals(pelanggan.getConfirmPassword())) {
+            model.addAttribute("error", "Password dan konfirmasi password tidak cocok");
+            return "user/register";
+        }
 
+        try {
+            boolean success = userService.register(pelanggan);
+            if (!success) {
+                model.addAttribute("error", "Username sudah digunakan, silakan pilih username lain");
+                return "user/register";
+            }
+
+            model.addAttribute("success", "Registrasi berhasil! Silakan login.");
+            return "redirect:/login";
+        } catch (Exception e) {
+            model.addAttribute("error", "Terjadi kesalahan: " + e.getMessage());
+            return "user/register";
+        }
+    }
+    // Endpoint untuk melihat profil role user
     @GetMapping("/profile")
     @RequiredRole("user")
     public String viewProfile(Model model, HttpSession session) {
@@ -77,25 +76,26 @@ public String registerUser(@Valid @ModelAttribute("pelanggan") Pelanggan pelangg
         return "redirect:/profile?success";
     }
 
+    // Endpoint untuk top up saldo
     @PostMapping("/topup")
     @RequiredRole("user")
-    public String topUpSaldo(@RequestParam Double amount, 
-                           HttpSession session,
-                           RedirectAttributes redirectAttributes) {
+    public String topUpSaldo(@RequestParam Double amount,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
         try {
             if (amount < 10000) {
                 redirectAttributes.addFlashAttribute("error", "Minimum top up amount is Rp 10.000");
                 return "redirect:/profile";
             }
 
-            Pelanggan pelanggan = (Pelanggan) session.getAttribute("pelanggan");            
+            Pelanggan pelanggan = (Pelanggan) session.getAttribute("pelanggan");
             userService.topUpSaldo(pelanggan.getUserId(), amount);
-            
+
             pelanggan = userService.getCurrentUserProfile(pelanggan.getUsername());
             session.setAttribute("pelanggan", pelanggan);
-            
-            redirectAttributes.addFlashAttribute("success", 
-                String.format("Successfully topped up Rp %.0f", amount));
+
+            redirectAttributes.addFlashAttribute("success",
+                    String.format("Successfully topped up Rp %.0f", amount));
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
