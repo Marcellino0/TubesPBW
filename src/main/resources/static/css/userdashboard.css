@@ -138,6 +138,7 @@ body {
     outline: none;
     border-color: var(--primary-color);
 }
+
 .search-input::placeholder {
     color: var(--text-secondary);
 }
@@ -227,16 +228,52 @@ body {
     height: 850px;
     position: relative;
     perspective: 1000px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    padding: 4px;
     transition: all 0.3s ease;
-    border: 1px solid var(--border-color);
+}
+
+.movie-card::before,
+.movie-card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(
+        45deg,
+        #c4b5fd,
+        #8b5cf6,
+        #4c1d95,
+        #a855f7,
+        #c4b5fd,
+        #4c1d95
+    );
+    background-size: 400%;
+    z-index: -1;
+    animation: glow 20s linear infinite;
+    border-radius: 16px;
+}
+
+.movie-card::after {
+    filter: blur(15px);
+    opacity: 0.5;
+}
+
+@keyframes glow {
+    0% {
+        background-position: 0 0;
+    }
+    50% {
+        background-position: 400% 0;
+    }
+    100% {
+        background-position: 0 0;
+    }
 }
 
 .movie-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3),
-                0 10px 10px -5px rgba(0, 0, 0, 0.2);
-    border-color: var(--primary-color);
 }
 
 /* Flipcard Styles */
@@ -247,6 +284,8 @@ body {
     text-align: left;
     transition: transform 0.8s;
     transform-style: preserve-3d;
+    background: var(--card-bg);
+    border-radius: 12px;
 }
 
 .movie-card.flipped .flipcard {
@@ -292,7 +331,7 @@ body {
     padding: 1.25rem;
     border-radius: 12px;
     border: 1px solid var(--border-color);
-    max-height: calc(100% - 120px); 
+    max-height: calc(100% - 120px);
 }
 
 .synopsis-text {
@@ -328,7 +367,6 @@ body {
     object-fit: cover;
     cursor: pointer;
     transition: transform 0.3s ease;
-    border-bottom: 1px solid var(--border-color);
 }
 
 .movie-card img:hover {
@@ -616,3 +654,4 @@ body {
         padding: 0.5rem 1rem;
     }
 }
+
