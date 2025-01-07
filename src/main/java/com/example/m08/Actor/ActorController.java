@@ -17,7 +17,7 @@ public class ActorController {
         return session.getAttribute("admin") != null;
     }
 
-    // Method untuk menampilkan halaman kelola aktor
+    // Endpoint untuk menampilkan halaman kelola aktor
     @GetMapping("/manage")
     public String manageActors(Model model, HttpSession session) {
         if (!isAdminAuthenticated(session)) {
@@ -28,7 +28,7 @@ public class ActorController {
         return "admin/kelolaAktor";
     }
 
-    // Method untuk menambah aktor baru
+    // Endpoint untuk menambah aktor baru
     @PostMapping("/add")
     public String addActor(@ModelAttribute Actor actor, HttpSession session) {
         if (!isAdminAuthenticated(session)) {
@@ -37,7 +37,7 @@ public class ActorController {
         actorRepository.save(actor);
         return "redirect:/admin/actors/manage";
     }
-    // Method untuk menghapus aktor
+    // Endpoint untuk menghapus aktor
     @GetMapping("/delete/{id}")
     public String deleteActor(@PathVariable Integer id, HttpSession session) {
         if (!isAdminAuthenticated(session)) {

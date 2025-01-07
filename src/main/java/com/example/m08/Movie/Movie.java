@@ -16,11 +16,35 @@ import java.util.Set;
 public class Movie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int filmId;
+    @Column(name = "film_id")
+    private Integer filmId;
     
+    @Column(nullable = false)
     private byte[] cover;
+    
+    @Column(nullable = false)
     private String judul;
+    
+    @Column(nullable = false)
     private String genre;
+    
+    @Column(nullable = false)
+    private Integer stok;
+    
+    @Column(name = "harga_7_hari", nullable = false)
+    private Double harga7Hari;
+    
+    @Column(name = "harga_14_hari", nullable = false)
+    private Double harga14Hari;
+    
+    @Column(name = "harga_30_hari", nullable = false)
+    private Double harga30Hari;
+    
+    @Column(columnDefinition = "TEXT")
+    private String synopsis;
+    
+    @Column(name = "target_sewa", columnDefinition = "INT DEFAULT 0")
+    private Integer targetSewa;
     
     @ManyToMany
     @JoinTable(
@@ -30,27 +54,14 @@ public class Movie {
     )
     private Set<Actor> actors = new HashSet<>();
     
-    @Column(columnDefinition = "TEXT")
-    private String synopsis;
-    
-    private Integer stok;
-    
-    @Column(name = "harga_7_hari")
-    private Double harga7Hari;
-    
-    @Column(name = "harga_14_hari")
-    private Double harga14Hari;
-    
-    @Column(name = "harga_30_hari")
-    private Double harga30Hari;
-    
+    // Method untuk konversi cover ke Base64
     public String getBase64Cover() {
         if (cover != null) {
             return java.util.Base64.getEncoder().encodeToString(cover);
         }
         return null;
     }
-    
+    // Method untuk mendapatkan harga berdasarkan durasi
     public Double getPriceByDuration(int duration) {
         return switch (duration) {
             case 7 -> harga7Hari;

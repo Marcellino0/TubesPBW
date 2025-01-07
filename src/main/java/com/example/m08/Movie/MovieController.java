@@ -33,7 +33,7 @@ public class MovieController {
     private boolean isAdminAuthenticated(HttpSession session) {
         return session.getAttribute("admin") != null;
     }
-
+    // Endpoint untuk menampilkan form kelola film
     @GetMapping("/manage")
     public String manageMovies(Model model, HttpSession session) {
         if (!isAdminAuthenticated(session)) {
@@ -45,6 +45,7 @@ public class MovieController {
         return "admin/kelolaFilm";
     }
 
+    // Endpoint untuk menambah film baru
     @PostMapping("/add")
     public String addMovie(@ModelAttribute Movie movie,
             @RequestParam("coverImage") MultipartFile coverImage,
@@ -73,6 +74,7 @@ public class MovieController {
         return "redirect:/admin/dashboard";
     }
 
+    // Endpoint untuk edit film
     @GetMapping("/edit/{id}")
     public String editMovieForm(@PathVariable int id, Model model, HttpSession session) {
         if (!isAdminAuthenticated(session)) {
@@ -87,7 +89,8 @@ public class MovieController {
         model.addAttribute("actors", actorRepository.findAllByOrderByNameAsc());
         return "admin/editMovie";
     }
-
+    
+    // Endpoint untuk edit film
     @PostMapping("/edit/{id}")
     public String updateMovie(@PathVariable int id,
             @ModelAttribute Movie movie,
@@ -125,6 +128,7 @@ public class MovieController {
         return "redirect:/admin/dashboard";
     }
 
+    // Endpoint untuk delete film
     @GetMapping("/delete/{id}")
     public String deleteMovie(@PathVariable int id, HttpSession session) {
         if (!isAdminAuthenticated(session)) {

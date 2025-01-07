@@ -11,6 +11,7 @@ public class JdbcLaporanRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
     
+    // Method untuk membuat laporan baru dari data rental
     public void createLaporanFromRental(int userId, int filmId, LocalDate rentDate, LocalDate dueDate, double hargaSewa, int idSewa) {
         String sql = """
             INSERT INTO laporan (id_sewa, movie_title, username, rent_date, due_date, harga_sewa, status)
@@ -21,7 +22,7 @@ public class JdbcLaporanRepository {
         
         jdbcTemplate.update(sql, idSewa, rentDate, dueDate, hargaSewa, filmId, userId);
     }
-    
+    // Method untuk update status dan denda laporan
     public void updateLaporanStatus(int idSewa, String status, double denda) {
         String sql = "UPDATE laporan SET status = ?, denda = ? WHERE id_sewa = ?";
         jdbcTemplate.update(sql, status, denda, idSewa);
