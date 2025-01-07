@@ -1,3 +1,4 @@
+// Fungsi redirect untuk admin panel
 function redirectToCatalog() {
     window.location.href = '/userdashboard';
 }
@@ -18,15 +19,15 @@ function logout() {
     window.location.href = '/logout';
 }
 
-// Get current path
+// Mendapatkan path sekarang
 let currentPath = window.location.pathname;
 
-// Remove active class from all menu items
+// Menghapus class aktif dari semua menu item
 document.querySelectorAll('.sidebar-menu li').forEach(item => {
     item.classList.remove('active');
 });
 
-// Add active class based on current path
+// Menambah class aktif berdasarkan path yang sekarang
 if (currentPath === '/rental') {
     document.querySelector('.sidebar-menu li[onclick="redirectToRentals()"]').classList.add('active');
 } else if (currentPath === '/userdashboard') {

@@ -27,7 +27,7 @@ function handleLogout() {
     window.location.href = '/logout';
 }
 
-// Mobile menu handling
+// Handling menu mobile
 const mobileMenuTrigger = document.querySelector('.mobile-menu-trigger');
 const sidebar = document.querySelector('.sidebar');
 
@@ -35,17 +35,17 @@ mobileMenuTrigger.addEventListener('click', () => {
     sidebar.classList.toggle('active');
 });
 
-// Close mobile menu when clicking outside
+// Menutup menu saar memencet diluar
 document.addEventListener('click', (e) => {
     if (!sidebar.contains(e.target) && !mobileMenuTrigger.contains(e.target)) {
         sidebar.classList.remove('active');
     }
 });
 
-// Chart functions
+// Fungsi chart
 let rentalChart;
 
-// Function to initialize the chart
+// Fungsi untuk inisalisasi chart
 function initializeChart() {
     const ctx = document.getElementById('rentalChart').getContext('2d');
 
@@ -167,7 +167,7 @@ function initializeChart() {
 }
 
 
-// Function to update chart data
+// Fungsi untuk update data chartnya
 function updateChartData() {
     if (rentalChart) {
         const averageRentals = calculateAverageRentals();
@@ -176,7 +176,7 @@ function updateChartData() {
     }
 }
 
-// Add event listeners to update target buttons
+// Menambah event listener untuk update button target
 function setupUpdateTargetButtons() {
     document.querySelectorAll('.update-target-btn').forEach(btn => {
         btn.addEventListener('click', async function () {
@@ -199,7 +199,7 @@ function setupUpdateTargetButtons() {
                 });
 
                 if (response.ok) {
-                    // Update local data
+                    // Update lokal data
                     const filmIndex = rentalStats.findIndex(stat => stat.filmId === parseInt(filmId));
                     if (filmIndex !== -1) {
                         rentalStats[filmIndex].targetCount = targetCount;
@@ -217,7 +217,7 @@ function setupUpdateTargetButtons() {
     });
 }
 
-// Initialize everything when the page loads
+// Inisialisasi semua saat page sedang bekerja atau loading
 document.addEventListener('DOMContentLoaded', () => {
     initializeChart();
     setupUpdateTargetButtons();

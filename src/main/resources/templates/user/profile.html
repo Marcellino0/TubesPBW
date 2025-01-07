@@ -42,7 +42,7 @@
                     <h2>User Profile</h2>
                 </div>
 
-                <!-- Success Messages -->
+                <!-- Messages sukses -->
                 <div th:if="${param.success}" class="alert alert-success">
                     Profile updated successfully!
                 </div>
@@ -50,7 +50,7 @@
                     Top up successful!
                 </div>
 
-                <!-- Profile Information -->
+                <!-- Informasi profile -->
                 <div class="profile-info">
                     <form th:action="@{/profile/update}" method="post" th:object="${user}">
                         <input type="hidden" th:field="*{userId}" />
@@ -83,7 +83,7 @@
                         <button type="submit" class="update-btn">Update Profile</button>
                     </form>
 
-                    <!-- Top Up Form -->
+                    <!-- Top Up -->
                     <div class="topup-section">
                         <h3>Top Up Balance</h3>
                         <form th:action="@{/topup}" method="post">

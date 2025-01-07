@@ -1,9 +1,12 @@
 package com.example.m08.Movie;
 
+import com.example.m08.Actor.Actor;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -18,7 +21,14 @@ public class Movie {
     private byte[] cover;
     private String judul;
     private String genre;
-    private String aktor;
+    
+    @ManyToMany
+    @JoinTable(
+        name = "film_actors",
+        joinColumns = @JoinColumn(name = "film_id"),
+        inverseJoinColumns = @JoinColumn(name = "actor_id")
+    )
+    private Set<Actor> actors = new HashSet<>();
     
     @Column(columnDefinition = "TEXT")
     private String synopsis;

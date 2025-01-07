@@ -30,7 +30,7 @@ body {
     min-height: 100vh;
 }
 
-/* Sidebar styles*/
+/* Sidebar*/
 .sidebar {
     width: 280px;
     background: #000000;
@@ -106,7 +106,7 @@ body {
     background: var(--bg-color);
 }
 
-/* Section styling */
+/* Section */
 .section {
     background: var(--card-bg);
     padding: 2rem;
@@ -127,7 +127,7 @@ body {
     font-weight: 700;
 }
 
-/* Data Table styles */
+/* Tabel data */
 .data-table {
     width: 100%;
     border-collapse: collapse;
@@ -167,7 +167,7 @@ body {
     border-bottom: none;
 }
 
-/* Empty state */
+/* Status kosong */
 .no-history {
     text-align: center;
     padding: 3rem 2rem;
@@ -212,7 +212,7 @@ body {
         padding: 0.75rem 1rem;
     }
     
-    /* Stack table on mobile */
+    /*  tabel untuk mobile */
     .data-table thead {
         display: none;
     }
@@ -240,7 +240,7 @@ body {
     }
 }
 
-/* Add mobile menu trigger */
+/* Menambah mobile menu trigger */
 .mobile-menu-trigger {
     display: none;
     position: fixed;

@@ -25,7 +25,7 @@ function handleLogout() {
     window.location.href = '/logout';
 }
 
-// Mobile menu handling
+// Handling mobile menu
 const mobileMenuTrigger = document.querySelector('.mobile-menu-trigger');
 const sidebar = document.querySelector('.sidebar');
 
@@ -33,7 +33,7 @@ mobileMenuTrigger.addEventListener('click', () => {
     sidebar.classList.toggle('active');
 });
 
-// Close mobile menu when clicking outside
+// Menutup menu saar memencet diluar
 document.addEventListener('click', (e) => {
     if (!sidebar.contains(e.target) && !mobileMenuTrigger.contains(e.target)) {
         sidebar.classList.remove('active');

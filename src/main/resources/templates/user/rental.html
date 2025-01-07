@@ -47,13 +47,13 @@
                     <h2>Current Rentals</h2>
                 </div>
 
-                <!-- No rentals message -->
+                <!-- Tidak ada rental message -->
                 <div th:if="${#lists.isEmpty(rentals)}" class="no-rentals">
                     <br>
                     <p>You don't have any active rentals.</p>
                 </div>
 
-                <!-- Rental List -->
+                <!-- Daftar rental -->
                 <div th:unless="${#lists.isEmpty(rentals)}" class="rental-list">
                     <table class="rental-table">
                         <thead>

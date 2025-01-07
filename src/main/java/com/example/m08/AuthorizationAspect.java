@@ -25,7 +25,7 @@ public class AuthorizationAspect {
             return "redirect:/login";
         }
 
-        // Check for wildcard role
+        // Mengecheck role
         String[] requiredRoles = requiredRole.value();
         if (Arrays.asList(requiredRoles).contains("*")) {
             if (session.getAttribute("admin") != null || session.getAttribute("pelanggan") != null) {
@@ -34,7 +34,7 @@ public class AuthorizationAspect {
             return "redirect:/login";
         }
 
-        // Get user role
+        // Get role milik user
         String userRole = null;
         if (session.getAttribute("admin") != null) {
             userRole = "admin";
@@ -46,12 +46,12 @@ public class AuthorizationAspect {
             return "redirect:/login";
         }
 
-        // Check if user has required role
+        // Periksa apakah pengguna memiliki role yang diperlukan
         if (Arrays.asList(requiredRoles).contains(userRole)) {
             return joinPoint.proceed();
         }
 
-        // Redirect based on role
+        // Redirect berdasarkan rolenya
         if (userRole.equals("admin")) {
             return "redirect:/admin/dashboard";
         } else {

@@ -24,13 +24,13 @@ body {
     color: var(--text-primary);
 }
 
-/* Layout */
+/* layout */
 .admin-container {
     display: flex;
     min-height: 100vh;
 }
 
-/* Sidebar styles */
+/* sidebar */
 .sidebar {
     width: 280px;
     background: #000000;
@@ -98,7 +98,7 @@ body {
     opacity: 0.9;
 }
 
-/* Main content area */
+/* main content */
 .main-content {
     flex: 1;
     margin-left: 280px;
@@ -106,7 +106,7 @@ body {
     background: var(--bg-color);
 }
 
-/* Section styling */
+/* section */
 .section {
     background: var(--card-bg);
     padding: 2rem;
@@ -130,7 +130,7 @@ body {
     font-weight: 700;
 }
 
-/* Button styles */
+/* Button */
 .submit-btn {
     background-color: var(--primary-color);
     color: white;
@@ -152,7 +152,7 @@ body {
     transform: translateY(-2px);
 }
 
-/* Table styles */
+/* tabel */
 .data-table {
     width: 100%;
     border-collapse: collapse;
@@ -188,7 +188,7 @@ body {
     background-color: rgba(0, 0, 0, 0.2);
 }
 
-/* Action buttons */
+/* buttons */
 .edit-btn,
 .delete-btn {
     padding: 0.5rem 1rem;
@@ -253,7 +253,7 @@ body {
         padding: 0.75rem 1rem;
     }
     
-    /* Stack table on mobile */
+    /* Tabel untuk mobile */
     .data-table thead {
         display: none;
     }

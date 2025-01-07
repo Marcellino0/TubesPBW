@@ -9,7 +9,7 @@
     <div th:fragment="pagination">
         <nav th:if="${pageCount > 1}">
             <ul class="pagination-container">
-                <!-- Previous Button -->
+                <!-- TOmbol sebelum -->
                 <li>
                     <a class="pagination-link"
                         th:href="@{/userdashboard(page=${currentPage - 1}, search=${search}, genre=${selectedGenre})}"
@@ -19,7 +19,7 @@
                     </a>
                 </li>
 
-                <!-- Page Numbers -->
+                <!-- Nomor page -->
                 <li th:each="i : ${#numbers.sequence(1, pageCount)}">
                     <a class="pagination-link"
                         th:href="@{/userdashboard(page=${i}, search=${search}, genre=${selectedGenre})}" th:text="${i}"
@@ -27,7 +27,7 @@
                     </a>
                 </li>
 
-                <!-- Next Button -->
+                <!-- Tombol selanjutnya -->
                 <li>
                     <a class="pagination-link"
                         th:href="@{/userdashboard(page=${currentPage + 1}, search=${search}, genre=${selectedGenre})}"

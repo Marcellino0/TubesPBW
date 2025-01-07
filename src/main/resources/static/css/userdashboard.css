@@ -26,7 +26,7 @@ body {
     min-height: 100vh;
 }
 
-/* Modernized Sidebar */
+/* Sidebar */
 .sidebar {
     width: 280px;
     background: #000000;
@@ -99,7 +99,7 @@ body {
     background: var(--bg-color);
 }
 
-/* Search and Filter */
+/* Search dan Filter */
 .search-filter-container {
     display: flex;
     justify-content: flex-start;
@@ -142,7 +142,7 @@ body {
     color: var(--text-secondary);
 }
 
-/* Genre and Actor Select Styles */
+/* Memilih Genre dan Actor  */
 .genre-select,
 .actor-select {
     width: 100%;
@@ -170,7 +170,7 @@ body {
     color: var(--text-primary);
 }
 
-/* Button Group Styles */
+/* Button Group */
 .button-group {
     display: flex;
     gap: 1rem;
@@ -211,7 +211,7 @@ body {
     transform: translateY(-2px);
 }
 
-/* Movie Grid and Cards */
+/* Grid film and "Cards" */
 .movie-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -239,7 +239,7 @@ body {
     border-color: var(--primary-color);
 }
 
-/* Flipcard Styles */
+/* Flipcard sinopsis */
 .flipcard {
     position: relative;
     width: 100%;
@@ -405,7 +405,7 @@ body {
     color: var(--primary-color);
 }
 
-/* Rental Form */
+/* rental form */
 .rental-form {
     margin-top: 1.5rem;
     background: var(--bg-color);
@@ -472,7 +472,7 @@ body {
     transform: translateY(-2px);
 }
 
-/* Out of Stock Message */
+/* Message stock habis */
 .out-of-stock {
     color: #dc2626;
     font-weight: 600;

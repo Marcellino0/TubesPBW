@@ -22,7 +22,7 @@ body {
     line-height: 1.6;
 }
 
-/* Modern Header */
+/* Header */
 .header {
     background: rgba(15, 23, 42, 0.9);
     backdrop-filter: blur(10px);
@@ -75,7 +75,7 @@ body {
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
 
-/* Modern Dashboard */
+/* Dashboard */
 .dashboard {
     padding: 3rem 5%;
     background: var(--background-dark);
@@ -156,13 +156,13 @@ body {
     margin-bottom: 0.25rem;
 }
 
-/* Top Movies Slideshow */
+/*  Slideshow film teratas */
 #topMoviesSlideshow .movie-slide.active {
     grid-template-columns: repeat(4, 1fr);
     gap: 1.5rem;
 }
 
-/* Responsive Design for Top Movies */
+/* Responsive Design untuk film teratas */
 @media (max-width: 1200px) {
     #topMoviesSlideshow .movie-slide.active {
         grid-template-columns: repeat(3, 1fr);
@@ -181,7 +181,7 @@ body {
     }
 }
 
-/* Responsive Design for Latest Movies */
+/* Responsive Design untuk film terbaru */
 @media (max-width: 1400px) {
     #latestMoviesSlideshow .movie-slide.active {
         grid-template-columns: repeat(4, 1fr);
@@ -267,7 +267,7 @@ body {
     background: var(--primary-color);
 }
 
-/* Slideshow Container */
+/* Slideshow */
 .slideshow-container {
     position: relative;
     height: 600px;

@@ -2,7 +2,7 @@ function resetSearchForm() {
     window.location.href = '/userdashboard';
 }
 
-// Initialize multiple select dropdowns
+// Insialisasi multiple select dropdown
 document.addEventListener('DOMContentLoaded', function () {
     new SlimSelect({
         select: '#genreSelect',
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function flipCard(element) {
     const movieCard = element.closest('.movie-card');
     if (!movieCard) {
-        // If clicking the back button
+        // Jika memencet tombol back
         const flipcard = element.closest('.flipcard');
         if (flipcard) {
             const movieCard = flipcard.closest('.movie-card');
@@ -46,7 +46,7 @@ function updatePrice(movieId) {
     priceElement.textContent = formattedPrice;
 }
 
-// Existing navigation functions remain unchanged
+// Fungsi navigasi yang tetap ada tidak akan berubah
 function redirectToCatalog() {
     window.location.href = '/userdashboard';
 }

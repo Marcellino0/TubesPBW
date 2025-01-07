@@ -137,7 +137,7 @@
             transition: all 0.3s ease;
         }
 
-        /* Enhanced Error Message Styling */
+        /* Error Message */
         .notification {
             position: relative;
             padding: 15px 20px;
@@ -178,7 +178,7 @@
             opacity: 1;
         }
 
-        /* Login Type Selector */
+        /* Pemilihan tipe login */
         .login-type-selector {
             display: flex;
             background: rgba(255, 255, 255, 0.1);
@@ -206,7 +206,7 @@
             box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
         }
 
-        /* Input Fields */
+        /* Bidang input */
         .input-group {
             margin-bottom: 25px;
         }
@@ -237,7 +237,7 @@
             box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.1);
         }
 
-        /* Login Button */
+        /* Login-btn */
         .login-btn {
             width: 100%;
             padding: 15px;
@@ -262,7 +262,7 @@
             transform: translateY(0);
         }
 
-        /* Switch Form (Register Link) */
+        /* Ganti Form (Daftar Link) */
         .switch-form {
             margin-top: 20px;
             text-align: center;

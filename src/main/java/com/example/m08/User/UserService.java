@@ -37,7 +37,7 @@ public class UserService {
     }
 
     public void topUpSaldo(int userId, Double amount) {
-        // Validasi minimum amount
+        // Validasi minimum amount(jumlah)
         if (amount < 10000) {
             throw new RuntimeException("Minimum top up amount is Rp 10.000");
         }

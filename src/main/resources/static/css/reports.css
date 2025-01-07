@@ -29,7 +29,7 @@ body {
     min-height: 100vh;
 }
 
-/* Sidebar styles */
+/* Sidebar */
 .sidebar {
     width: 280px;
     background: #000000;
@@ -124,7 +124,7 @@ body {
     font-weight: 700;
 }
 
-/* Report Header */
+/* Header Laporan */
 .report-header {
     margin-bottom: 2rem;
     padding-bottom: 1rem;
@@ -188,7 +188,7 @@ body {
     border: 1px solid var(--border-color);
 }
 
-/* Table Styles */
+/* Tabel */
 .table-container {
     margin-top: 2rem;
     overflow-x: auto;
@@ -222,7 +222,7 @@ body {
     background: rgba(255, 255, 255, 0.05);
 }
 
-/* Target Input and Update Button Styles */
+/* Target Input and Update Button */
 .target-input {
     width: 100px;
     padding: 0.5rem;
@@ -245,7 +245,7 @@ body {
     border-color: var(--primary-color);
 }
 
-/* Remove spinner arrows from number input */
+/* Hapus panah dari angka input */
 .target-input::-webkit-outer-spin-button,
 .target-input::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -256,7 +256,7 @@ body {
     -moz-appearance: textfield;
 }
 
-/* Update button styles */
+/* Update button */
 .update-target-btn {
     padding: 0.5rem 1rem;
     background-color: var(--primary-color);
@@ -399,7 +399,7 @@ body {
 .text-right {
     text-align: right;
 }
-
+/* action buttons */
 .action-buttons {
     margin-top: 2rem;
 }

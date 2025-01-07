@@ -13,28 +13,28 @@ public class ExportRentalStatsPdf {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         try {
-            // Configure table
+            // Konfigurasi tabel
             PdfPTable table = new PdfPTable(4);
             table.setWidthPercentage(100);
             table.setWidths(new int[]{5, 2, 2, 2});
 
-            // Configure fonts
+            // Konfigurasi font
             Font headFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
             Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16);
 
-            // Add title
+            // Menambah judul
             Paragraph title = new Paragraph("Laporan Statistik Penyewaan Film", titleFont);
             title.setAlignment(Element.ALIGN_CENTER);
             title.setSpacingAfter(20);
 
-            // Add date
+            // Menambah tanggal
             Paragraph date = new Paragraph(
                 "Tanggal: " + java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.ofPattern("dd MMMM yyyy")),
                 FontFactory.getFont(FontFactory.HELVETICA, 12)
             );
             date.setSpacingAfter(20);
 
-            // Create table headers
+            // Membuat tabel header
             PdfPCell hcell;
 
             hcell = new PdfPCell(new Phrase("Judul Film", headFont));
@@ -57,30 +57,30 @@ public class ExportRentalStatsPdf {
             hcell.setBackgroundColor(BaseColor.LIGHT_GRAY);
             table.addCell(hcell);
 
-            // Add data rows
+            // Menambah data baris
             for (MovieRentalStats stat : stats) {
                 PdfPCell cell;
 
-                // Movie Title
+                // Judul Film
                 cell = new PdfPCell(new Phrase(stat.getMovieTitle()));
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 cell.setHorizontalAlignment(Element.ALIGN_LEFT);
                 cell.setPadding(5);
                 table.addCell(cell);
 
-                // Rental Count
+                // Jumlah sewa
                 cell = new PdfPCell(new Phrase(String.valueOf(stat.getRentalCount())));
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 table.addCell(cell);
 
-                // Target Count
+                // Jumlah target
                 cell = new PdfPCell(new Phrase(String.valueOf(stat.getTargetCount())));
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 table.addCell(cell);
 
-                // Achievement Percentage
+                // Presentase pencapaian
                 double achievement = stat.getTargetCount() > 0 
                     ? (double) stat.getRentalCount() / stat.getTargetCount() * 100 
                     : 0;
@@ -90,12 +90,12 @@ public class ExportRentalStatsPdf {
                 table.addCell(cell);
             }
 
-            // Calculate totals
+            // Menghitung total
             int totalRentals = stats.stream().mapToInt(MovieRentalStats::getRentalCount).sum();
             int totalTargets = stats.stream().mapToInt(MovieRentalStats::getTargetCount).sum();
             double totalAchievement = totalTargets > 0 ? (double) totalRentals / totalTargets * 100 : 0;
 
-            // Add total row
+            // Menambah baris total
             PdfPCell totalCell = new PdfPCell(new Phrase("Total", headFont));
             totalCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
             totalCell.setPadding(5);

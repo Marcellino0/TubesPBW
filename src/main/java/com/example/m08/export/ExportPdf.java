@@ -15,21 +15,21 @@ public class ExportPdf {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         
         try {
-            // Configure table
+            // CKonfigurasi tabel
             PdfPTable table = new PdfPTable(4);
             table.setWidthPercentage(100);
             table.setWidths(new int[]{4, 3, 3, 3});
 
-            // Configure fonts
+            // Konfigurasi font
             Font headFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
             Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16);
             
-            // Add title
+            // Menambah Judul
             Paragraph title = new Paragraph("Laporan Rental Film", titleFont);
             title.setAlignment(Element.ALIGN_CENTER);
             title.setSpacingAfter(20);
             
-            // Add period
+            // Menambah periode
             // DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMMM");
             Paragraph period = new Paragraph(
                 "Periode: " + month + " " + year,
@@ -37,7 +37,7 @@ public class ExportPdf {
             );
             period.setSpacingAfter(20);
 
-            // Create table headers
+            // Membuat table header
             PdfPCell hcell;
             
             hcell = new PdfPCell(new Phrase("Judul Film", headFont));
@@ -60,7 +60,7 @@ public class ExportPdf {
             hcell.setBackgroundColor(BaseColor.LIGHT_GRAY);
             table.addCell(hcell);
 
-            // Add data rows
+            // Menambah baris data
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
             
             for (Laporan report : reports) {
@@ -89,12 +89,12 @@ public class ExportPdf {
                 table.addCell(cell);
             }
 
-            // Calculate total revenue
+            // Menghitung total pendapatan
             double totalRevenue = reports.stream()
                 .mapToDouble(report -> report.getHargaSewa())
                 .sum();
 
-            // Add total row
+            // Menambah total baris
             PdfPCell totalCell = new PdfPCell(new Phrase("Total Pendapatan", headFont));
             totalCell.setColspan(3);
             totalCell.setHorizontalAlignment(Element.ALIGN_RIGHT);

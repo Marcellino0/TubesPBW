@@ -17,12 +17,12 @@
             <button type="button" class="type-btn" onclick="switchForm('admin')">Admin Login</button>
         </div>
 
-        <!-- Enhanced Error Message Display -->
+        <!-- Tampilan Error Message -->
         <div th:if="${error}" class="notification error">
             <span th:text="${error}"></span>
         </div>
 
-        <!-- User Login Form -->
+        <!-- User Login  -->
         <div id="userForm" class="form-wrapper active">
             <form class="login-form" th:action="@{/login}" method="post">
                 <div class="input-group">
@@ -41,7 +41,7 @@
             </form>
         </div>
 
-        <!-- Admin Login Form -->
+        <!-- Admin Login  -->
         <div id="adminForm" class="form-wrapper">
             <form class="login-form" th:action="@{/loginadmin}" method="post">
                 <div class="input-group">

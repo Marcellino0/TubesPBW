@@ -29,7 +29,7 @@ body {
   min-height: 100vh;
 }
 
-/* Sidebar styles */
+/* Sidebar */
 .sidebar {
   width: 280px;
   background: #000000;
@@ -124,7 +124,7 @@ body {
   font-weight: 700;
 }
 
-/* Filter form styles */
+/* Filter */
 .filter-form {
   background: var(--card-bg);
   padding: 1.5rem;
@@ -173,7 +173,7 @@ body {
   box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
 }
 
-/* Table styles */
+/* Tabel */
 .data-table {
   width: 100%;
   border-collapse: collapse;
@@ -209,7 +209,7 @@ body {
   background-color: rgba(0, 0, 0, 0.2);
 }
 
-/* Total section styles */
+/* Total section */
 .total-section {
   display: flex;
   justify-content: space-between;
@@ -226,7 +226,7 @@ body {
   color: var(--text-primary);
 }
 
-/* Button styles */
+/* Button */
 .btn {
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
@@ -328,7 +328,7 @@ body {
   margin-top: 2rem;
 }
 
-/* Download PDF Button Styles */
+/* Download PDF Button */
 .download-btn {
   display: inline-flex;
   align-items: center;
