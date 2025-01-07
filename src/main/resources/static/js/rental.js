@@ -18,15 +18,12 @@ function logout() {
     window.location.href = '/logout';
 }
 
-// Get current path
 let currentPath = window.location.pathname;
 
-// Remove active class from all menu items
 document.querySelectorAll('.sidebar-menu li').forEach(item => {
     item.classList.remove('active');
 });
 
-// Add active class based on current path
 if (currentPath === '/rental') {
     document.querySelector('.sidebar-menu li[onclick="redirectToRentals()"]').classList.add('active');
 } else if (currentPath === '/userdashboard') {

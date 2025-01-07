@@ -1,4 +1,3 @@
-// Fungsi redirect untuk admin panel
 function redirectToAdminDashboard() {
     window.location.href = '/admin/dashboard';
 }
@@ -27,38 +26,26 @@ function handleLogout() {
     window.location.href = '/logout';
 }
 
-// Mobile menu handling
-const mobileMenuTrigger = document.querySelector('.mobile-menu-trigger');
-const sidebar = document.querySelector('.sidebar');
-
-mobileMenuTrigger.addEventListener('click', () => {
-    sidebar.classList.toggle('active');
-});
-
-// Close mobile menu when clicking outside
-document.addEventListener('click', (e) => {
-    if (!sidebar.contains(e.target) && !mobileMenuTrigger.contains(e.target)) {
-        sidebar.classList.remove('active');
-    }
-});
-
-// Chart functions
 let rentalChart;
 
-// Function to initialize the chart
+// Inisialisasi chart rental film
 function initializeChart() {
     const ctx = document.getElementById('rentalChart').getContext('2d');
 
+    // Membuat chart baru dengan konfigurasi
     rentalChart = new Chart(ctx, {
         type: 'line',
         data: {
+            // Data untuk sumbu X (judul film)
             labels: rentalStats.map(stat => stat.movieTitle),
             datasets: [
                 {
+                    // Dataset untuk jumlah penyewaan aktual
                     label: 'Jumlah Penyewaan',
                     data: rentalStats.map(stat => stat.rentalCount),
                     borderColor: 'rgba(99, 102, 241, 1)',
                     backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                    // Konfigurasi tampilan garis dan titik
                     borderWidth: 2,
                     tension: 0.3,
                     fill: true,
@@ -69,10 +56,12 @@ function initializeChart() {
                     pointHoverRadius: 6
                 },
                 {
+                    // Dataset untuk target penyewaan
                     label: 'Target Penyewaan',
                     data: rentalStats.map(stat => stat.targetCount || stat.rentalCount * 1.2),
                     borderColor: 'rgba(52, 211, 153, 1)',
                     backgroundColor: 'rgba(52, 211, 153, 0.2)',
+                    // Konfigurasi tampilan garis dan titik
                     borderWidth: 2,
                     tension: 0.3,
                     fill: true,
@@ -85,12 +74,15 @@ function initializeChart() {
             ]
         },
         options: {
+            // Konfigurasi responsif chart
             responsive: true,
             maintainAspectRatio: false,
+            // Konfigurasi interaksi dengan chart
             interaction: {
                 intersect: false,
                 mode: 'index'
             },
+            // Konfigurasi skala sumbu X dan Y
             scales: {
                 y: {
                     beginAtZero: true,
@@ -113,6 +105,7 @@ function initializeChart() {
                     }
                 }
             },
+            // Konfigurasi plugin chart (legend, title, tooltip)
             plugins: {
                 legend: {
                     display: true,
@@ -166,17 +159,16 @@ function initializeChart() {
     });
 }
 
-
-// Function to update chart data
+// Fungsi untuk memperbarui data chart
 function updateChartData() {
     if (rentalChart) {
-        const averageRentals = calculateAverageRentals();
+        // Memperbarui data target penyewaan
         rentalChart.data.datasets[1].data = rentalStats.map(stat => stat.targetCount || stat.rentalCount * 1.2);
         rentalChart.update();
     }
 }
 
-// Add event listeners to update target buttons
+// Fungsi untuk mengatur event listener tombol update target
 function setupUpdateTargetButtons() {
     document.querySelectorAll('.update-target-btn').forEach(btn => {
         btn.addEventListener('click', async function () {
@@ -199,7 +191,6 @@ function setupUpdateTargetButtons() {
                 });
 
                 if (response.ok) {
-                    // Update local data
                     const filmIndex = rentalStats.findIndex(stat => stat.filmId === parseInt(filmId));
                     if (filmIndex !== -1) {
                         rentalStats[filmIndex].targetCount = targetCount;
@@ -217,7 +208,6 @@ function setupUpdateTargetButtons() {
     });
 }
 
-// Initialize everything when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     initializeChart();
     setupUpdateTargetButtons();
