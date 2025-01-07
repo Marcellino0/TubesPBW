@@ -18,26 +18,26 @@ function currentSlide(n) {
 function showSlides(n) {
     const slides = document.getElementsByClassName("slides");
     const dots = document.getElementsByClassName("dot");
-    
-    if (n > slides.length) {slideIndex = 1}    
-    if (n < 1) {slideIndex = slides.length}
-    
+
+    if (n > slides.length) { slideIndex = 1 }
+    if (n < 1) { slideIndex = slides.length }
+
     Array.from(slides).forEach(slide => {
         slide.style.display = "none";
     });
-    
+
     Array.from(dots).forEach(dot => {
         dot.classList.remove("active");
     });
-    
-    slides[slideIndex-1].style.display = "block";
-    dots[slideIndex-1].classList.add("active");
+
+    slides[slideIndex - 1].style.display = "block";
+    dots[slideIndex - 1].classList.add("active");
 
     const videos = document.querySelectorAll('.slide-video');
     videos.forEach(video => {
         video.pause();
     });
-    videos[slideIndex-1].play();
+    videos[slideIndex - 1].play();
 }
 
 // Fungsi slideshow film
@@ -61,7 +61,7 @@ function showMovieSlides(n, section) {
     const slides = document.querySelectorAll(`#${section}MoviesSlideshow .movie-slide`);
     const dots = document.querySelectorAll(`#${section}MoviesSlideshow .movie-dot`);
 
-    if (!slides.length) return; 
+    if (!slides.length) return;
 
     let slideIndex = section === 'top' ? topMovieIndex : latestMovieIndex;
 
@@ -115,7 +115,7 @@ function startAutoAdvance() {
 document.addEventListener('DOMContentLoaded', () => {
     // Inisialisasi slideshow video utama
     showSlides(slideIndex);
-    
+
     // Perpindahan otomatis slideshow utama
     setInterval(() => {
         plusSlides(1);
