@@ -94,7 +94,7 @@ public class LoginController {
             return "redirect:/login";
         }
 
-        int show = 5;
+        int show = 4;
         int start = (page - 1) * show;
 
         List<Movie> movies;
