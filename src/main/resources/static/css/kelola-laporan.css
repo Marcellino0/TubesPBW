@@ -254,76 +254,6 @@ body {
   font-size: 1.1rem;
 }
 
-/* Responsive design */
-@media (max-width: 1024px) {
-  .sidebar {
-    width: 250px;
-  }
-  
-  .main-content {
-    margin-left: 250px;
-  }
-}
-
-@media (max-width: 768px) {
-  .sidebar {
-    transform: translateX(-100%);
-  }
-  
-  .sidebar.active {
-    transform: translateX(0);
-  }
-  
-  .main-content {
-    margin-left: 0;
-    padding: 1.5rem;
-  }
-  
-  .form-row {
-    flex-direction: column;
-  }
-  
-  .data-table {
-    font-size: 0.875rem;
-  }
-  
-  .data-table th,
-  .data-table td {
-    padding: 0.75rem 1rem;
-  }
-  
-  .data-table thead {
-    display: none;
-  }
-  
-  .data-table tr {
-    display: block;
-    margin-bottom: 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 1rem;
-  }
-  
-  .data-table td {
-    display: block;
-    text-align: right;
-    padding: 0.5rem 0;
-    border: none;
-  }
-  
-  .data-table td::before {
-    content: attr(data-label);
-    float: left;
-    font-weight: bold;
-    color: var(--primary-color);
-  }
-  
-  .total-section {
-    flex-direction: column;
-    gap: 1rem;
-  }
-}
-
 .action-buttons {
   margin-top: 2rem;
 }
@@ -351,25 +281,4 @@ body {
 
 .download-btn:active {
   transform: translateY(0);
-}
-
-/* Mobile menu trigger */
-.mobile-menu-trigger {
-  display: none;
-  position: fixed;
-  top: 1rem;
-  left: 1rem;
-  z-index: 100;
-  padding: 0.5rem;
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  color: var(--text-primary);
-  cursor: pointer;
-}
-
-@media (max-width: 768px) {
-  .mobile-menu-trigger {
-    display: block;
-  }
 }

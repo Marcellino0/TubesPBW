@@ -34,7 +34,7 @@ public class AuthorizationAspect {
             return "redirect:/login";
         }
 
-        // Get user role
+        // Mengambil user role
         String userRole = null;
         if (session.getAttribute("admin") != null) {
             userRole = "admin";
@@ -46,12 +46,12 @@ public class AuthorizationAspect {
             return "redirect:/login";
         }
 
-        // Check if user has required role
+        // Periksa apakah user memiliki role yang diperlukan
         if (Arrays.asList(requiredRoles).contains(userRole)) {
             return joinPoint.proceed();
         }
 
-        // Redirect based on role
+        // Redirect berdasarkan role
         if (userRole.equals("admin")) {
             return "redirect:/admin/dashboard";
         } else {

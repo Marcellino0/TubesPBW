@@ -10,7 +10,6 @@
 
 <body>
     <div class="admin-container">
-        <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
                 <h2>Admin Dashboard</h2>
@@ -20,7 +19,7 @@
                     Kelola Film
                 </li>
                 <li onclick="redirectToManageCustomers()">
-                    Kelola Pelanggan
+                    Kelola Pelanggan 
                 </li>
                 <li onclick="redirectToManageGenres()">
                     Kelola Genre
@@ -65,28 +64,34 @@
                     <tbody>
                         <tr th:each="movie : ${movies}">
                             <td data-label="Cover">
-                                <img th:if="${movie.base64Cover != null}"
-                                    th:src="@{'data:image/jpeg;base64,' + ${movie.base64Cover}}" alt="Cover Film"
-                                    width="100">
+                                <img th:if="${movie.base64Cover != null}" 
+                                     th:src="@{'data:image/jpeg;base64,' + ${movie.base64Cover}}" 
+                                     alt="Cover Film" width="100">
                                 <span th:unless="${movie.base64Cover != null}">No Cover</span>
                             </td>
                             <td data-label="Judul" th:text="${movie.judul}"></td>
                             <td data-label="Genre" th:text="${movie.genre}"></td>
-                            <td data-label="Aktor" th:text="${movie.aktor}"></td>
-                            <td data-label="Stok" th:text="${movie.stok}"></td>
-                            <td data-label="Harga 7 Hari">Rp<span
-                                    th:text="${#numbers.formatDecimal(movie.harga7Hari, 0, 'COMMA', 0, 'POINT')}">0</span>
+                            <td data-label="Aktor">
+                                <span th:if="${not #lists.isEmpty(movie.actors)}"
+                                      th:text="${#strings.listJoin(movie.actors.![name], ', ')}">
+                                </span>
+                                <span th:if="${#lists.isEmpty(movie.actors)}">No actors</span>
                             </td>
-                            <td data-label="Harga 14 Hari">Rp<span
-                                    th:text="${#numbers.formatDecimal(movie.harga14Hari, 0, 'COMMA', 0, 'POINT')}">0</span>
+                            <td data-label="Stok" th:text="${movie.stok != null ? movie.stok : 0}"></td>
+                            <td data-label="Harga 7 Hari">
+                                Rp<span th:text="${#numbers.formatDecimal(movie.harga7Hari != null ? movie.harga7Hari : 0, 0, 'COMMA', 0, 'POINT')}">0</span>
                             </td>
-                            <td data-label="Harga 30 Hari">Rp<span
-                                    th:text="${#numbers.formatDecimal(movie.harga30Hari, 0, 'COMMA', 0, 'POINT')}">0</span>
+                            <td data-label="Harga 14 Hari">
+                                Rp<span th:text="${#numbers.formatDecimal(movie.harga14Hari != null ? movie.harga14Hari : 0, 0, 'COMMA', 0, 'POINT')}">0</span>
+                            </td>
+                            <td data-label="Harga 30 Hari">
+                                Rp<span th:text="${#numbers.formatDecimal(movie.harga30Hari != null ? movie.harga30Hari : 0, 0, 'COMMA', 0, 'POINT')}">0</span>
                             </td>
                             <td data-label="Aksi">
                                 <a th:href="@{/admin/movies/edit/{id}(id=${movie.filmId})}" class="edit-btn">Edit</a>
-                                <a th:href="@{/admin/movies/delete/{id}(id=${movie.filmId})}" class="delete-btn"
-                                    onclick="return confirm('Apakah Anda yakin ingin menghapus film ini?')">Hapus</a>
+                                <a th:href="@{/admin/movies/delete/{id}(id=${movie.filmId})}" 
+                                   class="delete-btn"
+                                   onclick="return confirm('Apakah Anda yakin ingin menghapus film ini?')">Hapus</a>
                             </td>
                         </tr>
                     </tbody>
@@ -100,6 +105,4 @@
     </button>
     <script th:src="@{/js/admindashboard.js}"></script>
 </body>
-
 </html>
-

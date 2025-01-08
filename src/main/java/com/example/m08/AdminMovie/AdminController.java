@@ -28,20 +28,22 @@ public class AdminController {
     @Autowired
     private RentalRepository rentalRepository;
 
+    // Endpoint dashboard admin 
     @GetMapping("/dashboard")
-    @RequiredRole("admin")
+    @RequiredRole("admin") // Hanya admin yang bisa akses
     public String dashboard(Model model) {
         model.addAttribute("movies", movieRepository.findAll());
         return "admin/admindashboard";
     }
 
+    // Endpoint untuk mengelola data pelanggan
     @GetMapping("/manage-customers")
     @RequiredRole("admin")
     public String manageCustomers(Model model) {
         model.addAttribute("customers", pelangganRepository.findAll());
         return "admin/kelolaPelanggan";
     }
-
+    // Endpoint untuk mengedit data pelanggan
     @GetMapping("/edit-customer/{id}")
     @RequiredRole("admin")
     public String editCustomer(@PathVariable int id, Model model) {
@@ -51,6 +53,7 @@ public class AdminController {
         return "admin/editPelanggan";
     }
 
+    // Endpoint untuk mengupdate data pelanggan
     @PostMapping("/update-customer/{id}")
     @RequiredRole("admin")
     public String updateCustomer(@PathVariable int id, @ModelAttribute Pelanggan customer, 
@@ -70,7 +73,8 @@ public class AdminController {
         pelangganRepository.save(existingCustomer);
         return "redirect:/admin/manage-customers";
     }
-
+    
+    // Endpoint untuk mengdelete data pelanggan
     @GetMapping("/delete-customer/{id}")
     @RequiredRole("admin")
     public String deleteCustomer(@PathVariable int id) {
@@ -78,6 +82,7 @@ public class AdminController {
         return "redirect:/admin/manage-customers";
     }
 
+    // Endpoint untuk melihat laporan rental film
     @GetMapping("/reports")
     @RequiredRole("admin")
     public String viewReports(Model model) {

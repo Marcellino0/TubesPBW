@@ -1,28 +1,36 @@
 package com.example.m08.Rental;
 
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 import com.example.m08.User.Pelanggan;
 import com.example.m08.User.PelangganRepository;
+import com.example.m08.export.ExportRentalStatsPdf;
 
 @Controller
 public class RentalController {
-    
+
     @Autowired
     private RentalRepository rentalRepository;
-    
+
     @Autowired
     private PelangganRepository pelangganRepository;
 
+    // Endpoint untuk menampilkan daftar penyewaan aktif
     @GetMapping("/rental")
     public String viewRentals(Model model, HttpSession session) {
         Pelanggan user = (Pelanggan) session.getAttribute("pelanggan");
@@ -35,40 +43,39 @@ public class RentalController {
         return "user/rental";
     }
 
+    // Endpoint untuk menampilkan history penyewaan
     @GetMapping("/history-rental")
-public String viewRentalHistory(Model model, HttpSession session) {
-    Pelanggan user = (Pelanggan) session.getAttribute("pelanggan");
-    if (user == null) {
-        return "redirect:/login";
-    }
-    
-    List<RentalHistory> rentalHistory = rentalRepository.findRentalHistory(user.getUserId());
-    model.addAttribute("rentalHistory", rentalHistory);
-    return "user/history-rental";
-}
+    public String viewRentalHistory(Model model, HttpSession session) {
+        Pelanggan user = (Pelanggan) session.getAttribute("pelanggan");
+        if (user == null) {
+            return "redirect:/login";
+        }
 
+        List<RentalHistory> rentalHistory = rentalRepository.findRentalHistory(user.getUserId());
+        model.addAttribute("rentalHistory", rentalHistory);
+        return "user/history-rental";
+    }
+
+    // Endpoint untuk proses penyewaan film
     @PostMapping("/rent/{filmId}")
     public String rentMovie(@PathVariable int filmId,
-                          @RequestParam int duration,
-                          HttpSession session,
-                          RedirectAttributes redirectAttributes) {
+            @RequestParam int duration,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
         try {
             Pelanggan user = (Pelanggan) session.getAttribute("pelanggan");
             if (user == null) {
                 return "redirect:/login";
             }
 
-            // Create rental object
             Rental rental = new Rental();
             rental.setFilmId(filmId);
             rental.setRentDate(LocalDate.now());
             rental.setDueDate(LocalDate.now().plusDays(duration));
             rental.setStatus("ACTIVE");
 
-            // Attempt to save
             rentalRepository.save(rental, user.getUserId());
 
-            // Update session with new balance
             user = pelangganRepository.findById(user.getUserId()).orElse(null);
             if (user != null) {
                 session.setAttribute("pelanggan", user);
@@ -76,17 +83,18 @@ public String viewRentalHistory(Model model, HttpSession session) {
 
             redirectAttributes.addFlashAttribute("success", "Movie rented successfully!");
             return "redirect:/rental";
-            
+
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/userdashboard";
         }
     }
 
+    // Endpoint untuk pengembalian film
     @PostMapping("/rental/return/{rentalId}")
     public String returnMovie(@PathVariable Long rentalId,
-                            HttpSession session,
-                            RedirectAttributes redirectAttributes) {
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
         try {
             Pelanggan user = (Pelanggan) session.getAttribute("pelanggan");
             if (user == null) {
@@ -103,9 +111,9 @@ public String viewRentalHistory(Model model, HttpSession session) {
             rentalRepository.update(rental);
 
             if (rental.getDenda() > 0) {
-                redirectAttributes.addFlashAttribute("warning", 
-                    String.format("Movie returned with late fee: Rp%.2f", rental.getDenda()));
-                
+                redirectAttributes.addFlashAttribute("warning",
+                        String.format("Movie returned with late fee: Rp%.2f", rental.getDenda()));
+
                 user = pelangganRepository.findById(user.getUserId()).orElse(null);
                 if (user != null) {
                     session.setAttribute("pelanggan", user);
@@ -134,20 +142,20 @@ public String viewRentalHistory(Model model, HttpSession session) {
     @PostMapping("/admin/rental/update-target/{filmId}")
     @ResponseBody
     public ResponseEntity<?> updateMovieTarget(
-        @PathVariable int filmId,
-        @RequestBody TargetUpdateRequest request,
-        HttpSession session) {
-    
-    try {
-        rentalRepository.updateMovieTarget(filmId, request.getTargetCount());
-        return ResponseEntity.ok()
-            .body(Map.of("message", "Target updated successfully"));
-    } catch (Exception e) {
-        e.printStackTrace();
-        return ResponseEntity.badRequest()
-            .body(Map.of("error", e.getMessage()));
+            @PathVariable int filmId,
+            @RequestBody TargetUpdateRequest request,
+            HttpSession session) {
+
+        try {
+            rentalRepository.updateMovieTarget(filmId, request.getTargetCount());
+            return ResponseEntity.ok()
+                    .body(Map.of("message", "Target updated successfully"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", e.getMessage()));
+        }
     }
-}
 
     @GetMapping("/api/rental/stats")
     @ResponseBody
@@ -158,6 +166,31 @@ public String viewRentalHistory(Model model, HttpSession session) {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/admin/export/pdf")
+    public void downloadRentalReport(HttpServletResponse response) throws IOException {
+        try {
+            // Mengambil data rental dari database
+            List<MovieRentalStats> stats = rentalRepository.getMovieRentalStats();
+
+            // Membuat file PDF dari data rental
+            ByteArrayInputStream bis = ExportRentalStatsPdf.rentalStatsReport(stats);
+
+            // Mengatur nama file untuk download file PDF
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=rental-stats-report.pdf");
+
+            // Menulis isi PDF ke dalam response
+            IOUtils.copy(bis, response.getOutputStream());
+
+            // Mengirim data ke user
+            response.flushBuffer();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error dalam pembuatan PDF");
         }
     }
 

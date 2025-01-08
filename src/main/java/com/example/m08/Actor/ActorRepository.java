@@ -1,4 +1,3 @@
-// src/main/java/com/example/m08/Actor/ActorRepository.java
 package com.example.m08.Actor;
 
 import org.springframework.data.jpa.repository.JpaRepository;

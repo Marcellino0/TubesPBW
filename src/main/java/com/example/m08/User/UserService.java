@@ -14,17 +14,19 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    // Method untuk registrasi pelanggan baru
     public boolean register(Pelanggan pelanggan) {
+        // Cek apakah username sudah ada
         if (pelangganRepository.findByUsername(pelanggan.getUsername()).isPresent()) {
             return false;
         }
-
+        // Enkripsi password dan set saldo awal
         pelanggan.setPassword(passwordEncoder.encode(pelanggan.getPassword()));
         pelanggan.setSaldo(0.0);
         pelangganRepository.save(pelanggan);
         return true;
     }
-
+    // Method untuk autentikasi login
     public Pelanggan login(String username, String password) {
         Optional<Pelanggan> pelangganOptional = pelangganRepository.findByUsername(username);
         if (pelangganOptional.isPresent()) {
@@ -35,13 +37,12 @@ public class UserService {
         }
         return null;
     }
-
+    // Method untuk top up saldo pelanggan
     public void topUpSaldo(int userId, Double amount) {
-        // Validasi minimum amount
         if (amount < 10000) {
             throw new RuntimeException("Minimum top up amount is Rp 10.000");
         }
-
+        // Update saldo pelanggan
         Optional<Pelanggan> pelangganOpt = pelangganRepository.findById(userId);
         if (pelangganOpt.isPresent()) {
             Pelanggan pelanggan = pelangganOpt.get();
@@ -49,10 +50,11 @@ public class UserService {
             pelangganRepository.save(pelanggan);
         }
     }
+    // Method untuk mendapatkan profil user saat ini
     public Pelanggan getCurrentUserProfile(String username) {
         return pelangganRepository.findByUsername(username).orElse(null);
     }
-
+    // Method untuk update profil pelanggan
     public void updateProfile(Pelanggan pelanggan) {
         Optional<Pelanggan> existingPelanggan = pelangganRepository.findById(pelanggan.getUserId());
         if (existingPelanggan.isPresent()) {

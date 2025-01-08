@@ -24,39 +24,41 @@ public class LaporanController {
     @Autowired
     private LaporanRepository laporanRepository;
 
+    // Endpoint untuk melihat semua laporan dan total pendapatan
     @GetMapping("/kelolaLaporan")
     public String viewLaporan(Model model, HttpSession session) {
-        
+
         List<Laporan> reports = laporanRepository.findAll();
         double totalRevenue = calculateTotalRevenue(reports);
-        
+
         model.addAttribute("reports", reports);
         model.addAttribute("totalRevenue", totalRevenue);
-        
+
         return "admin/kelolaLaporan";
     }
-    
+
+    // Endpoint untuk mencari laporan berdasarkan bulan dan tahun
     @GetMapping("/laporan/search")
-public String searchReports(@RequestParam int month, @RequestParam int year, Model model) {
-    List<Laporan> reports = laporanRepository.findByMonthAndYear(month, year);
-    double totalRevenue = calculateTotalRevenue(reports);
-    
-    model.addAttribute("reports", reports);
-    model.addAttribute("totalRevenue", totalRevenue);
-    model.addAttribute("selectedMonth", month);
-    model.addAttribute("selectedYear", year);
-    
-    return "admin/kelolaLaporan";
-}
+    public String searchReports(@RequestParam int month, @RequestParam int year, Model model) {
+        List<Laporan> reports = laporanRepository.findByMonthAndYear(month, year);
+        double totalRevenue = calculateTotalRevenue(reports);
 
+        model.addAttribute("reports", reports);
+        model.addAttribute("totalRevenue", totalRevenue);
+        model.addAttribute("selectedMonth", month);
+        model.addAttribute("selectedYear", year);
 
-     @GetMapping("/laporan/download")
+        return "admin/kelolaLaporan";
+    }
+
+    // Endpoint untuk download laporan dalam format PDF
+    @GetMapping("/laporan/download")
     public ResponseEntity<InputStreamResource> downloadReport(
             @RequestParam(defaultValue = "1") int month,
             @RequestParam(defaultValue = "2024") int year) throws IOException {
-        
+
         List<Laporan> reports = laporanRepository.findByMonthAndYear(month, year);
-        
+
         ByteArrayInputStream bis = ExportPdf.laporanReport(reports, month, year);
 
         HttpHeaders headers = new HttpHeaders();
@@ -68,9 +70,10 @@ public String searchReports(@RequestParam int month, @RequestParam int year, Mod
                 .body(new InputStreamResource(bis));
     }
 
+    // Method helper untuk menghitung total pendapatan
     private double calculateTotalRevenue(List<Laporan> reports) {
         return reports.stream()
-                .mapToDouble(report -> report.getHargaSewa() + report.getDenda())
+                .mapToDouble(report -> report.getHargaSewa())
                 .sum();
     }
 }

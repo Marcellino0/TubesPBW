@@ -2,7 +2,6 @@ function resetSearchForm() {
     window.location.href = '/userdashboard';
 }
 
-// Initialize multiple select dropdowns
 document.addEventListener('DOMContentLoaded', function () {
     new SlimSelect({
         select: '#genreSelect',
@@ -21,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function () {
 function flipCard(element) {
     const movieCard = element.closest('.movie-card');
     if (!movieCard) {
-        // If clicking the back button
         const flipcard = element.closest('.flipcard');
         if (flipcard) {
             const movieCard = flipcard.closest('.movie-card');
@@ -46,7 +44,6 @@ function updatePrice(movieId) {
     priceElement.textContent = formattedPrice;
 }
 
-// Existing navigation functions remain unchanged
 function redirectToCatalog() {
     window.location.href = '/userdashboard';
 }

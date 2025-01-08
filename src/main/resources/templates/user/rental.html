@@ -11,7 +11,6 @@
 
 <body>
     <div class="admin-container">
-        <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
                 <h2>User Dashboard</h2>
@@ -35,9 +34,7 @@
             </ul>
         </div>
 
-        <!-- Main Content -->
         <div class="main-content">
-            <!-- Alert Messages -->
             <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
             <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
             <div th:if="${warning}" class="alert warning" th:text="${warning}"></div>
@@ -47,13 +44,11 @@
                     <h2>Current Rentals</h2>
                 </div>
 
-                <!-- No rentals message -->
                 <div th:if="${#lists.isEmpty(rentals)}" class="no-rentals">
                     <br>
                     <p>You don't have any active rentals.</p>
                 </div>
-
-                <!-- Rental List -->
+                
                 <div th:unless="${#lists.isEmpty(rentals)}" class="rental-list">
                     <table class="rental-table">
                         <thead>
