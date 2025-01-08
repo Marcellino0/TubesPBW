@@ -113,6 +113,11 @@ body {
     animation: fadeIn 0.5s ease-in-out;
 }
 
+#topMoviesSlideshow .movie-slide.active {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+
 .movie-card {
     position: relative;
     border-radius: 12px;
@@ -156,64 +161,10 @@ body {
     margin-bottom: 0.25rem;
 }
 
-/* Top Movies Slideshow */
-#topMoviesSlideshow .movie-slide.active {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
-}
-
-/* Responsive Design for Top Movies */
-@media (max-width: 1200px) {
-    #topMoviesSlideshow .movie-slide.active {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (max-width: 768px) {
-    #topMoviesSlideshow .movie-slide.active {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 480px) {
-    #topMoviesSlideshow .movie-slide.active {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Responsive Design for Latest Movies */
-@media (max-width: 1400px) {
-    #latestMoviesSlideshow .movie-slide.active {
-        grid-template-columns: repeat(4, 1fr);
-    }
-}
-
-@media (max-width: 1200px) {
-    #latestMoviesSlideshow .movie-slide.active {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (max-width: 768px) {
-    #latestMoviesSlideshow .movie-slide.active {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 480px) {
-    #latestMoviesSlideshow .movie-slide.active {
-        grid-template-columns: 1fr;
-    }
-}
-
 /* Animations */
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 /* Navigation */
@@ -320,26 +271,6 @@ body {
 .fade {
     animation-name: fade;
     animation-duration: 1s;
-}
-
-@keyframes fade {
-    from {
-        opacity: 0.4
-    }
-    to {
-        opacity: 1
-    }
-}
-
-.dot-container {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2;
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
 }
 
 /* Info Sections */
@@ -463,29 +394,4 @@ body {
 .prev:hover, .next:hover {
     background: var(--primary-color);
     transform: scale(1.1);
-}
-
-/* Responsive Design */
-@media (max-width: 1024px) {
-    .premiere-section {
-        grid-template-columns: 1fr;
-    }
-    
-    .movie-grid {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    }
-}
-
-@media (max-width: 768px) {
-    .header {
-        padding: 1rem;
-    }
-    
-    .dashboard {
-        padding: 2rem 1rem;
-    }
-    
-    .premiere-info h2 {
-        font-size: 2rem;
-    }
 }

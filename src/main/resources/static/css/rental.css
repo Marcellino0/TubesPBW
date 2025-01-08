@@ -230,39 +230,6 @@ body {
     border: 1px solid #d97706;
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
-    .sidebar {
-        width: 250px;
-    }
-    
-    .main-content {
-        margin-left: 250px;
-    }
-}
 
-@media (max-width: 768px) {
-    .sidebar {
-        transform: translateX(-100%);
-    }
-    
-    .sidebar.active {
-        transform: translateX(0);
-    }
-    
-    .main-content {
-        margin-left: 0;
-        padding: 1.5rem;
-    }
-    
-    .rental-table {
-        font-size: 0.875rem;
-    }
-    
-    .rental-table th,
-    .rental-table td {
-        padding: 0.75rem 1rem;
-    }
-}
 
  

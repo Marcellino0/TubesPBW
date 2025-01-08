@@ -185,18 +185,9 @@ button:active {
         transform: translateX(100%);
         opacity: 0;
     }
+
     to {
         transform: translateX(0);
         opacity: 1;
-    }
-}
-
-@media (max-width: 640px) {
-    .form-container {
-        padding: 1.5rem;
-    }
-
-    body {
-        padding: 1rem;
     }
 }
