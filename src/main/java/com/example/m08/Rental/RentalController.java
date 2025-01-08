@@ -1,18 +1,25 @@
 package com.example.m08.Rental;
 
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 import com.example.m08.User.Pelanggan;
 import com.example.m08.User.PelangganRepository;
+import com.example.m08.export.ExportRentalStatsPdf;
 
 @Controller
 public class RentalController {
@@ -35,6 +42,7 @@ public class RentalController {
         model.addAttribute("today", LocalDate.now());
         return "user/rental";
     }
+
     // Endpoint untuk menampilkan history penyewaan
     @GetMapping("/history-rental")
     public String viewRentalHistory(Model model, HttpSession session) {
@@ -47,6 +55,7 @@ public class RentalController {
         model.addAttribute("rentalHistory", rentalHistory);
         return "user/history-rental";
     }
+
     // Endpoint untuk proses penyewaan film
     @PostMapping("/rent/{filmId}")
     public String rentMovie(@PathVariable int filmId,
@@ -80,6 +89,7 @@ public class RentalController {
             return "redirect:/userdashboard";
         }
     }
+
     // Endpoint untuk pengembalian film
     @PostMapping("/rental/return/{rentalId}")
     public String returnMovie(@PathVariable Long rentalId,
@@ -156,6 +166,31 @@ public class RentalController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/admin/export/pdf")
+    public void downloadRentalReport(HttpServletResponse response) throws IOException {
+        try {
+            // Mengambil data rental dari database
+            List<MovieRentalStats> stats = rentalRepository.getMovieRentalStats();
+
+            // Membuat file PDF dari data rental
+            ByteArrayInputStream bis = ExportRentalStatsPdf.rentalStatsReport(stats);
+
+            // Mengatur nama file untuk download file PDF
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=rental-stats-report.pdf");
+
+            // Menulis isi PDF ke dalam response
+            IOUtils.copy(bis, response.getOutputStream());
+
+            // Mengirim data ke user
+            response.flushBuffer();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error dalam pembuatan PDF");
         }
     }
 
