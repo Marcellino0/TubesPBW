@@ -368,6 +368,9 @@ body {
     backdrop-filter: blur(10px);
     padding: 1.5rem;
     color: var(--text-secondary);
+    align-items: center;
+    justify-content: center;
+    display: flex;
 }
 
 /* Navigation Controls */
