@@ -16,28 +16,33 @@ function currentSlide(n) {
 }
 
 function showSlides(n) {
-    const slides = document.getElementsByClassName("slides");
-    const dots = document.getElementsByClassName("dot");
+    const slides = document.getElementsByClassName("slides"); //ngambil semua elemen slides
+    const dots = document.getElementsByClassName("dot"); //ngambil semua elemen dot (o)
 
-    if (n > slides.length) { slideIndex = 1 }
-    if (n < 1) { slideIndex = slides.length }
+    if (n > slides.length) {
+        slideIndex = 1
+    }
+    if (n < 1) {
+        slideIndex = slides.length
+    }
 
+    //nge hide semua elemen slides
     Array.from(slides).forEach(slide => {
         slide.style.display = "none";
     });
-
+    //ngehapus class active dari semua elemen dot
     Array.from(dots).forEach(dot => {
         dot.classList.remove("active");
     });
-
+    //nge show elemen slides yang aktif
     slides[slideIndex - 1].style.display = "block";
     dots[slideIndex - 1].classList.add("active");
-
+    //pause video kalau slide ga aktif
     const videos = document.querySelectorAll('.slide-video');
     videos.forEach(video => {
         video.pause();
     });
-    videos[slideIndex - 1].play();
+    videos[slideIndex - 1].play();//video jalan
 }
 
 // Fungsi slideshow film

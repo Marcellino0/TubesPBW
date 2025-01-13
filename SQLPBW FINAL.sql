@@ -1,4 +1,3 @@
--- Drop semua tabel dan view yang ada terlebih dahulu
 DROP VIEW IF EXISTS rental_history;
 DROP TABLE IF EXISTS penyewaan;
 DROP TABLE IF EXISTS laporan;

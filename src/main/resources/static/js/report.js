@@ -34,7 +34,7 @@ function initializeChart() {
 
     // Membuat chart baru dengan konfigurasi
     rentalChart = new Chart(ctx, {
-        type: 'line',
+        type: 'line', //line chart
         data: {
             // Data untuk sumbu X (judul film)
             labels: rentalStats.map(stat => stat.movieTitle),
@@ -85,9 +85,9 @@ function initializeChart() {
             // Konfigurasi skala sumbu X dan Y
             scales: {
                 y: {
-                    beginAtZero: true,
+                    beginAtZero: true, //sumbu y dari 0
                     ticks: {
-                        stepSize: 1,
+                        stepSize: 1, //langkah di sumbu y
                         color: 'rgba(241, 245, 249, 0.8)'
                     },
                     grid: {
@@ -143,12 +143,12 @@ function initializeChart() {
                     displayColors: true,
                     callbacks: {
                         label: function (context) {
-                            let label = context.dataset.label || '';
+                            let label = context.dataset.label || ''; // Mengambil label dataset
                             if (label) {
                                 label += ': ';
                             }
                             if (context.parsed.y !== null) {
-                                label += parseFloat(context.parsed.y).toFixed(1);
+                                label += parseFloat(context.parsed.y).toFixed(1); // Menampilkan nilai dengan 1 angka desimal
                             }
                             return label;
                         }
@@ -175,13 +175,14 @@ function setupUpdateTargetButtons() {
             const filmId = this.getAttribute('data-film-id');
             const targetInput = document.querySelector(`.target-input[data-film-id="${filmId}"]`);
             const targetCount = parseInt(targetInput.value);
-
+            //periksa nilai target valid atau tidak
             if (isNaN(targetCount) || targetCount < 0) {
                 alert('Please enter a valid target number');
                 return;
             }
 
             try {
+                //request update target penyewaan
                 const response = await fetch(`/admin/rental/update-target/${filmId}`, {
                     method: 'POST',
                     headers: {
@@ -191,7 +192,7 @@ function setupUpdateTargetButtons() {
                 });
 
                 if (response.ok) {
-                    const filmIndex = rentalStats.findIndex(stat => stat.filmId === parseInt(filmId));
+                    const filmIndex = rentalStats.findIndex(stat => stat.filmId === parseInt(filmId)); //cari film dari id filmnya
                     if (filmIndex !== -1) {
                         rentalStats[filmIndex].targetCount = targetCount;
                         updateChartData();
@@ -207,7 +208,7 @@ function setupUpdateTargetButtons() {
         });
     });
 }
-
+//nge-run setup saat halaman dimuat
 document.addEventListener('DOMContentLoaded', () => {
     initializeChart();
     setupUpdateTargetButtons();
